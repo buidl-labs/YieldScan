@@ -9,7 +9,8 @@ import {
     Input,
     InputRightAddon,
     Icon,
-    Button
+    Button,
+    Link as ChakraLink
 } from "@chakra-ui/core";
 import FAQs from "./FAQs";
 import HowToStake from "./guides/HowToStake";
@@ -30,6 +31,7 @@ export default function HelpCenter() {
                     <InputGroup mt={8}>
                         <Input
                             placeholder="Search the documentation"
+                            variant="filled"
                             roundedLeft="2rem"
                         />
                         <InputRightAddon
@@ -53,7 +55,8 @@ export default function HelpCenter() {
                             How to stake
                         </Heading>
                         <Text my={4}>
-                            A step by step guide explaining how to stake tokens on the Polkadot Network.
+                            A step by step guide explaining how to stake tokens
+                            on the Polkadot Network.
                         </Text>
                     </Box>
                 </Link>
@@ -63,6 +66,19 @@ export default function HelpCenter() {
                     FAQs
                 </Text>
                 <FAQs />
+
+                {/* Contact Us */}
+                <Box my={16} textAlign="center">
+                    <Text fontSize="xl">
+                        Can't find what you're looking for?
+                    </Text>
+                    <ChakraLink
+                        href="mailto:sahil@thevantageproject.com"
+                        color="teal.500"
+                    >
+                        Contact Us
+                    </ChakraLink>
+                </Box>
             </Route>
 
             {/* Guides */}

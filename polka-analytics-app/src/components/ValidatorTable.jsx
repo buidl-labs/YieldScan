@@ -1,45 +1,44 @@
 import React from "react";
 import { Table } from "antd";
 
-const data = [
-    {
-        key: "1",
-        validatorName: "POLYCHAIN LABS 1",
-        reward: "0.155 KSM",
-        commission: "0.00%",
-        stashId: "HutJ….rt1xs",
-        controllerId: "Gw9k….xiVz2"
-    }
-];
-
 const columns = [
     {
         title: "Name",
-        dataIndex: "validatorName",
-        key: "validatorName"
+        dataIndex: "name",
+        key: "name",
+        align: "left"
     },
     {
-        title: "Daily Reward",
-        dataIndex: "reward",
-        key: "reward"
+        title: "Daily Earning",
+        dataIndex: "dailyEarning",
+        key: "dailyEarning",
+        align: "left",
+        defaultSortOrder: "descend",
+        sorter: (a, b) =>
+            a.dailyEarning.slice(0, -5) - b.dailyEarning.slice(0, -5)
     },
     {
         title: "Commission",
         dataIndex: "commission",
-        key: "commission"
+        key: "commission",
+        align: "left"
     },
     {
         title: "Stash Id",
-        dataIndex: "stashId",
-        key: "stashId"
-    },
-    {
-        title: "Controller Id",
-        dataIndex: "controllerId",
-        key: "controllerId"
+        dataIndex: "stashIdTruncated",
+        key: "stashIdTruncated",
+        align: "left"
     }
+    // {
+    //     title: "Controller Id",
+    //     dataIndex: "controllerId",
+    //     key: "controllerId"
+    // }
 ];
 
-export default function ValidatorTable() {
-    return <Table dataSource={data} columns={columns} pagination={false} />;
+export default function ValidatorTable(props) {
+    const { dataSource } = props;
+    return (
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
+    );
 }

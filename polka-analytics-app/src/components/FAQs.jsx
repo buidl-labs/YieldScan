@@ -93,7 +93,7 @@ class FAQs extends React.Component {
         return (
             <Accordion defaultIndex={[0]} allowMultiple>
                 {data.map(data => (
-                    <AccordionItem key={data.id}>
+                    <AccordionItem key={data.id} py={4}>
                         <AccordionHeader>
                             <Box flex="1" textAlign="left">
                                 <Heading as="h5" size="sm" textAlign="left">
