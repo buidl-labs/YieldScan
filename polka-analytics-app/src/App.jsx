@@ -145,7 +145,7 @@ function App() {
                 stashIdTruncated: stashIdTruncated,
                 name: name,
                 commission: commission,
-                dailyEarning: `${dailyEarning} KSM`
+                dailyEarning: isNaN(dailyEarning) ? "Not enough data" : `${dailyEarning} KSM`
             };
         });
 
