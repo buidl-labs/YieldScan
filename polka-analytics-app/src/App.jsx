@@ -22,7 +22,8 @@ function App() {
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
-	const [stakeAmount, setStakeAmount] = React.useState(1000.0);
+    const [stakeAmount, setStakeAmount] = React.useState(1000.0);
+    const ERA_PER_DAY = 4;
 
 	const createApi = async () => {
 		console.log(`Connecting to API...`);
@@ -131,7 +132,7 @@ function App() {
 				poolReward
 			} = validator;
 			const userStakeFraction = stakeAmount / (stakeAmount + totalStake);
-			const dailyEarning = userStakeFraction * poolReward;
+			const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
 			if (dailyEarning > maxDailyEarning) setMaxDailyEarning(dailyEarning);
 			return {
 				stashId: stashId,
