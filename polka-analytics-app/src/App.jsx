@@ -138,7 +138,7 @@ function App() {
 				stashId: stashId,
 				stashIdTruncated: stashIdTruncated,
 				name: name,
-				commission: commission,
+				commission: `${parseFloat(commission)}%`,
 				dailyEarning: isNaN(dailyEarning)
 					? "Not enough data"
 					: `${dailyEarning} KSM`
