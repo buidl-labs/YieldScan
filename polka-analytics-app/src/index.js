@@ -6,7 +6,7 @@ import {
     CSSReset,
     theme
 } from "@chakra-ui/core";
-import Router from "./Router.jsx";
+import App from "./App.jsx";
 import "./stylesheets/scss/index.scss"
 
 const customTheme = {
@@ -23,7 +23,7 @@ ReactDOM.render(
     <ThemeProvider theme={customTheme}>
         <ColorModeProvider>
             <CSSReset />
-            <Router />
+            <App />
         </ColorModeProvider>
     </ThemeProvider>,
     document.getElementById("root")

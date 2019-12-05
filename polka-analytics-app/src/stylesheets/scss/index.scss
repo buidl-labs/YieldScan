@@ -17,6 +17,11 @@ td {
     padding-bottom: 0;
 }
 
+.nav-link.active {
+    font-weight: 700;
+    color: #E50B7B;
+}
+
 .card {
     border: 2px solid transparent;
     border-radius: 1rem;
@@ -34,4 +39,8 @@ td {
     display: flex;
     justify-content: space-between;
     cursor: pointer;
+}
+
+.anticon.on {
+    color: #319795;
 }

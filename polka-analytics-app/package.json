@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@amplitude/react-amplitude": "^1.0.0",
     "@chakra-ui/core": "^0.4.1",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
     "@polkadot/api": "^0.97.1",
+    "amplitude-js": "^5.7.0",
     "antd": "^3.26.0",
     "emotion-theming": "^10.0.19",
     "node-sass": "^4.13.0",
@@ -21,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && cd build && surge --domain https://dev-polka-analytics.surge.sh/"
+    "deploy": "npm run build && cd build && surge --domain https://dev-polka-analytics.surge.sh/",
+    "deploy-public": "npm run build && cd build && surge --domain https://polka-analytics.surge.sh/"
   },
   "eslintConfig": {
     "extends": "react-app"
