@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink, Route } from "react-router-dom";
+import { Link as RouterLink, NavLink, Route } from "react-router-dom";
 import {
 	Flex,
 	IconButton,
@@ -10,20 +10,29 @@ import {
 	Text,
 	Input,
 	InputGroup,
-	InputRightAddon
+	InputRightAddon,
+	Spinner,
+	Link,
+	CircularProgress
 } from "@chakra-ui/core";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { hexToString } from "@polkadot/util";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
+import amplitude from "amplitude-js";
+import { AmplitudeProvider, LogOnMount } from "@amplitude/react-amplitude";
+
+const AMPLITUDE_KEY = "1d3873d97d87e9193e7e30529d8a10ab";
 
 function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
-    const [stakeAmount, setStakeAmount] = React.useState(1000.0);
-    const ERA_PER_DAY = 4;
+	const [stakeAmount, setStakeAmount] = React.useState(1000.0);
+	const [apiConnected, setApiConnected] = React.useState(false);
+	const [isLoaded, setIsLoaded] = React.useState(false);
+	const ERA_PER_DAY = 4;
 
 	const createApi = async () => {
 		console.log(`Connecting to API...`);
@@ -31,7 +40,7 @@ function App() {
 		const api = await ApiPromise.create({ provider: wsProvider });
 		await api.isReady;
 		console.log(`API is ready`);
-        console.clear();
+		console.clear();
 		// Fetch recent reward events from Polkascan
 		const res = await fetch(
 			"https://polkascan.io/kusama-cc3/api/v1/event?&filter[module_id]=staking&filter[event_id]=Reward&page[size]=25"
@@ -117,6 +126,7 @@ function App() {
 		const filteredValidatorData = validatorData.filter(curr =>
 			currentValidators.includes(curr.stashId)
 		);
+		setApiConnected(true);
 		setValidatorData(filteredValidatorData);
 		return filteredValidatorData;
 	};
@@ -146,7 +156,8 @@ function App() {
 		});
 
 		setValidatorTableData(data);
-	}, [stakeAmount, validatorData, maxDailyEarning]);
+		if (apiConnected) setIsLoaded(true);
+	}, [stakeAmount, validatorData, maxDailyEarning, apiConnected]);
 
 	React.useEffect(() => {
 		createApi();
@@ -154,114 +165,153 @@ function App() {
 	}, [calcReward]);
 
 	return (
-		<Flex
-			className="App"
-			maxW="960px"
-			justify="center"
-			direction="column"
-			m="auto"
-			pb={8}
+		<AmplitudeProvider
+			amplitudeInstance={amplitude.getInstance()}
+			apiKey={AMPLITUDE_KEY}
 		>
-			{/* Navbar */}
-			<Flex direction="row" justifyContent="space-between" p={2}>
-				{/* Polka Analytics Logo - Left hand part of navbar */}
-				<Flex justify="flex-start" alignItems="center">
-					<NavLink to="/">
-						<Box as="span" display="inline-flex" alignItems="center">
-							<Image src="/logo192.png" height="2rem" mr={4} />
-							<Heading as="h3" size="lg">
-								Polka Analytics
-							</Heading>
-						</Box>
-					</NavLink>
-				</Flex>
-				{/* Navigation Menu & color mode toggle - Right hand part of navbar */}
-				<Flex justify="flex-end">
-					<Flex alignItems="center">
-						<Box mr={8}>
-							<NavLink to="/dashboard">Dashboard</NavLink>
-						</Box>
-						<Box mr={8}>
-							<NavLink to="/help-center">Help Center</NavLink>
-						</Box>
+			<LogOnMount eventType="Use Count" />
+			<Flex
+				className="App"
+				maxW="960px"
+				justify="center"
+				direction="column"
+				m="auto"
+				pb={8}
+			>
+				{/* Navbar */}
+				<Flex direction="row" justifyContent="space-between" p={2}>
+					{/* Polka Analytics Logo - Left hand part of navbar */}
+					<Flex justify="flex-start" alignItems="center">
+						<NavLink to="/">
+							<Box as="span" display="inline-flex" alignItems="center">
+								<Image src="/logo192.png" height="2rem" mr={4} />
+								<Heading as="h3" size="lg">
+									Polka Analytics
+								</Heading>
+							</Box>
+						</NavLink>
 					</Flex>
-					<IconButton
-						aria-label={
-							colorMode === "light"
-								? "Switch to dark mode"
-								: "Switch to light mode"
-						}
-						icon={colorMode === "light" ? "moon" : "sun"}
-						size="lg"
-						onClick={toggleColorMode}
-						backgroundColor={colorMode === "light" ? "#fff" : "gray.800"}
-					/>
+					{/* Navigation Menu & color mode toggle - Right hand part of navbar */}
+					<Flex justify="flex-end">
+						<Flex alignItems="center">
+							<Box mr={8}>
+								<Link as={NavLink} className="nav-link" to="/dashboard">
+									Dashboard
+								</Link>
+							</Box>
+							<Box mr={8}>
+								<Link as={NavLink} className="nav-link" to="/help-center">
+									Help Center
+								</Link>
+							</Box>
+						</Flex>
+						<IconButton
+							aria-label={
+								colorMode === "light"
+									? "Switch to dark mode"
+									: "Switch to light mode"
+							}
+							icon={colorMode === "light" ? "moon" : "sun"}
+							size="lg"
+							onClick={toggleColorMode}
+							backgroundColor={colorMode === "light" ? "#fff" : "gray.800"}
+						/>
+					</Flex>
 				</Flex>
-			</Flex>
-			{/* Homepage - Dashboard */}
-			<Route exact path="/(|dashboard)">
-				<Heading as="h2" size="xl" textAlign="center" mt={16}>
-					Put your KSM tokens to work
-				</Heading>
-				<Text fontSize="2xl" textAlign="center">
-					You could be earning{" "}
-					<Box as="span" color="brand.900">
-						{maxDailyEarning}
-					</Box>{" "}
-					KSM daily
-				</Text>
-				{/* Stake Amount Input */}
-				<Flex
-					flexDirection="column"
-					alignItems="center"
-					position="sticky"
-					top="0"
-					backgroundImage={
-						colorMode === "light"
-							? "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))"
-							: "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))"
-					}
-				>
-					<InputGroup my={8}>
-						<Input
-							placeholder="Stake Amount"
-							variant="filled"
-							value={stakeAmount}
-							textAlign="center"
-							roundedLeft="2rem"
-							onChange={e =>
-								setStakeAmount(
-									isNaN(parseFloat(e.target.value))
-										? 0
-										: parseFloat(e.target.value)
-								)
+				{/* Homepage - Dashboard */}
+				<Route exact path="/(|dashboard)">
+					<Heading as="h2" size="xl" textAlign="center" mt={16}>
+						Put your KSM tokens to work
+					</Heading>
+					<Text fontSize="2xl" textAlign="center">
+						You could be earning{" "}
+						<Box as="span" color="brand.900">
+							{isLoaded && apiConnected ? (
+								maxDailyEarning
+							) : (
+								<CircularProgress
+									isIndeterminate
+									as="span"
+									color="brand"
+									size="36px"
+									mb={-2}
+									mx={2}
+								></CircularProgress>
+							)}
+						</Box>{" "}
+						KSM daily
+					</Text>
+					{/* Stake Amount Input */}
+					<Flex
+						flexDirection="column"
+						alignItems="center"
+						position="sticky"
+						top="0"
+						backgroundImage={
+							colorMode === "light"
+								? "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))"
+								: "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))"
+						}
+					>
+						<InputGroup my={8}>
+							<Input
+								placeholder="Stake Amount"
+								variant="filled"
+								value={stakeAmount}
+								textAlign="center"
+								roundedLeft="2rem"
+								onChange={e =>
+									setStakeAmount(
+										isNaN(parseFloat(e.target.value))
+											? 0
+											: parseFloat(e.target.value)
+									)
+								}
+							/>
+							<InputRightAddon
+								children="KSM"
+								backgroundColor="teal.500"
+								roundedRight="2rem"
+							/>
+						</InputGroup>
+					</Flex>
+					<Box as="span" color="teal.500" textAlign="center">
+						<Link as={RouterLink} to="/help-center/guides/how-to-stake">
+							How to stake?
+						</Link>
+					</Box>
+					{/* Validator Table */}
+					<Text textAlign="center" mt={16} mb={8}>
+						Looking for a list of active validators to stake on? Look no
+						further!
+					</Text>
+					{isLoaded && apiConnected ? (
+						<ValidatorTable
+							dataSource={
+								validatorTableData !== undefined ? validatorTableData : []
 							}
 						/>
-						<InputRightAddon
-							children="KSM"
-							backgroundColor="teal.500"
-							roundedRight="2rem"
-						/>
-					</InputGroup>
-				</Flex>
-				<Box as="span" color="teal.500" textAlign="center">
-					<Link to="/help-center/guides/how-to-stake">How to stake?</Link>
-				</Box>
-				{/* Validator Table */}
-				<Text textAlign="center" mt={16} mb={8}>
-					Looking for a list of active validators to stake on? Look no further!
-				</Text>
-				<ValidatorTable
-					dataSource={
-						validatorTableData !== undefined ? validatorTableData : []
-					}
-				/>
-			</Route>
-			{/* Help Center */}
-			<Route path="/help-center">
-				<HelpCenter />
-			</Route>
-		</Flex>
+					) : (
+						<React.Fragment>
+							<Spinner as="span" size="lg" alignSelf="center" />
+							<Text
+								mt={4}
+								fontSize="xl"
+								color="gray.500"
+								textAlign="center"
+								alignSelf="center"
+							>
+								Unboxing pure awesomeness...
+							</Text>
+						</React.Fragment>
+					)}
+				</Route>
+				{/* Help Center */}
+				<Route path="/help-center">
+					<HelpCenter />
+				</Route>
+			</Flex>
+		</AmplitudeProvider>
 	);
 }
 
