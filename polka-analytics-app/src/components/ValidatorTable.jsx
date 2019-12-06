@@ -47,7 +47,7 @@ export default function ValidatorTable(props) {
 								() =>
 									toast({
 										title: "Validator Address Copied",
-										description: `The Stash Id of ${record.name} has been copied to clipboard`,
+										description: `The Stash Id of ${record.name} has been copied to your clipboard`,
 										status: "success",
 										duration: 5000,
 										isClosable: true

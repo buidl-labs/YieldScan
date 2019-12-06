@@ -13,6 +13,17 @@ import {
 const data = [
     {
         id: 1,
+        question: "Why stake?",
+        answer: `10% inflation/year when the network launches\n 50% targeted active staking\n ~20% annual return`,
+        link: {
+            url:
+                "https://wiki.polkadot.network/docs/en/learn-staking#why-stake",
+            content: "Learn more about why stake",
+            isExternal: true
+        }
+    },
+    {
+        id: 2,
         question: "What is Polkadot?",
         answer:
             "Polkadot is a protocol that allows independent blockchains to exchange information.",
@@ -24,7 +35,7 @@ const data = [
         }
     },
     {
-        id: 2,
+        id: 3,
         question: "How does staking work in polkadot and what is NPoS?",
         answer:
             "Polkadot uses NPoS (Nominated Proof-of-Stake) as its mechanism for selecting the validator set. It is designed with the roles of validators and nominators, to maximize chain security.",
@@ -36,7 +47,7 @@ const data = [
         }
     },
     {
-        id: 3,
+        id: 4,
         question: "What are nominators?",
         answer:
             "Nominators secure the relay chain by selecting good validators and staking DOTs.",
@@ -47,24 +58,13 @@ const data = [
         }
     },
     {
-        id: 4,
+        id: 5,
         question: "What are validators?",
         answer:
             "Validators secure the relay chain by staking DOTs, validating proofs from collators and participating in consensus with other validators.",
         link: {
             url: "https://wiki.polkadot.network/docs/en/maintain-validator",
             content: "Learn more about validators",
-            isExternal: true
-        }
-    },
-    {
-        id: 5,
-        question: "Why stake?",
-        answer: `10% inflation/year when the network launches\n 50% targeted active staking\n ~20% annual return`,
-        link: {
-            url:
-                "https://wiki.polkadot.network/docs/en/learn-staking#why-stake",
-            content: "Learn more about why stake",
             isExternal: true
         }
     },
