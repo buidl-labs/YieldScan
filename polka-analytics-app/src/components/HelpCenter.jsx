@@ -4,12 +4,12 @@ import {
     Box,
     Heading,
     Text,
-    Flex,
-    InputGroup,
-    Input,
-    InputRightAddon,
-    Icon,
-    Button,
+    // Flex,
+    // InputGroup,
+    // Input,
+    // InputRightAddon,
+    // Icon,
+    // Button,
     Link as ChakraLink
 } from "@chakra-ui/core";
 import FAQs from "./FAQs";
@@ -23,11 +23,11 @@ export default function HelpCenter() {
                 <Heading as="h2" size="xl" textAlign="center" mt={16}>
                     Help Center
                 </Heading>
-                <Text fontSize="2xl" textAlign="center">
+                {/* <Text fontSize="2xl" textAlign="center">
                     What are you looking for?
-                </Text>
+                </Text> */}
                 {/* Search Input */}
-                <Flex flexDirection="column" alignItems="center">
+                {/* <Flex flexDirection="column" alignItems="center">
                     <InputGroup mt={8}>
                         <Input
                             placeholder="Search the documentation"
@@ -42,7 +42,7 @@ export default function HelpCenter() {
                             px={8}
                         />
                     </InputGroup>
-                </Flex>
+                </Flex> */}
 
                 {/* Guides Section */}
                 <Text fontSize="2xl" textAlign="center" mt={16}>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { Table } from "antd";
 import { IconButton, useToast } from "@chakra-ui/core";
 
@@ -7,11 +8,7 @@ export default function ValidatorTable(props) {
 	const { Column } = Table;
 	const toast = useToast();
 	return (
-		<Table
-			rowKey="stashId"
-			dataSource={dataSource}
-			pagination={false}
-		>
+		<Table rowKey="stashId" dataSource={dataSource} pagination={false}>
 			<Column title="Name" key="name" dataIndex="name" align="left" />
 			<Column
 				title="Daily Earning"
@@ -39,23 +36,31 @@ export default function ValidatorTable(props) {
 				title="Action"
 				key="action"
 				render={record => (
-					<IconButton
-						ml={4}
-						icon="copy"
-						onClick={() => {
-							navigator.clipboard.writeText(record.stashId).then(
-								() =>
-									toast({
-										title: "Validator Address Copied",
-										description: `The Stash Id of ${record.name} has been copied to your clipboard`,
-										status: "success",
-										duration: 5000,
-										isClosable: true
-									}),
-								() => console.log(`Something went wrong`)
-							);
-						}}
-					/>
+					<React.Fragment>
+						<IconButton
+							ml={4}
+							icon="copy"
+							onClick={() => {
+								navigator.clipboard.writeText(record.stashId).then(
+									() =>
+										toast({
+											title: "Validator Address Copied",
+											description: `The Stash Id of ${record.name} has been copied to your clipboard`,
+											status: "success",
+											duration: 5000,
+											isClosable: true
+										}),
+									() => console.log(`Something went wrong`)
+								);
+							}}
+						/>
+						<IconButton
+							ml={4}
+							icon="external-link"
+							as={RouterLink}
+							to={`/kusama/validator/${record.stashId}`}
+						/>
+					</React.Fragment>
 				)}
 			/>
 		</Table>
