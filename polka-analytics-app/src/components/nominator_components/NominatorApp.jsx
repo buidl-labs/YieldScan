@@ -1,10 +1,9 @@
 import React from "react";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Stage, Layer, Arc, Circle, Text } from "react-konva";
+import { Stage, Layer, Arc, Circle, Text as KonvaText } from "react-konva";
 import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
-import NomBottombar from "./NomBottombar";
-import { IconButton, Spinner } from "@chakra-ui/core";
+import { IconButton, Spinner, Box, Text, Flex } from "@chakra-ui/core";
 
 class NominatorApp extends React.Component {
 	constructor() {
@@ -25,10 +24,6 @@ class NominatorApp extends React.Component {
 		this.deriveInfo();
 	}
 
-	componentWillUnmount() {
-		this.ismounted = false;
-	}
-
 	deriveInfo = async () => {
 		console.log("derive info running");
 		const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io");
@@ -36,7 +31,7 @@ class NominatorApp extends React.Component {
 		await api.isReady;
 		const totalinfo = await Promise.all(
 			this.props.valtotalinfo.map(
-				async validator => await api.derive.staking.info(validator)
+				async validator => await api.derive.staking.account(validator)
 			)
 		);
 		let unfilteredNominators = [];
@@ -50,7 +45,7 @@ class NominatorApp extends React.Component {
 		}
 		let filteredNominators = unfilteredNominators.filter(onlyUnique);
 		const nominators = await Promise.all(
-			filteredNominators.map(async val => await api.derive.staking.info(val))
+			filteredNominators.map(async val => await api.derive.staking.account(val))
 		);
 		const parsedNominators = JSON.parse(JSON.stringify(nominators));
 		if (!this.ismounted) {
@@ -195,38 +190,34 @@ class NominatorApp extends React.Component {
 				: "";
 
 		let arr = valbacked;
-		const width = window.innerWidth > 960 ? 960 : window.innerWidth;
-		const height =
-			window.innerWidth > 960
-				? (window.innerHeight * 960) / window.innerWidth
-				: window.innerHeight;
+		const width = window.innerWidth;
+		const height = window.innerHeight;
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
-					<div className="nav-path">
-						<div className="nav-path-current">{nominatorname}</div>
-						<IconButton
-							ml={4}
-							icon="copy"
-							onClick={() => {
-								navigator.clipboard
-									.writeText(stashId)
-									.then(this.onCopy, () => console.log(`Something went wrong`));
-							}}
-						/>
-					</div>
+					<Box textAlign="center">
+						<Box display="flex" justifyContent="center" mt={20} mb={8}>
+							<Text alignSelf="center">{nominatorname}</Text>
+							<IconButton
+								ml={4}
+								icon="copy"
+								onClick={() => {
+									navigator.clipboard
+										.writeText(stashId)
+										.then(this.onCopy, () =>
+											console.log(`Something went wrong`)
+										);
+								}}
+							/>
+						</Box>
+						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+							Copied to your clipboard
+						</Text>
+					</Box>
 					<Stage width={width} height={height}>
 						<Layer>
-							{this.state.copied && (
-								<Text
-									text="copied"
-									x={1000}
-									y={45}
-									fill="green"
-									fontSize={18}
-								/>
-							)}
 							<Validators
+								colorMode={this.props.colorMode}
 								allvals={arr}
 								rect_x={width / 2}
 								circ_x={width / 2 - 200}
@@ -241,7 +232,9 @@ class NominatorApp extends React.Component {
 								outerRadius={height / 2 - 24}
 								rotation={90}
 								angle={180}
-								stroke="#97A1BF"
+								stroke={
+									this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
+								}
 								strokeWidth={4}
 							/>
 
@@ -249,31 +242,66 @@ class NominatorApp extends React.Component {
 								x={width / 2 - 200}
 								y={height / 2}
 								radius={7}
-								fill="white"
+								fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 								onMouseOver={this.handleOnMouseOver}
 								onMouseOut={this.handleOnMouseOut}
 							/>
 
 							{this.state.showValidatorAddress && (
-								<Text
+								<KonvaText
 									text={valtext}
 									x={width / 2 - 200}
 									y={height / 2 - 18}
-									fill="#FFFFFF"
+									fill={
+										this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
+									}
 								/>
 							)}
 						</Layer>
 					</Stage>
-					<div className="nombottombar">
-						<NomBottombar
-							controllername={controllername}
-							bondvalue={bondvalue}
-						/>
-					</div>
+					<Flex justifyContent="center">
+						<Box
+							mt={12}
+							display="flex"
+							justifyContent="space-between"
+							width="100%"
+							maxW="960px"
+							alignSelf="center"
+							mb={8}
+						>
+							<Text>{controllername}</Text>
+							<Text>{bondvalue}</Text>
+						</Box>
+					</Flex>
 				</React.Fragment>
 			);
 		} else {
-			return <Spinner as="span" size="lg" alignSelf="center" mt={16} />;
+			return (
+				<Box
+					display="flex"
+					flexDirection="column"
+					position="absolute"
+					top="50%"
+					left="50%"
+					transform="translate(-50%, -50%)"
+					alignSelf="center"
+					justifyContent="center"
+					textAlign="center"
+					mt={-16}
+					zIndex={-1}
+				>
+					<Spinner as="span" size="lg" alignSelf="center" />
+					<Text
+						mt={4}
+						fontSize="xl"
+						color="gray.500"
+						textAlign="center"
+						alignSelf="center"
+					>
+						Stabilizing the isotopes...
+					</Text>
+				</Box>
+			);
 		}
 	}
 }

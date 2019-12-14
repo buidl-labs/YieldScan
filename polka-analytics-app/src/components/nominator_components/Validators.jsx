@@ -20,13 +20,14 @@ class Validators extends React.Component {
 			y_cord += windowlength / (this.props.allvals.length + 1);
 			arr1.push(
 				<Rectangleandlines
+					colorMode={this.props.colorMode}
 					key={index}
 					totalinfo={this.props.totalinfo}
 					valinfo={element.validator}
 					staked={element.staked}
 					history={this.props.history}
 					x={this.props.rect_x}
-					y={y_cord - 185}
+					y={y_cord}
 					circ_x={this.props.circ_x}
 					circ_y={this.props.circ_y}
 					xline={

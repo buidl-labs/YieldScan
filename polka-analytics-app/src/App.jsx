@@ -21,6 +21,7 @@ import {
 	Link,
 	CircularProgress
 } from "@chakra-ui/core";
+import { debounce } from "throttle-debounce";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { hexToString } from "@polkadot/util";
 import ValidatorTable from "./components/ValidatorTable";
@@ -35,6 +36,7 @@ const AMPLITUDE_KEY = "1d3873d97d87e9193e7e30529d8a10ab";
 
 function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
+	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
 	const [intentionData, setIntentionData] = React.useState([]);
@@ -42,7 +44,12 @@ function App() {
 		[]
 	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
+	const [stakeInput, setStakeInput] = React.useState(1000.0);
 	const [stakeAmount, setStakeAmount] = React.useState(1000.0);
+	const debounceStakeInput = debounce(750, () => {
+		console.log("debounced");
+		setStakeAmount(stakeInput);
+	});
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
@@ -56,7 +63,7 @@ function App() {
 		// console.clear();
 		// Fetch recent reward events from Polkascan
 		const res = await fetch(
-			"https://polkascan.io/kusama-cc3/api/v1/event?&filter[module_id]=staking&filter[event_id]=Reward&page[size]=25"
+			"https://polkascan.io/kusama-cc3/api/v1/event?&filter[module_id]=staking&filter[event_id]=Reward&page[size]=10"
 		);
 		const json = await res.json();
 		const rewardData = await json.data;
@@ -131,18 +138,23 @@ function App() {
 		});
 
 		const validatorData = await Promise.all(
-			Object.keys(result).map(async key => {
+			Object.keys(result).map(async (key, index) => {
 				const validatorPoolReward =
 					((result[key].points.reduce((acc, curr) => acc + curr, 0) /
 						result[key].points.length) *
 						reward) /
 					10 ** 12;
-				const stakeInfo = await api.derive.staking.info(key);
-				const totalStake = stakeInfo.stakers.total.toString() / 10 ** 12;
+				const electedInfo = await api.derive.staking.electedInfo();
+				const stakeInfo = await api.derive.staking.account(key.toString());
+				const totalStake =
+					stakeInfo !== undefined
+						? stakeInfo.stakers.total.toString() / 10 ** 12
+						: undefined;
 				result[key].totalStake = totalStake;
 				result[key].poolReward = isNaN(validatorPoolReward)
 					? "Not enough data"
 					: (1 - result[key].commission / 100) * validatorPoolReward;
+				setElectedInfo(electedInfo);
 				return result[key];
 			})
 		);
@@ -213,7 +225,12 @@ function App() {
 					pb={8}
 				>
 					{/* Navbar */}
-					<Flex direction="row" justifyContent="space-between" p={2}>
+					<Flex
+						direction="row"
+						justifyContent="space-between"
+						zIndex={999}
+						p={2}
+					>
 						{/* Polka Analytics Logo - Left hand part of navbar */}
 						<Flex justify="flex-start" alignItems="center">
 							<NavLink to="/">
@@ -263,14 +280,6 @@ function App() {
 									You could be earning{" "}
 									<Box as="span" color="brand.900">
 										{maxDailyEarning}
-										{/* <CircularProgress
-										isIndeterminate
-										as="span"
-										color="brand"
-										size="36px"
-										mb={-2}
-										mx={2}
-									></CircularProgress> */}
 									</Box>{" "}
 									KSM daily
 								</Text>
@@ -296,16 +305,17 @@ function App() {
 										<Input
 											placeholder="Stake Amount"
 											variant="filled"
-											value={stakeAmount}
+											value={stakeInput}
 											textAlign="center"
 											roundedLeft="2rem"
-											onChange={e =>
-												setStakeAmount(
+											onChange={e => {
+												setStakeInput(
 													isNaN(parseFloat(e.target.value))
 														? 0
 														: parseFloat(e.target.value)
-												)
-											}
+												);
+												debounceStakeInput(stakeAmount);
+											}}
 										/>
 										<InputRightAddon
 											children="KSM"
@@ -325,75 +335,122 @@ function App() {
 									further!
 								</Text>
 								<ValidatorTable
+									colorMode={colorMode}
 									dataSource={
 										validatorTableData !== undefined ? validatorTableData : []
 									}
 								/>
 							</React.Fragment>
 						) : (
-							<CircularProgress
-								isIndeterminate
-								as="span"
-								color="brand"
-								size="36px"
-								mb={-2}
-								mx={2}
-							></CircularProgress>
-						)}
-					</Route>
-					{/* Specific Views for Validators */}
-					<Route path="/kusama/validator/">
-						{isLoaded && apiConnected ? (
-							<ValidatorApp
-								valtotalinfo={validatorData.map(data => data.stashId)}
-								intentions={intentionData}
-								validatorsandintentions={validatorsAndIntentions}
-								validatorandintentionloading={!isLoaded}
-								isKusama={true}
-							/>
-						) : (
-							<React.Fragment>
-								<Spinner as="span" size="lg" alignSelf="center" mt={16} />
-								<Text
-									mt={4}
-									fontSize="xl"
-									color="gray.500"
-									textAlign="center"
+							<Box
+								display="flex"
+								flexDirection="column"
+								position="absolute"
+								top="50%"
+								transform="translateY(-50%)"
+								alignSelf="center"
+								justifyContent="center"
+								textAlign="center"
+								mt={-16}
+							>
+								<CircularProgress
+									isIndeterminate
+									as="span"
+									color="brand"
+									size="36px"
 									alignSelf="center"
-								>
-									Stabilizing the isotopes...
+								/>
+								<Text mt={4} fontSize="xl" color="gray.500" maxW={300}>
+									Rome wasn't built in a day...
+									<br />
+									But this calculation will be done in a few minutes :)
 								</Text>
-							</React.Fragment>
+							</Box>
 						)}
 					</Route>
-					<Route path="/kusama/nominator/">
-						{isLoaded && apiConnected ? (
-							<NominatorApp
-								valtotalinfo={validatorData.map(data => data.stashId)}
-								intentions={intentionData}
-								validatorsandintentions={validatorsAndIntentions}
-								validatorandintentionloading={!isLoaded}
-							/>
-						) : (
-							<React.Fragment>
-								<Spinner as="span" size="lg" alignSelf="center" mt={16} />
-								<Text
-									mt={4}
-									fontSize="xl"
-									color="gray.500"
-									textAlign="center"
-									alignSelf="center"
-								>
-									Stabilizing the isotopes...
-								</Text>
-							</React.Fragment>
-						)}
-					</Route>
+
 					{/* Help Center */}
 					<Route path="/help-center">
 						<HelpCenter />
 					</Route>
 				</Flex>
+				{/* Validator specific view */}
+				<Route path="/kusama/validator/">
+					{isLoaded && apiConnected ? (
+						<ValidatorApp
+							colorMode={colorMode}
+							electedInfo={electedInfo}
+							valtotalinfo={validatorData.map(data => data.stashId)}
+							intentions={intentionData}
+							validatorsandintentions={validatorsAndIntentions}
+							validatorandintentionloading={!isLoaded}
+							isKusama={true}
+						/>
+					) : (
+						<Box
+							display="flex"
+							flexDirection="column"
+							position="absolute"
+							top="50%"
+							left="50%"
+							transform="translate(-50%, -50%)"
+							alignSelf="center"
+							justifyContent="center"
+							textAlign="center"
+							mt={-16}
+							zIndex={-1}
+						>
+							<Spinner as="span" size="lg" alignSelf="center" />
+							<Text
+								mt={4}
+								fontSize="xl"
+								color="gray.500"
+								textAlign="center"
+								alignSelf="center"
+							>
+								Unboxing pure awesomeness...
+							</Text>
+						</Box>
+					)}
+				</Route>
+				{/* Nominator specific view */}
+				<Route path="/kusama/nominator/">
+					{isLoaded && apiConnected ? (
+						<NominatorApp
+							colorMode={colorMode}
+							electedInfo={electedInfo}
+							valtotalinfo={validatorData.map(data => data.stashId)}
+							intentions={intentionData}
+							validatorsandintentions={validatorsAndIntentions}
+							validatorandintentionloading={!isLoaded}
+						/>
+					) : (
+						<Box
+							display="flex"
+							flexDirection="column"
+							position="absolute"
+							top="50%"
+							left="50%"
+							transform="translate(-50%, -50%)"
+							alignSelf="center"
+							justifyContent="center"
+							textAlign="center"
+							mt={-16}
+							zIndex={-1}
+						>
+							<Spinner as="span" size="lg" alignSelf="center" />
+							<Text
+								mt={4}
+								fontSize="xl"
+								color="gray.500"
+								textAlign="center"
+								alignSelf="center"
+							>
+								Stabilizing the isotopes...
+							</Text>
+						</Box>
+					)}
+				</Route>
 			</Router>
 		</AmplitudeProvider>
 	);

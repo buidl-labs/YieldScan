@@ -59,12 +59,12 @@ class Rectangleandlines extends React.Component {
 						this.props.x - 12,
 						this.props.y
 					]}
-					stroke="white"
+					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.2}
 				/>
 				<Line
 					points={[this.props.x, this.props.y, this.props.xline, this.props.y]}
-					stroke="white"
+					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.2}
 				/>
 				<Rect
@@ -72,7 +72,7 @@ class Rectangleandlines extends React.Component {
 					y={this.props.y - 6}
 					width={24}
 					height={12}
-					fill="purple"
+					fill="#E50B7B"
 					cornerRadius={10}
 					onMouseOver={this.handleOnMouseOver}
 					onMouseOut={this.handleOnMouseOut}
@@ -84,7 +84,7 @@ class Rectangleandlines extends React.Component {
 						text={valtext}
 						x={this.props.x - 12}
 						y={this.props.y - 18}
-						fill="#FFFFFF"
+						fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					/>
 				)}
 				{this.state.showValidatorAddress && (
@@ -92,7 +92,7 @@ class Rectangleandlines extends React.Component {
 						text={stakedtext}
 						x={this.props.x + 220}
 						y={this.props.y - 18}
-						fill="#FFFFFF"
+						fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					/>
 				)}
 			</React.Fragment>

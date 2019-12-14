@@ -3,7 +3,6 @@ import Circleandline from "./Circleandline";
 
 class WhiteCircles extends React.Component {
 	render() {
-		console.log(this.props.nominators)
 		let angle = (2 / 3) * Math.PI;
 		let maxAngle = (2 / 3) * Math.PI;
 		var arr = [];
@@ -17,6 +16,7 @@ class WhiteCircles extends React.Component {
 			angle += maxAngle / (Number(this.props.n) + 1);
 			arr.push(
 				<Circleandline
+				colorMode={this.props.colorMode}
 					key={index}
 					x={this.props.r * Math.cos(angle) + this.props.x}
 					y={this.props.r * Math.sin(angle) + this.props.y}

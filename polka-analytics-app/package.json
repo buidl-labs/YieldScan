@@ -7,7 +7,7 @@
     "@chakra-ui/core": "^0.4.1",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
-    "@polkadot/api": "^0.98.1",
+    "@polkadot/api": "^0.99.1",
     "amplitude-js": "^5.7.0",
     "antd": "^3.26.0",
     "emotion-theming": "^10.0.19",
@@ -18,7 +18,8 @@
     "react-konva": "^16.10.1-0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
-    "react-vertical-timeline-component": "^2.5.0"
+    "react-vertical-timeline-component": "^2.5.0",
+    "throttle-debounce": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

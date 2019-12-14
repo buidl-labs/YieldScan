@@ -1,10 +1,10 @@
 import React from "react";
-import { IconButton } from "@chakra-ui/core";
-import { Stage, Layer, Arc, Line, Rect, Text } from "react-konva";
+import { IconButton, Box, Text, Spinner, Flex } from "@chakra-ui/core";
+import { Stage, Layer, Arc, Line, Rect } from "react-konva";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
-import ValBottombar from "./ValBottombar";
+import { hexToString } from "@polkadot/util";
 
 class ValidatorApp extends React.Component {
 	constructor(props) {
@@ -16,11 +16,13 @@ class ValidatorApp extends React.Component {
 			showValidatorAddress: false,
 			stash: "",
 			controller: "",
+			name: "",
 			isloading: true,
 			totalinfo: [],
 			valinfo: {},
 			validatorInfo: "",
-			copied: false
+			copied: false,
+			isLoaded: false
 		};
 		this.pathArray = window.location.href.split("/");
 		this.ismounted = false;
@@ -31,19 +33,6 @@ class ValidatorApp extends React.Component {
 	componentDidMount() {
 		this.deriveInfo();
 	}
-	// shouldComponentUpdate(nextProps, nextState) {
-	// 	if (
-	// 		this.props.validatorandintentionloading ===
-	// 			nextProps.validatorandintentionloading &&
-	// 		this.props.validatorsandintentions ===
-	// 			nextProps.validatorsandintentions &&
-	// 		this.state.copied === nextState.copied
-	// 	) {
-	// 		return false;
-	// 	} else {
-	// 		return true;
-	// 	}
-	// }
 
 	deriveInfo = async () => {
 		const { validator } = this.state;
@@ -53,12 +42,16 @@ class ValidatorApp extends React.Component {
 
 		let validatorInfo = undefined;
 		let nominators = [];
-		console.log(`loading: ${this.props.validatorandintentionloading}`);
+		let name = "";
 		if (!this.props.validatorandintentionloading) {
-			const logger = this.props.validatorsandintentions.toString().split(",");
-			console.log("found", logger);
-			if (logger.includes(validator)) {
-				validatorInfo = await api.derive.staking.info(validator);
+			const validatorList = this.props.validatorsandintentions
+				.toString()
+				.split(",");
+			if (validatorList.includes(validator)) {
+				validatorInfo = this.props.electedInfo.info.find(
+					data => data.stashId.toString() === validator
+				);
+				name = await api.query.nicks.nameOf(validator);
 				nominators = await validatorInfo.stakers.others;
 			}
 		}
@@ -67,7 +60,11 @@ class ValidatorApp extends React.Component {
 				...state,
 				validatorInfo: validatorInfo,
 				nominators: nominators,
-				isloading: false
+				name: name.raw[0]
+					? hexToString(name.raw[0].toString())
+					: `Validator (...${validator.slice(-6, -1)})`,
+				isloading: false,
+				isLoaded: true
 			}));
 		}
 		this.ismounted = true;
@@ -76,31 +73,11 @@ class ValidatorApp extends React.Component {
 	handleOnMouseOver = () => {
 		this.setState({ showValidatorAddress: true });
 	};
+
 	handleOnMouseOut = () => {
 		this.setState({ showValidatorAddress: false });
 	};
 
-	BackbtnhandleOnMouseOver = () => {
-		document.body.style.cursor = "pointer";
-	};
-	BackbtnhandleOnMouseOut = () => {
-		document.body.style.cursor = "default";
-	};
-
-	BackbtnhandleClick = () => {
-		document.body.style.cursor = "default";
-		this.props.history.push({
-			pathname: this.pathArray[4] === "kusama" ? "/kusama" : "/alexander",
-			state: { totalinfo: this.props.totalinfo, valinfo: this.props.valinfo }
-		});
-	};
-	homebtnhandleClick = () => {
-		document.body.style.cursor = "default";
-		this.props.history.push({
-			pathname: "/",
-			state: { totalinfo: this.props.totalinfo, valinfo: this.props.valinfo }
-		});
-	};
 	onCopy = () => {
 		if (this.ismounted) {
 			this.setState({ copied: true }, () => {
@@ -112,15 +89,9 @@ class ValidatorApp extends React.Component {
 		}
 	};
 
-	componentWillUnmount() {
-		this.ismounted = false;
-	}
 	render() {
-		const width = window.innerWidth > 960 ? 960 : window.innerWidth;
-		const height =
-			window.innerWidth > 960
-				? (window.innerHeight * 960) / window.innerWidth
-				: window.innerHeight;
+		const width = window.innerWidth;
+		const height = window.innerHeight;
 		let radius = 120;
 
 		let value = "";
@@ -133,7 +104,6 @@ class ValidatorApp extends React.Component {
 				this.pathArray[4] === "kusama"
 					? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
 					: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
-			console.log("totalvalue: ", this.totalvalue);
 			this.ownvalue =
 				this.pathArray[4] === "kusama"
 					? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
@@ -151,121 +121,153 @@ class ValidatorApp extends React.Component {
 			}
 		}
 
-		let validatorname =
-			"Validator Address: " +
-			this.state.validator.toString().slice(0, 8) +
-			"......" +
-			this.state.validator.toString().slice(-8);
+		let totalBonded = 0;
+		totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
 
-		let totalbondedtext =
-			"total staked: " +
-			this.totalvalue.toFixed(3) +
-			(this.pathArray[4] === "kusama" ? " KSM" : " DOT");
-		let selfbondedtext =
-			"validator self stake: " +
-			this.ownvalue.toString().slice(0, 7) +
-			(this.pathArray[4] === "kusama" ? " KSM" : " DOT");
-
-		let totalbonded = 0;
-		totalbonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
-		let nominatorbondedtext =
-			"nominator stake: " +
-			totalbonded.toString().slice(0, 8) +
-			(this.pathArray[4] === "kusama" ? " KSM" : " DOT");
 		if (this.state.nominators.length > 10) {
 			radius = 200;
 		}
 		let opacity = 0.3;
-		let color = "purple";
+		let color = "#E50B7B";
 		if (this.props.intentions.includes(this.state.validator)) {
 			opacity = 0;
 			color = "yellow";
 		}
-		return (
-			<React.Fragment>
-				<div className="nav-path">
-					<div className="nav-path-current">{validatorname}</div>
-					<IconButton
-						ml={4}
-						icon="copy"
-						onClick={() => {
-							navigator.clipboard
-								.writeText(validator)
-								.then(this.onCopy, () => console.log(`Something went wrong`));
-						}}
-					/>
-				</div>
-				<Stage width={width} height={height} draggable={true}>
-					<Layer>
-						{this.state.copied && (
-							<Text text="copied" x={1000} y={45} fill="green" fontSize={18} />
-						)}
-						{/* Here n is number of white circles to draw
+		if (this.state.isLoaded) {
+			return (
+				<React.Fragment>
+					<Box textAlign="center">
+						<Box display="flex" justifyContent="center" mt={20} mb={8}>
+							<Text alignSelf="center">{this.state.name}</Text>
+							<IconButton
+								ml={4}
+								icon="copy"
+								onClick={() => {
+									navigator.clipboard
+										.writeText(validator)
+										.then(this.onCopy, () =>
+											console.log(`Something went wrong`)
+										);
+								}}
+							/>
+						</Box>
+						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+							Copied to your clipboard
+						</Text>
+					</Box>
+					<Stage width={width} height={height} draggable={true}>
+						<Layer>
+							{/* Here n is number of white circles to draw
 		                	r is radius of the imaginary circle on which we have to draw white circles
 		                	x,y is center of imaginary circle
 		             	*/}
 
-						<WhiteCircles
-							n={this.state.nominators.length}
-							r={radius}
-							x={width / 2 + 13}
-							y={height / 2 + 6}
-							nominators={this.state.nominators}
-							history={this.props.history}
-							totalinfo={totalinfo}
-							valinfo={valinfo}
-						/>
+							<WhiteCircles
+								colorMode={this.props.colorMode}
+								n={this.state.nominators.length}
+								r={radius}
+								x={width / 2 + 13}
+								y={height / 2 + 6}
+								nominators={this.state.nominators}
+								history={this.props.history}
+								totalinfo={totalinfo}
+								valinfo={valinfo}
+							/>
 
-						{/* Arc used to create the semicircle on the right,
+							{/* Arc used to create the semicircle on the right,
 		            		Rotation is used to rotate the arc drawn by 90 degrees in clockwise direction
 		       			*/}
-						<Arc
-							x={width - 2}
-							y={height / 2}
-							innerRadius={height / 2 - 25}
-							outerRadius={height / 2 - 24}
-							rotation={90}
-							angle={180}
-							stroke="#97A1BF"
-							strokeWidth={4}
-						/>
-						{/* Adding 6 to stating and ending y point and 24 to length of line
+							<Arc
+								x={width - 2}
+								y={height / 2}
+								innerRadius={height / 2 - 25}
+								outerRadius={height / 2 - 24}
+								rotation={90}
+								angle={180}
+								stroke={
+									this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
+								}
+								strokeWidth={4}
+							/>
+							{/* Adding 6 to stating and ending y point and 24 to length of line
 		            		because the upper left corner of rectangle is at width/2,height/2
 		            		so mid point of rectangle becomes width/2+12,height/2+6
 		         		*/}
-						<Line
-							points={[
-								width / 2,
-								height / 2 + 6,
-								width - height / 2 + 23,
-								height / 2 + 6
-							]}
-							fill="white"
-							stroke="white"
-							opacity={opacity}
-						/>
+							<Line
+								points={[
+									width / 2,
+									height / 2 + 6,
+									width - height / 2 + 23,
+									height / 2 + 6
+								]}
+								fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
+								stroke={
+									this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
+								}
+								opacity={opacity}
+							/>
 
-						<Rect
-							x={width / 2}
-							y={height / 2}
-							width={26}
-							height={12}
-							fill={color}
-							cornerRadius={10}
-							onMouseOver={this.handleOnMouseOver}
-							onMouseOut={this.handleOnMouseOut}
-						/>
-					</Layer>
-				</Stage>
-				<div className="valbottombar">
-					<ValBottombar
-						totalbondedtext={totalbondedtext}
-						selfbondedtext={selfbondedtext}
-						nominatorbondedtext={nominatorbondedtext}
-					/>
-				</div>
-			</React.Fragment>
-		);
+							<Rect
+								x={width / 2}
+								y={height / 2}
+								width={26}
+								height={12}
+								fill={color}
+								cornerRadius={10}
+								onMouseOver={this.handleOnMouseOver}
+								onMouseOut={this.handleOnMouseOut}
+							/>
+						</Layer>
+					</Stage>
+					<Flex justifyContent="center">
+						<Box
+							mt={12}
+							display="flex"
+							justifyContent="space-between"
+							width="100%"
+							maxW="960px"
+							alignSelf="center"
+							mb={8}
+						>
+							<Text>Total Staked: {this.totalvalue.toFixed(3)} KSM</Text>
+							<Text>
+								Validator Self Stake: {this.ownvalue.toString().slice(0, 7)} KSM
+							</Text>
+							<Text>
+								Nominator Stake: {totalBonded.toString().slice(0, 8)} KSM
+							</Text>
+						</Box>
+					</Flex>
+				</React.Fragment>
+			);
+		} else {
+			return (
+				<Box
+					display="flex"
+					flexDirection="column"
+					position="absolute"
+					top="50%"
+					left="50%"
+					transform="translate(-50%, -50%)"
+					alignSelf="center"
+					justifyContent="center"
+					textAlign="center"
+					mt={-16}
+					zIndex={-1}
+				>
+					<Spinner as="span" size="lg" alignSelf="center" />
+					<Text
+						mt={4}
+						fontSize="xl"
+						color="gray.500"
+						textAlign="center"
+						alignSelf="center"
+					>
+						Stabilizing the isotopes...
+					</Text>
+				</Box>
+			);
+		}
 	}
 }
 

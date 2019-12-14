@@ -38,8 +38,6 @@ class Circleandline extends React.Component {
 	};
 
 	render() {
-		// console.log(this.props.totalinfo)
-		console.log("Circleandline", this.props.text);
 		let nomaddress =
 			"accountId: " +
 			this.props.text.toString().slice(0, 8) +
@@ -64,14 +62,14 @@ class Circleandline extends React.Component {
 					x={this.props.x}
 					y={this.props.y}
 					radius={7}
-					fill="white"
+					fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					onMouseOver={this.handleOnMouseOver}
 					onMouseOut={this.handleOnMouseOut}
 					onClick={this.handleClick}
 				/>
 				<Line
 					points={[this.props.x, this.props.y, this.props.x2, this.props.y2]}
-					stroke="white"
+					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.3}
 				/>
 
