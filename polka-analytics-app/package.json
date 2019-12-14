@@ -19,7 +19,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "react-vertical-timeline-component": "^2.5.0",
-    "throttle-debounce": "^2.1.0"
+    "use-debounce": "^3.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

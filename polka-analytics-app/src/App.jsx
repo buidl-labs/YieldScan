@@ -21,7 +21,7 @@ import {
 	Link,
 	CircularProgress
 } from "@chakra-ui/core";
-import { debounce } from "throttle-debounce";
+import { useDebounce } from "use-debounce";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { hexToString } from "@polkadot/util";
 import ValidatorTable from "./components/ValidatorTable";
@@ -45,11 +45,7 @@ function App() {
 	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
-	const [stakeAmount, setStakeAmount] = React.useState(1000.0);
-	const debounceStakeInput = debounce(750, () => {
-		console.log("debounced");
-		setStakeAmount(stakeInput);
-	});
+	const [stakeAmount] = useDebounce(stakeInput, 1000)
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
@@ -314,7 +310,6 @@ function App() {
 														? 0
 														: parseFloat(e.target.value)
 												);
-												debounceStakeInput(stakeAmount);
 											}}
 										/>
 										<InputRightAddon
