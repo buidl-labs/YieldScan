@@ -39,10 +39,10 @@ function App() {
 	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
-	const [intentionData, setIntentionData] = React.useState([]);
-	const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
-		[]
-	);
+	// const [intentionData, setIntentionData] = React.useState([]);
+	// const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
+		// []
+	// );
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
 	const [stakeAmount] = useDebounce(stakeInput, 1000)
@@ -67,15 +67,18 @@ function App() {
 		// Retrieve currentElected validators for current block
 		const currentValidators = await api.query.staking.currentElected();
 		// Retrieve all validators
-		const allValidators = await api.query.staking.validators();
+		// const allValidators = await api.query.staking.validators();
+		
 		// Parse validators
-		const parsedValidators = JSON.parse(JSON.stringify(allValidators))[0];
+		// const parsedValidators = JSON.parse(JSON.stringify(allValidators))[0];
 		// Retrieve session validators
-		const sessionValidators = await api.query.session.validators();
-		const intentions = await parsedValidators.filter(
-			validator => !sessionValidators.includes(validator)
-		);
-		const validatorsAndIntentions = [...sessionValidators, ...intentions];
+		
+		// const sessionValidators = await api.query.session.validators();
+		
+		// const intentions = await parsedValidators.filter(
+		// 	validator => !sessionValidators.includes(validator)
+		// );
+		// const validatorsAndIntentions = [...sessionValidators, ...intentions];
 		// Retrieve the last known era reward
 		const reward = await rewardData[0].attributes.attributes[0].value;
 		// Retrieve the hashes of the end of era blocks
@@ -159,8 +162,8 @@ function App() {
 		);
 		setApiConnected(true);
 		setValidatorData(filteredValidatorData);
-		setIntentionData(intentions);
-		setValidatorsAndIntentions(validatorsAndIntentions);
+		// setIntentionData(intentions);
+		// setValidatorsAndIntentions(validatorsAndIntentions);
 		return filteredValidatorData;
 	};
 
@@ -376,8 +379,8 @@ function App() {
 							colorMode={colorMode}
 							electedInfo={electedInfo}
 							valtotalinfo={validatorData.map(data => data.stashId)}
-							intentions={intentionData}
-							validatorsandintentions={validatorsAndIntentions}
+							// intentions={intentionData}
+							// validatorsandintentions={validatorsAndIntentions}
 							validatorandintentionloading={!isLoaded}
 							isKusama={true}
 						/>
@@ -415,8 +418,8 @@ function App() {
 							colorMode={colorMode}
 							electedInfo={electedInfo}
 							valtotalinfo={validatorData.map(data => data.stashId)}
-							intentions={intentionData}
-							validatorsandintentions={validatorsAndIntentions}
+							// intentions={intentionData}
+							// validatorsandintentions={validatorsAndIntentions}
 							validatorandintentionloading={!isLoaded}
 						/>
 					) : (

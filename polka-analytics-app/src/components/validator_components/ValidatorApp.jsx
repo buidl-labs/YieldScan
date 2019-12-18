@@ -11,7 +11,7 @@ class ValidatorApp extends React.Component {
 		super(props);
 		this.state = {
 			validator: props.history.location.pathname.split("/")[3].toString(),
-			validatorsandintentions: props.validatorsandintentions,
+			// validatorsandintentions: props.validatorsandintentions,
 			nominators: [],
 			showValidatorAddress: false,
 			stash: "",
@@ -43,18 +43,23 @@ class ValidatorApp extends React.Component {
 		let validatorInfo = undefined;
 		let nominators = [];
 		let name = "";
-		if (!this.props.validatorandintentionloading) {
-			const validatorList = this.props.validatorsandintentions
-				.toString()
-				.split(",");
-			if (validatorList.includes(validator)) {
-				validatorInfo = this.props.electedInfo.info.find(
-					data => data.stashId.toString() === validator
-				);
-				name = await api.query.nicks.nameOf(validator);
-				nominators = await validatorInfo.stakers.others;
-			}
-		}
+		name = await api.query.nicks.nameOf(validator);
+		validatorInfo = this.props.electedInfo.info.find(
+		  data => data.stashId.toString() === validator
+		);
+		nominators = await validatorInfo.stakers.others;
+		// if (!this.props.validatorandintentionloading) {
+		// 	const validatorList = this.props.validatorsandintentions
+		// 		.toString()
+		// 		.split(",");
+		// 	if (validatorList.includes(validator)) {
+		// 		validatorInfo = this.props.electedInfo.info.find(
+		// 			data => data.stashId.toString() === validator
+		// 		);
+		// 		name = await api.query.nicks.nameOf(validator);
+		// 		nominators = await validatorInfo.stakers.others;
+		// 	}
+		// }
 		if (!this.ismounted) {
 			this.setState(state => ({
 				...state,
@@ -94,32 +99,32 @@ class ValidatorApp extends React.Component {
 		const height = window.innerHeight;
 		let radius = 120;
 
-		let value = "";
+		// let value = "";
 		let validator = "";
 		let valinfo = "";
 		let totalinfo = "";
-		if (!this.props.validatorandintentionloading && !this.state.isloading) {
-			totalinfo = this.props.valtotalinfo;
-			this.totalvalue =
-				this.pathArray[4] === "kusama"
-					? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
-					: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
-			this.ownvalue =
-				this.pathArray[4] === "kusama"
-					? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
-					: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
-			validator = this.state.validatorInfo.accountId;
-			valinfo = value;
-			if (
-				this.props.intentions.includes(
-					this.props.history.location.pathname.split("/")[3].toString()
-				)
-			) {
-				this.totalvalue =
-					this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-				this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-			}
-		}
+		// if (!this.props.validatorandintentionloading && !this.state.isloading) {
+		// 	totalinfo = this.props.valtotalinfo;
+		// 	this.totalvalue =
+		// 		this.pathArray[4] === "kusama"
+		// 			? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
+		// 			: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
+		// 	this.ownvalue =
+		// 		this.pathArray[4] === "kusama"
+		// 			? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
+		// 			: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
+		// 	validator = this.state.validatorInfo.accountId;
+		// 	valinfo = value;
+		// 	if (
+		// 		this.props.intentions.includes(
+		// 			this.props.history.location.pathname.split("/")[3].toString()
+		// 		)
+		// 	) {
+		// 		this.totalvalue =
+		// 			this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+		// 		this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+		// 	}
+		// }
 
 		let totalBonded = 0;
 		totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
@@ -129,10 +134,10 @@ class ValidatorApp extends React.Component {
 		}
 		let opacity = 0.3;
 		let color = "#E50B7B";
-		if (this.props.intentions.includes(this.state.validator)) {
-			opacity = 0;
-			color = "yellow";
-		}
+		// if (this.props.intentions.includes(this.state.validator)) {
+		// 	opacity = 0;
+		// 	color = "yellow";
+		// }
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
