@@ -22,7 +22,6 @@ import {
 	CircularProgress
 } from "@chakra-ui/core";
 import { useDebounce } from "use-debounce";
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
 import amplitude from "amplitude-js";
@@ -79,31 +78,21 @@ function App() {
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
 
-	const getElectedInfo = async() => {
-		const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io");
-		const api = await ApiPromise.create({ provider: wsProvider });
-		await api.isReady;
-		const electedInfo = await api.derive.staking.electedInfo();
-		setElectedInfo(electedInfo);
-	}
-
-	React.useEffect(() => {
-		getElectedInfo();
-	}, [])
-
 	React.useEffect(() => {
 		if (apiConnected) calcReward();
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
 		const socket = socketIOClient("http://localhost:3004/");
-		socket.on("initial", (data) => {
+		socket.on("initial", ({filteredValidatorsList, electedInfo}) => {
 			setApiConnected(true);
-			setValidatorData(data);
+			setValidatorData(filteredValidatorsList);
+			setElectedInfo(electedInfo[0]);
 		});
 
-		socket.on("onDataChange", (data) => {
-			setValidatorData(data);
+		socket.on("onDataChange", ({filteredValidatorsList, electedInfo}) => {
+			setValidatorData(filteredValidatorsList);
+			setElectedInfo(electedInfo[0]);
 		});
 	}, [])
 
