@@ -83,7 +83,7 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("http://localhost:3004/");
+		const socket = socketIOClient("http://108.160.139.25:80");
 		socket.on("initial", ({filteredValidatorsList, electedInfo}) => {
 			setApiConnected(true);
 			setValidatorData(filteredValidatorsList);
