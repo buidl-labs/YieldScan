@@ -83,7 +83,7 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("http://108.160.139.25:80");
+		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/")
 		socket.on("initial", ({filteredValidatorsList, electedInfo}) => {
 			setApiConnected(true);
 			setValidatorData(filteredValidatorsList);
