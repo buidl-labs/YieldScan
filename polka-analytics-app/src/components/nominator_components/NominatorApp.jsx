@@ -3,7 +3,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Stage, Layer, Arc, Circle, Text as KonvaText } from "react-konva";
 import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
-import { IconButton, Spinner, Box, Text, Flex } from "@chakra-ui/core";
+import { Spinner, Box, Text, Flex, Grid, Divider } from "@chakra-ui/core";
 
 class NominatorApp extends React.Component {
 	constructor() {
@@ -18,9 +18,12 @@ class NominatorApp extends React.Component {
 		this.ismounted = false;
 		this.totalinfo = [];
 		this.nominators = [];
+		this.totalValidators = [];
+		this.totalStake = 0;
+		this.validatorWithHighestStake = 0;
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		this.deriveInfo();
 	}
 
@@ -149,10 +152,13 @@ class NominatorApp extends React.Component {
 			valbacked = arr1;
 			totalbonded = bonded;
 			controllerId = nominatorvalue;
+			this.totalValidators = valbacked;
+			this.totalStake = totalbonded;
+			this.validatorWithHighestStake = Math.max(...valbacked.map(validator => validator.staked));
 		}
 		let nominatorname =
 			this.props.history.location.pathname.split("/")[3] !== undefined
-				? "Nominator Address: " +
+				? "Nominator (" +
 				  this.props.history.location.pathname
 						.split("/")[3]
 						.toString()
@@ -161,7 +167,7 @@ class NominatorApp extends React.Component {
 				  this.props.history.location.pathname
 						.split("/")[3]
 						.toString()
-						.slice(-8)
+						.slice(-8) + ")"
 				: "";
 
 		let stashname =
@@ -197,22 +203,61 @@ class NominatorApp extends React.Component {
 				<React.Fragment>
 					<Box textAlign="center">
 						<Box display="flex" justifyContent="center" mt={20} mb={8}>
-							<Text alignSelf="center">{nominatorname}</Text>
-							<IconButton
-								ml={4}
-								icon="copy"
-								onClick={() => {
-									navigator.clipboard
-										.writeText(stashId)
-										.then(this.onCopy, () =>
-											console.log(`Something went wrong`)
-										);
-								}}
-							/>
+							<Text fontSize="2xl" fontWeight="bold" alignSelf="center">{nominatorname}</Text>
 						</Box>
 						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
 						</Text>
+					</Box>
+					<Grid templateColumns="1fr 2fr" gap={2}>
+					<Box width={350} height={540} style={{marginLeft: 40,marginTop: 40, boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)", borderRadius: '10px', padding: "5px 10px"}}>
+					<Flex 
+						flexDirection="column"
+						alignItems="center">
+					<Text align="center" mt={2} fontSize="2xl" fontWeight="semibold" lineHeight="short">
+						Key Stats
+					</Text>
+					</Flex>
+					<Divider />
+					<Flex
+						flexDirection="column"
+						style={{padding: '0 20px'}}
+					>
+					<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
+						Earning in previous era
+					</Text>
+					{/*TODO: Calculate Earning in previous era*/}
+					<Text>
+						<span
+						style={{textTransform: "uppercase", fontWeight: "bold", color: "#E50B7B"}}
+						>KSM</span>
+					</Text>
+					</Flex>
+					<Divider />
+					<Flex flexDirection="column" style={{padding: '0 20px'}}>
+						<Text fontWeight="bold">Expected daily ROI</Text>
+						{/*TODO: Calculate Expected daily ROI*/}
+						<Text>KSM</Text>
+					</Flex>
+					<Divider />
+					<Flex flexDirection="column" style={{padding: '0 20px'}}>
+					<Text fontWeight="bold">Diversity</Text>
+					<Text>
+						Backing {this.totalValidators.length} different validator
+					</Text>
+					</Flex>
+					<Divider />
+					<Flex flexDirection="column" style={{padding: '0 20px'}}>
+						<Text fontWeight="bold">Amount at stake</Text>
+						<Text mt={3} fontSize="12px">Total</Text>
+						<Text style={{color: "#E50B7B", fontWeight: "bold"}}>{this.totalStake.toFixed(3)} KSM</Text>
+						<Text mt={3} fontSize="12px">On highest</Text>
+						<Text fontWeight="bold">{this.validatorWithHighestStake.toFixed(3)} KSM</Text>
+						<Text style={{color: "#718096", fontSize: 12}}>Highest amount staked on this validator</Text>
+						<Text mt={3} fontSize="12px">On others</Text>
+						<Text fontWeight="bold">{(this.totalStake - this.validatorWithHighestStake).toFixed(3)} KSM</Text>
+						<Text style={{color: "#718096", fontSize: 12}}>Amount at stake for all validators combined excluding (Highest staked validator)</Text>
+					</Flex>
 					</Box>
 					<Stage width={width} height={height}>
 						<Layer>
@@ -259,7 +304,8 @@ class NominatorApp extends React.Component {
 							)}
 						</Layer>
 					</Stage>
-					<Flex justifyContent="center">
+					</Grid>
+					{/* <Flex justifyContent="center">
 						<Box
 							mt={12}
 							display="flex"
@@ -272,7 +318,7 @@ class NominatorApp extends React.Component {
 							<Text>{controllername}</Text>
 							<Text>{bondvalue}</Text>
 						</Box>
-					</Flex>
+					</Flex> */}
 				</React.Fragment>
 			);
 		} else {
