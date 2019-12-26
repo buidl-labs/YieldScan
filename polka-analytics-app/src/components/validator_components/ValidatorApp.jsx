@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, Box, Text, Spinner, Flex, Divider,InputGroup,  InputRightAddon, Input, Grid } from "@chakra-ui/core";
+import { Box, Text, Spinner, Flex, Divider,InputGroup,  InputRightAddon, Input, Grid } from "@chakra-ui/core";
 import { Stage, Layer, Arc, Line, Rect} from "react-konva";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import WhiteCircles from "./WhiteCircles";
@@ -11,7 +11,7 @@ class ValidatorApp extends React.Component {
 		super(props);
 		this.state = {
 			validator: props.history.location.pathname.split("/")[3].toString(),
-			// validatorsandintentions: props.validatorsandintentions,
+			validatorsandintentions: props.validatorsandintentions,
 			nominators: [],
 			showValidatorAddress: false,
 			stash: "",
@@ -23,9 +23,15 @@ class ValidatorApp extends React.Component {
 			validatorInfo: "",
 			copied: false,
 			isLoaded: false,
-			stakeInput: props.maxDailyEarning === -Infinity ? 0 : 1000,
+			stakeInput: 1000,
 			currentValidatorData: props.validatorData.filter(data => data.stashId === props.history.location.pathname.split("/")[3].toString())[0],
-			dailyEarning: props.maxDailyEarning === -Infinity ? 0 : props.maxDailyEarning,
+			dailyEarning: (() => {
+				const ERA_PER_DAY = 4;
+				const {totalStake, poolReward} = props.validatorData.filter(data => data.stashId === props.history.location.pathname.split("/")[3].toString())[0];
+				const userStakeFraction = 1000 / (1000 + totalStake);
+				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
+				return dailyEarning.toFixed(3);
+			})(),
 		};
 		this.pathArray = window.location.href.split("/");
 		this.ismounted = false;
@@ -35,18 +41,6 @@ class ValidatorApp extends React.Component {
 
 	componentDidMount() {
 		this.deriveInfo();
-		// console.log("this.props.validator", this.state.validator);
-		// console.log("this.props.validatorData", this.props.validatorData);
-		// const result =this.props.validatorData.filter(data => data.stashId === this.state.validator);
-		// console.log("result", result);
-		// if(this.props.validatorTableData){
-		// 	const earnings = this.props.validatorTableData.map(data => data);
-		// 	console.log("earnings", this.props.validatorTableData);
-		// 	this.setState({
-		// 		dailyEarning: Math.max(...earnings)
-		// 	})
-		// 	console.log("yoyo");
-		// }
 	}
 
 	deriveInfo = async () => {
@@ -63,19 +57,18 @@ class ValidatorApp extends React.Component {
 		  data => data.stashId.toString() === validator
 		);
 		nominators = await validatorInfo.stakers.others;
-		console.log("nominators", nominators);
-		// if (!this.props.validatorandintentionloading) {
-		// 	const validatorList = this.props.validatorsandintentions
-		// 		.toString()
-		// 		.split(",");
-		// 	if (validatorList.includes(validator)) {
-		// 		validatorInfo = this.props.electedInfo.info.find(
-		// 			data => data.stashId.toString() === validator
-		// 		);
-		// 		name = await api.query.nicks.nameOf(validator);
-		// 		nominators = await validatorInfo.stakers.others;
-		// 	}
-		// }
+		if (!this.props.validatorandintentionloading) {
+			const validatorList = this.props.validatorsandintentions
+				.toString()
+				.split(",");
+			if (validatorList.includes(validator)) {
+				validatorInfo = this.props.electedInfo.info.find(
+					data => data.stashId.toString() === validator
+				);
+				name = await api.query.nicks.nameOf(validator);
+				nominators = await validatorInfo.stakers.others;
+			}
+		}
 		if (!this.ismounted) {
 			this.setState(state => ({
 				...state,
@@ -111,41 +104,39 @@ class ValidatorApp extends React.Component {
 	};
 
 	render() {
-		console.log("State", this.state);
-		console.log("Props", this.props);
 		const width = window.innerWidth - 350;
 		const height = window.innerHeight;
 		let radius = 120;
 
-		// let value = "";
-		let validator = "";
+		let value = "";
+		// let validator = "";
 		let valinfo = "";
 		let totalinfo = "";
-		// if (!this.props.validatorandintentionloading && !this.state.isloading) {
-		// 	totalinfo = this.props.valtotalinfo;
-		// 	this.totalvalue =
-		// 		this.pathArray[4] === "kusama"
-		// 			? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
-		// 			: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
-		// 	this.ownvalue =
-		// 		this.pathArray[4] === "kusama"
-		// 			? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
-		// 			: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
-		// 	validator = this.state.validatorInfo.accountId;
-		// 	valinfo = value;
-		// 	if (
-		// 		this.props.intentions.includes(
-		// 			this.props.history.location.pathname.split("/")[3].toString()
-		// 		)
-		// 	) {
-		// 		this.totalvalue =
-		// 			this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-		// 		this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-		// 	}
-		// }
+		if (!this.props.validatorandintentionloading && !this.state.isloading) {
+			totalinfo = this.props.valtotalinfo;
+			this.totalvalue =
+				this.pathArray[4] === "kusama"
+					? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
+					: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
+			this.ownvalue =
+				this.pathArray[4] === "kusama"
+					? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
+					: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
+			// validator = this.state.validatorInfo.accountId;
+			valinfo = value;
+			if (
+				this.props.intentions.includes(
+					this.props.history.location.pathname.split("/")[3].toString()
+				)
+			) {
+				this.totalvalue =
+					this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+				this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+			}
+		}
 
-		let totalBonded = 0;
-		totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
+		// let totalBonded = 0;
+		// totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
 
 		if (this.state.nominators.length > 10) {
 			radius = 200;
@@ -160,26 +151,16 @@ class ValidatorApp extends React.Component {
 			return (
 				<React.Fragment>
 					<Box textAlign="center">
-						<Box display="flex" justifyContent="center" mt={20} mb={8}>
-							<Text alignSelf="center">{this.state.name}</Text>
-							<IconButton
-								ml={4}
-								icon="copy"
-								onClick={() => {
-									navigator.clipboard
-										.writeText(validator)
-										.then(this.onCopy, () =>
-											console.log(`Something went wrong`)
-										);
-								}}
-							/>
+						<Box display="flex" justifyContent="center" flexDirection="column" mt={20} mb={8}>
+							<Text fontSize="3xl" alignSelf="center">{this.state.name}</Text>
+							<Text>Infrastructure operator for proof-of-stake networks</Text>
 						</Box>
 						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
 						</Text>
 					</Box>
 					<Grid templateColumns="1fr 2fr" gap={2}>
-					<Box width={350} height={600} style={{marginRight: 20,boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)", borderRadius: '10px', padding: "5px 10px"}}>
+					<Box width={350} height={580} style={{marginLeft: 40,marginTop: 30, boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)", borderRadius: '10px', padding: "5px 10px"}}>
 					<Flex 
 						flexDirection="column"
 						alignItems="center">
@@ -192,7 +173,7 @@ class ValidatorApp extends React.Component {
 						flexDirection="column"
 						style={{padding: '0 20px'}}
 					>
-					<Text mt={2} fontSize="md" fontWeight="semibold" lineHeight="short">
+					<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
 						Stake amount
 					</Text>
 					<Text fontSize="md" color="gray.500">
@@ -225,37 +206,36 @@ class ValidatorApp extends React.Component {
 							roundedRight="2rem"
 						/>
 					</InputGroup>
-					<Text mt="3" fontSize="md" >
+					<Text fontWeight="bold" mt="3" fontSize="md" >
 					Daily Earning
 					</Text>
 					<Text>
 						<span
 						style={{textTransform: "uppercase", fontWeight: "bold", color: "#E50B7B"}}
 						>{this.state.dailyEarning} KSM</span>
-						<span style={{float: "right"}}>percentage daily</span>
 					</Text>
 					</Flex>
 					<Divider />
 					<Flex flexDirection="column" style={{padding: '0 20px'}}>
-						<Text>Commission</Text>
-						<Text>{this.state.validatorInfo && this.state.validatorInfo.validatorPrefs.commission}%</Text>
+						<Text fontWeight="bold">Commission</Text>
+						<Text>{this.state.validatorInfo && this.state.currentValidatorData.commission}%</Text>
 					</Flex>
 					<Divider />
 					<Flex flexDirection="column" style={{padding: '0 20px'}}>
-					<Text>Backers <span style={{color: "#718096", fontSize: 12}}>(number of stakers)</span></Text>
+					<Text fontWeight="bold">Backers <span style={{color: "#718096", fontSize: 12}}>(number of stakers)</span></Text>
 					<Text>
 						{this.state.validatorInfo && this.state.validatorInfo.stakers.others.length}
 					</Text>
 					</Flex>
 					<Divider />
 					<Flex flexDirection="column" style={{padding: '0 20px'}}>
-						<Text>Amount of stake</Text>
-						<Text>Total</Text>
-						<Text>Total stake</Text>
-						<Text>Staked by self</Text>
-						<Text>1.000 KSM</Text>
-						<Text>staked by others</Text>
-						<Text>21,00,00 KSM</Text>
+						<Text fontWeight="bold">Amount of stake</Text>
+						<Text mt={3} fontSize="12px">Total</Text>
+						<Text style={{color: "#E50B7B", fontWeight: "bold"}}>{this.totalvalue.toFixed(3)} KSM</Text>
+						<Text fontSize="12px">Staked by self</Text>
+						<Text fontWeight="bold">{this.ownvalue.toFixed(3)} KSM</Text>
+						<Text fontSize="12px">staked by others</Text>
+						<Text fontWeight="bold">{(this.totalvalue - this.ownvalue).toFixed(3)} KSM</Text>
 					</Flex>
 					</Box>
 					<Stage width={width} height={height} draggable={true}>

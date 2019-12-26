@@ -62,7 +62,7 @@ class Circleandline extends React.Component {
 					x={this.props.x}
 					y={this.props.y}
 					radius={7}
-					fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
+					fill={this.props.colorMode === "light" ? "#1A202C" : "#40B5AF"}
 					onMouseOver={this.handleOnMouseOver}
 					onMouseOut={this.handleOnMouseOut}
 					onClick={this.handleClick}

@@ -38,10 +38,10 @@ function App() {
 	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
-	// const [intentionData, setIntentionData] = React.useState([]);
-	// const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
-		// []
-	// );
+	const [intentionData, setIntentionData] = React.useState([]);
+	const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
+		[]
+	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
 	const [stakeAmount] = useDebounce(stakeInput, 1000)
@@ -84,17 +84,22 @@ function App() {
 
 	React.useEffect(() => {
 		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/")
-		socket.on("initial", ({filteredValidatorsList, electedInfo}) => {
+		socket.on("initial", ({filteredValidatorsList, electedInfo, intentionsData}) => {
 			setApiConnected(true);
 			setValidatorData(filteredValidatorsList);
 			setElectedInfo(electedInfo[0]);
+			setIntentionData(intentionsData[0].intentions);
+			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
 		});
 
-		socket.on("onDataChange", ({filteredValidatorsList, electedInfo}) => {
+		socket.on("onDataChange", ({filteredValidatorsList, electedInfo, intentionsData}) => {
 			setValidatorData(filteredValidatorsList);
 			setElectedInfo(electedInfo[0]);
+			setIntentionData(intentionsData[0].intentions);
+			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
 		});
 	}, [])
+
 
 	return (
 		<AmplitudeProvider
@@ -271,8 +276,10 @@ function App() {
 							colorMode={colorMode}
 							electedInfo={electedInfo}
 							valtotalinfo={validatorData.map(data => data.stashId)}
-							// intentions={intentionData}
-							// validatorsandintentions={validatorsAndIntentions}
+							validatorData={validatorData}
+							validatorTableData={validatorTableData}
+							intentions={intentionData}
+							validatorsandintentions={validatorsAndIntentions}
 							validatorandintentionloading={!isLoaded}
 							isKusama={true}
 						/>
@@ -310,8 +317,8 @@ function App() {
 							colorMode={colorMode}
 							electedInfo={electedInfo}
 							valtotalinfo={validatorData.map(data => data.stashId)}
-							// intentions={intentionData}
-							// validatorsandintentions={validatorsAndIntentions}
+							intentions={intentionData}
+							validatorsandintentions={validatorsAndIntentions}
 							validatorandintentionloading={!isLoaded}
 						/>
 					) : (
