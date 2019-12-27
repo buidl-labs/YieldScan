@@ -21,6 +21,7 @@ class NominatorApp extends React.Component {
 		this.totalValidators = [];
 		this.totalStake = 0;
 		this.validatorWithHighestStake = 0;
+		this.earningInPreviousEra = 0;
 	}
 
 	async componentDidMount() {
@@ -51,6 +52,10 @@ class NominatorApp extends React.Component {
 			filteredNominators.map(async val => await api.derive.staking.account(val))
 		);
 		const parsedNominators = JSON.parse(JSON.stringify(nominators));
+		
+		let previous = await api.query.balances.freeBalance(this.props.history.location.pathname.split("/")[3].toString());
+		const PARSED_PREVIOUS_ERA_EARNINGS = JSON.parse(JSON.stringify(previous));
+		this.earningInPreviousEra = (PARSED_PREVIOUS_ERA_EARNINGS / 10 ** 12).toFixed(3);
 		if (!this.ismounted) {
 			this.nominators = parsedNominators;
 			this.totalinfo = totalinfo;
@@ -226,11 +231,10 @@ class NominatorApp extends React.Component {
 					<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
 						Earning in previous era
 					</Text>
-					{/*TODO: Calculate Earning in previous era*/}
 					<Text>
 						<span
 						style={{textTransform: "uppercase", fontWeight: "bold", color: "#E50B7B"}}
-						>KSM</span>
+						>{this.earningInPreviousEra} KSM</span>
 					</Text>
 					</Flex>
 					<Divider />
