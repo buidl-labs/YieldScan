@@ -22,6 +22,7 @@ class NominatorApp extends React.Component {
 		this.totalStake = 0;
 		this.validatorWithHighestStake = 0;
 		this.earningInPreviousEra = 0;
+		this.expectedDailyRoi = 0
 	}
 
 	async componentDidMount() {
@@ -52,7 +53,7 @@ class NominatorApp extends React.Component {
 			filteredNominators.map(async val => await api.derive.staking.account(val))
 		);
 		const parsedNominators = JSON.parse(JSON.stringify(nominators));
-		
+
 		let previous = await api.query.balances.freeBalance(this.props.history.location.pathname.split("/")[3].toString());
 		const PARSED_PREVIOUS_ERA_EARNINGS = JSON.parse(JSON.stringify(previous));
 		this.earningInPreviousEra = (PARSED_PREVIOUS_ERA_EARNINGS / 10 ** 12).toFixed(3);
@@ -160,6 +161,34 @@ class NominatorApp extends React.Component {
 			this.totalValidators = valbacked;
 			this.totalStake = totalbonded;
 			this.validatorWithHighestStake = Math.max(...valbacked.map(validator => validator.staked));
+
+			//Logic for calculating expected daily ROI
+			const parsedBackers = JSON.parse(JSON.stringify(valbacked));
+			// console.log("valbacked", parsedBackers);
+			//Get Stash id for all the validators backed by current nominator 
+			const ids = parsedBackers.map(val => val.validator.stashId);
+			const result = this.props.validatorData.filter(validator => {
+				return ids.includes(validator.stashId);
+			});
+
+			const sumOfValidatorPoolReward = result.reduce((acc, curr) => {
+				return acc + curr.poolReward;
+			}, 0);
+
+			//Just to make sure poolReward doesn't result in zero making total ROI calculation result in zero 
+			//and average of sum of pool reward of all validators is taken here cause we are calculating expected daily ROI for nominator
+			//Since poolReward is already calculated on server with commission in mind so we don't have to reconsider it here again
+			const poolReward = sumOfValidatorPoolReward > 0 ? (sumOfValidatorPoolReward / result.length) : 0.01;
+
+			//Sum of all staked amount of validators backed by the nominator
+			const total = parsedBackers.reduce((acc, curr) => {
+				return acc + (curr.staked / (curr.staked + curr.validator.stakers.total.toString() / 10 ** 12))
+			}, 0)
+
+			const ERA_PER_DAY = 6;
+
+			this.expectedDailyRoi = (total * poolReward * ERA_PER_DAY).toFixed(3);
+
 		}
 		let nominatorname =
 			this.props.history.location.pathname.split("/")[3] !== undefined
@@ -240,8 +269,7 @@ class NominatorApp extends React.Component {
 					<Divider />
 					<Flex flexDirection="column" style={{padding: '0 20px'}}>
 						<Text fontWeight="bold">Expected daily ROI</Text>
-						{/*TODO: Calculate Expected daily ROI*/}
-						<Text>KSM</Text>
+						<Text style={{textTransform: "uppercase", fontWeight: "bold", color: "#E50B7B"}}>{this.expectedDailyRoi} KSM</Text>
 					</Flex>
 					<Divider />
 					<Flex flexDirection="column" style={{padding: '0 20px'}}>

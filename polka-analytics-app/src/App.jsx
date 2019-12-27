@@ -317,6 +317,7 @@ function App() {
 							electedInfo={electedInfo}
 							valtotalinfo={validatorData.map(data => data.stashId)}
 							intentions={intentionData}
+							validatorData={validatorData}
 							validatorsandintentions={validatorsAndIntentions}
 							validatorandintentionloading={!isLoaded}
 						/>
