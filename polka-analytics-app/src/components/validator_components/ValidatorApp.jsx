@@ -6,6 +6,7 @@ import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
 
+const ERA_PER_DAY = 6;
 class ValidatorApp extends React.Component {
 	constructor(props) {
 		super(props);
@@ -26,7 +27,6 @@ class ValidatorApp extends React.Component {
 			stakeInput: 1000,
 			currentValidatorData: props.validatorData.filter(data => data.stashId === props.history.location.pathname.split("/")[3].toString())[0],
 			dailyEarning: (() => {
-				const ERA_PER_DAY = 4;
 				const {totalStake, poolReward} = props.validatorData.filter(data => data.stashId === props.history.location.pathname.split("/")[3].toString())[0];
 				const userStakeFraction = 1000 / (1000 + totalStake);
 				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
@@ -187,7 +187,6 @@ class ValidatorApp extends React.Component {
 							textAlign="center"
 							roundedLeft="2rem"
 							onChange={e => {
-								const ERA_PER_DAY = 4;
 								const stakeAmount = isNaN(parseFloat(e.target.value))
 										? 0
 										: parseFloat(e.target.value)

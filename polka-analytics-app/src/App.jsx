@@ -47,8 +47,7 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 1000)
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
-	const ERA_PER_DAY = 4;
-
+	const ERA_PER_DAY = 4; //TODO:Why are we taking 4, since there are 6 era per day ?
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
 			const {
