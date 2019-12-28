@@ -5,6 +5,7 @@ import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
 import { Spinner, Box, Text, Flex, Grid, Divider } from "@chakra-ui/core";
 
+const ERA_PER_DAY = 4;
 class NominatorApp extends React.Component {
 	constructor() {
 		super();
@@ -172,33 +173,22 @@ class NominatorApp extends React.Component {
 			this.totalStake = totalbonded;
 			this.validatorWithHighestStake = Math.max(...valbacked.map(validator => validator.staked));
 
-			//Logic for calculating expected daily ROI
 			const parsedBackers = JSON.parse(JSON.stringify(valbacked));
-			// console.log("valbacked", parsedBackers);
 			//Get Stash id for all the validators backed by current nominator 
 			const ids = parsedBackers.map(val => val.validator.stashId);
 			const result = this.props.validatorData.filter(validator => {
 				return ids.includes(validator.stashId);
 			});
 
-			const sumOfValidatorPoolReward = result.reduce((acc, curr) => {
-				return acc + curr.poolReward;
-			}, 0);
+			let sum = 0;
+			for(let i = 0; i < parsedBackers.length; i++){
+				//Logic for calculating expected daily ROI
+				const { staked } = parsedBackers[i];
+				const {totalStake, poolReward} = result[i];
+				sum += (staked / totalStake) * poolReward;
+			}
 
-			//Just to make sure poolReward doesn't result in zero making total ROI calculation result in zero 
-			//and average of sum of pool reward of all validators is taken here cause we are calculating expected daily ROI for nominator
-			//Since poolReward is already calculated on server with commission in mind so we don't have to reconsider it here again
-			const poolReward = sumOfValidatorPoolReward > 0 ? (sumOfValidatorPoolReward / result.length) : 0.01;
-
-			//Sum of all staked amount of validators backed by the nominator
-			const total = parsedBackers.reduce((acc, curr) => {
-				return acc + (curr.staked / (curr.staked + curr.validator.stakers.total.toString() / 10 ** 12))
-			}, 0)
-
-			const ERA_PER_DAY = 6;
-
-			this.expectedDailyRoi = (total * poolReward * ERA_PER_DAY).toFixed(3);
-
+			this.expectedDailyRoi = (sum * ERA_PER_DAY).toFixed(3);
 		}
 		let nominatorname =
 			this.props.history.location.pathname.split("/")[3] !== undefined
