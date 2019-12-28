@@ -1,6 +1,6 @@
 import React from "react";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Stage, Layer, Arc, Circle, Text as KonvaText } from "react-konva";
+import { Stage, Layer, Arc, Circle, Text as KonvaText, Rect } from "react-konva";
 import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
 import { Spinner, Box, Text, Flex, Grid, Divider } from "@chakra-ui/core";
@@ -315,11 +315,23 @@ class NominatorApp extends React.Component {
 								strokeWidth={4}
 							/>
 
+							<Circle x={width - 348} y={height - 50} radius={10} fill={this.props.colorMode === "light" ? "#000" : "#40B5AF" } />
+							<KonvaText x={width - 325} y={height - 56} text="Nominator" fill={this.props.colorMode === "light" ? "#1A202C" : "#718096"} fontSize={15} />
+							<Rect
+								x={width - 360}
+								y={height - 30}
+								width={26}
+								height={15}
+								fill={"#E50B7B"}
+								cornerRadius={10}
+							/>
+							<KonvaText x={width - 325} y={height - 30} text="Validators" fill={this.props.colorMode === "light" ? "#1A202C" : "#718096"} fontSize={15} />
+
 							<Circle
 								x={width / 2 - 200}
 								y={height / 2}
 								radius={7}
-								fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
+								fill={this.props.colorMode === "light" ? "#1A202C" : "#40B5AF"}
 								onMouseOver={this.handleOnMouseOver}
 								onMouseOut={this.handleOnMouseOut}
 							/>

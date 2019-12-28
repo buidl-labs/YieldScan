@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text, Spinner, Flex, Divider,InputGroup,  InputRightAddon, Input, Grid } from "@chakra-ui/core";
-import { Stage, Layer, Arc, Line, Rect} from "react-konva";
+import { Stage, Layer, Arc, Line, Rect, Circle, Text as TextRK} from "react-konva";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
@@ -270,7 +270,18 @@ class ValidatorApp extends React.Component {
 									this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
 								}
 								strokeWidth={4}
+							/>         
+							 <Circle x={width - 348} y={height - 50} radius={10} fill={this.props.colorMode === "light" ? "#000" : "#40B5AF" } />
+							 <TextRK x={width - 325} y={height - 56} text="Nominators" fill={this.props.colorMode === "light" ? "#1A202C" : "#718096"} fontSize={15} />
+							 <Rect
+								x={width - 360}
+								y={height - 30}
+								width={26}
+								height={15}
+								fill={color}
+								cornerRadius={10}
 							/>
+							<TextRK x={width - 325} y={height - 30} text="Validator" fill={this.props.colorMode === "light" ? "#1A202C" : "#718096"} fontSize={15} />
 							{/* Adding 6 to stating and ending y point and 24 to length of line
 		            		because the upper left corner of rectangle is at width/2,height/2
 		            		so mid point of rectangle becomes width/2+12,height/2+6
