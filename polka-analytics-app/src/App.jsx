@@ -269,45 +269,85 @@ function App() {
 					</Route>
 				</Flex>
 				{/* Validator specific view */}
-				<Route path="/kusama/validator/">
-					{isLoaded && apiConnected ? (
-						<ValidatorApp
-							colorMode={colorMode}
-							electedInfo={electedInfo}
-							valtotalinfo={validatorData.map(data => data.stashId)}
-							validatorData={validatorData}
-							validatorTableData={validatorTableData}
-							intentions={intentionData}
-							validatorsandintentions={validatorsAndIntentions}
-							validatorandintentionloading={!isLoaded}
-							isKusama={true}
-						/>
-					) : (
-						<Box
-							display="flex"
-							flexDirection="column"
-							position="absolute"
-							top="50%"
-							left="50%"
-							transform="translate(-50%, -50%)"
-							alignSelf="center"
-							justifyContent="center"
-							textAlign="center"
-							mt={-16}
-							zIndex={-1}
-						>
-							<Spinner as="span" size="lg" alignSelf="center" />
-							<Text
-								mt={4}
-								fontSize="xl"
-								color="gray.500"
-								textAlign="center"
-								alignSelf="center"
-							>
-								Unboxing pure awesomeness...
-							</Text>
-						</Box>
-					)}
+				<Route path="/kusama/validator/" render={(props) => {
+					if(!props.history.location.pathname.split("/")[3]){
+						return <div style={{
+								display: 'grid',
+								justifyContent: 'center',
+								alignItems: 'center',
+								height: 'calc(100vh - 40px)',
+							}}><p style={{
+								fontSize: '30px',
+								fontWeight: 'bold'}}>
+								Oops! URL must include a validator's address
+								</p>
+							</div>
+					}else{
+						if(validatorData.some(validator => validator.stashId === props.history.location.pathname.split("/")[3].toString())){
+							return isLoaded && apiConnected ? (
+								<ValidatorApp
+									colorMode={colorMode}
+									electedInfo={electedInfo}
+									valtotalinfo={validatorData.map(data => data.stashId)}
+									validatorData={validatorData}
+									validatorTableData={validatorTableData}
+									intentions={intentionData}
+									validatorsandintentions={validatorsAndIntentions}
+									validatorandintentionloading={!isLoaded}
+									isKusama={true}
+								/>
+							) : (
+								<Box
+									display="flex"
+									flexDirection="column"
+									position="absolute"
+									top="50%"
+									left="50%"
+									transform="translate(-50%, -50%)"
+									alignSelf="center"
+									justifyContent="center"
+									textAlign="center"
+									mt={-16}
+									zIndex={-1}
+								>
+									<Spinner as="span" size="lg" alignSelf="center" />
+									<Text
+										mt={4}
+										fontSize="xl"
+										color="gray.500"
+										textAlign="center"
+										alignSelf="center"
+									>
+										Unboxing pure awesomeness...
+									</Text>
+								</Box>
+							)
+						}else{
+							return <div style={{
+								display: 'grid',
+								justifyContent: 'center',
+								alignItems: 'center',
+								height: 'calc(100vh - 40px)',
+								textAlign: "center"
+							}}><p style={{
+								fontSize: '30px',
+								fontWeight: 'bold',
+								margin: '0 50px'}}>
+								Oops! validator's address doesn't exist, or it might not be activated yet.
+								<p style={{
+									fontSize: '20px',
+									fontWeight: 'normal',
+									margin: '0 50px',
+									textAlign: "center"
+								}}>If they think this is a mistake on our end, 
+								then please bear with us and report it, we will
+								reach out to you as soon as possible</p>
+								</p>
+							</div>
+						}
+					}
+				}}>
+					
 				</Route>
 				{/* Nominator specific view */}
 				<Route path="/kusama/nominator/">
