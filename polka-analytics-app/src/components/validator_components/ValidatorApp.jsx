@@ -24,7 +24,7 @@ import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
 
-const ERA_PER_DAY = 6;
+const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
 	constructor(props) {
 		super(props);
