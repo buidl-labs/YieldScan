@@ -360,9 +360,6 @@ class NominatorApp extends React.Component {
 									stroke={
 										this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
 									}
-									fill={
-										this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
-									}
 									strokeWidth={4}
 								/>
 

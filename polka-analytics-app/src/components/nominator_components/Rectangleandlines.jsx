@@ -63,7 +63,7 @@ class Rectangleandlines extends React.Component {
 					opacity={0.2}
 				/>
 				<Line
-					points={[this.props.x, this.props.y, this.props.xline + 150, this.props.y]}
+					points={[this.props.x, this.props.y, this.props.xline - 400, this.props.y]}
 					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.2}
 				/>
