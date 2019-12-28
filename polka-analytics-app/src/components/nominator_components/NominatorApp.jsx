@@ -54,9 +54,19 @@ class NominatorApp extends React.Component {
 		);
 		const parsedNominators = JSON.parse(JSON.stringify(nominators));
 
-		let previous = await api.query.balances.freeBalance(this.props.history.location.pathname.split("/")[3].toString());
-		const PARSED_PREVIOUS_ERA_EARNINGS = JSON.parse(JSON.stringify(previous));
-		this.earningInPreviousEra = (PARSED_PREVIOUS_ERA_EARNINGS / 10 ** 12).toFixed(3);
+		const nominatorId = this.props.history.location.pathname.split("/")[3].toString();
+		let totalBalance = await api.query.balances.freeBalance(nominatorId);
+		// Here we subscribe to any balance changes and update the on-screen value
+		api.query.balances.freeBalance(nominatorId, (current) => {
+			// Calculate the delta
+			const change = current.sub(totalBalance);
+		
+			// Only display positive value changes (Since we are pulling `previous` above already,
+			// the initial balance change will also be zero)
+			if (!change.isZero()) {
+			  this.earningInPreviousEra = (JSON.parse(JSON.stringify(current)) / 10 ** 12).toFixed(3);
+			}
+		  });
 		if (!this.ismounted) {
 			this.nominators = parsedNominators;
 			this.totalinfo = totalinfo;
