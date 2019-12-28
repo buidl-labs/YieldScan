@@ -315,6 +315,7 @@ function App() {
 						<NominatorApp
 							colorMode={colorMode}
 							electedInfo={electedInfo}
+							validatorTableData={validatorTableData}
 							valtotalinfo={validatorData.map(data => data.stashId)}
 							intentions={intentionData}
 							validatorData={validatorData}

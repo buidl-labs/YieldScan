@@ -9,6 +9,7 @@ class Rectangleandlines extends React.Component {
 		};
 		this.pathArray = window.location.href.split("/");
 	}
+
 	handleOnMouseOver = e => {
 		e.target.setAttrs({
 			scaleX: 1.2,
@@ -50,25 +51,33 @@ class Rectangleandlines extends React.Component {
 			"Bonded: " +
 			this.props.staked.toString().slice(0, 7) +
 			(this.pathArray[4] === "kusama" ? " KSM" : " DOT");
+		const validator = this.props.validatorTableData.find(
+			element => element.stashId === this.props.valinfo.accountId.toString()
+		);
 		return (
 			<React.Fragment>
 				<Line
 					points={[
 						this.props.circ_x,
 						this.props.circ_y,
-						this.props.x - 12,
+						this.props.x - 12 - 100,
 						this.props.y
 					]}
 					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.2}
 				/>
 				<Line
-					points={[this.props.x, this.props.y, this.props.xline - 400, this.props.y]}
+					points={[
+						this.props.x - 100,
+						this.props.y,
+						this.props.xline - 400,
+						this.props.y
+					]}
 					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.2}
 				/>
 				<Rect
-					x={this.props.x - 12}
+					x={this.props.x - 12 - 100}
 					y={this.props.y - 6}
 					width={24}
 					height={12}
@@ -79,18 +88,25 @@ class Rectangleandlines extends React.Component {
 					onClick={this.handleClick}
 				/>
 
-				{this.state.showValidatorAddress && (
+				<Text
+					text={validator.name}
+					x={this.props.x - 70}
+					y={this.props.y - 18}
+					fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
+				/>
+
+				{/* {this.state.showValidatorAddress && (
 					<Text
 						text={valtext}
-						x={this.props.x - 12}
+						x={this.props.x - 12 - 100}
 						y={this.props.y - 18}
 						fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					/>
-				)}
+				)} */}
 				{this.state.showValidatorAddress && (
 					<Text
 						text={stakedtext}
-						x={this.props.x + 220}
+						x={this.props.x - 250}
 						y={this.props.y - 18}
 						fill={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					/>

@@ -65,7 +65,7 @@ class NominatorApp extends React.Component {
 			// Only display positive value changes (Since we are pulling `previous` above already,
 			// the initial balance change will also be zero)
 			if (!change.isZero()) {
-			  this.earningInPreviousEra = (JSON.parse(JSON.stringify(current)) / 10 ** 12).toFixed(3);
+			  this.earningInPreviousEra = (JSON.parse(JSON.stringify(change)) / 10 ** 12).toFixed(3);
 			}
 		  });
 		if (!this.ismounted) {
@@ -345,10 +345,11 @@ class NominatorApp extends React.Component {
 									colorMode={this.props.colorMode}
 									allvals={arr}
 									rect_x={width / 2}
-									circ_x={width / 2 - 200}
+									circ_x={width / 2 - 200 - 100}
 									circ_y={height / 2}
 									totalinfo={this.totalinfo}
 									history={this.props.history}
+									validatorTableData={this.props.validatorTableData}
 								/>
 								<Arc
 									x={width - 2}
@@ -397,7 +398,7 @@ class NominatorApp extends React.Component {
 								/>
 
 								<Circle
-									x={width / 2 - 200}
+									x={width / 2 - 200 - 100}
 									y={height / 2}
 									radius={7}
 									fill="#319795"
@@ -408,7 +409,7 @@ class NominatorApp extends React.Component {
 								{this.state.showValidatorAddress && (
 									<KonvaText
 										text={valtext}
-										x={width / 2 - 200}
+										x={width / 2 - 350}
 										y={height / 2 - 18}
 										fill={
 											this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
