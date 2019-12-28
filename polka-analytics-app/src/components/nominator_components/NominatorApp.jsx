@@ -236,14 +236,14 @@ class NominatorApp extends React.Component {
 			return (
 				<React.Fragment>
 					<Box textAlign="center">
-						<Box display="flex" justifyContent="center" mt={20} mb={8}>
+						<Box display="flex" justifyContent="center">
 							<Text fontSize="2xl" fontWeight="bold" alignSelf="center">
 								{nominatorname}
 							</Text>
 						</Box>
-						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+						{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
-						</Text>
+						</Text> */}
 					</Box>
 					<Grid templateColumns="1fr 2fr" gap={2}>
 						<Box
@@ -367,7 +367,7 @@ class NominatorApp extends React.Component {
 									x={width - 348}
 									y={height - 50}
 									radius={10}
-									fill={this.props.colorMode === "light" ? "#000" : "#40B5AF"}
+									fill="#319795"
 								/>
 								<KonvaText
 									x={width - 325}
@@ -383,7 +383,7 @@ class NominatorApp extends React.Component {
 									y={height - 30}
 									width={26}
 									height={15}
-									fill={"#E50B7B"}
+									fill="#E50B7B"
 									cornerRadius={10}
 								/>
 								<KonvaText
@@ -400,7 +400,7 @@ class NominatorApp extends React.Component {
 									x={width / 2 - 200}
 									y={height / 2}
 									radius={7}
-									fill={"#319795"}
+									fill="#319795"
 									onMouseOver={this.handleOnMouseOver}
 									onMouseOut={this.handleOnMouseOut}
 								/>

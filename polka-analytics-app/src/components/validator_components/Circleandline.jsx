@@ -58,19 +58,19 @@ class Circleandline extends React.Component {
 
 		return (
 			<React.Fragment>
-				<Circle
-					x={this.props.x}
-					y={this.props.y}
-					radius={7}
-					fill={"#319795"}
-					onMouseOver={this.handleOnMouseOver}
-					onMouseOut={this.handleOnMouseOut}
-					onClick={this.handleClick}
-				/>
 				<Line
 					points={[this.props.x, this.props.y, this.props.x2, this.props.y2]}
 					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
 					opacity={0.3}
+				/>
+				<Circle
+					x={this.props.x}
+					y={this.props.y}
+					radius={7}
+					fill="#319795"
+					onMouseOver={this.handleOnMouseOver}
+					onMouseOut={this.handleOnMouseOut}
+					onClick={this.handleClick}
 				/>
 
 				{this.state.showNominatorAddress && (

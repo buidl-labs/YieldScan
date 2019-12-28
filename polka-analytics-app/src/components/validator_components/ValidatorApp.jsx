@@ -8,7 +8,8 @@ import {
 	InputGroup,
 	InputRightAddon,
 	Input,
-	Grid
+	Grid,
+	Link
 } from "@chakra-ui/core";
 import {
 	Stage,
@@ -181,17 +182,27 @@ class ValidatorApp extends React.Component {
 							display="flex"
 							justifyContent="center"
 							flexDirection="column"
-							mt={20}
-							mb={8}
+							// mt={20}
+							// mb={8}
 						>
 							<Text fontSize="3xl" alignSelf="center">
 								{this.state.name}
 							</Text>
-							<Text>Infrastructure operator for proof-of-stake networks</Text>
+							<Link
+								color="teal.500"
+								href={
+									"https://polkadot.js.org/apps/#/staking/query/" +
+									this.state.validator
+								}
+								isExternal
+							>
+								View on Polkadot UI
+							</Link>
+							{/* <Text>Infrastructure operator for proof-of-stake networks</Text> */}
 						</Box>
-						<Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+						{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
-						</Text>
+						</Text> */}
 					</Box>
 					<Grid templateColumns="1fr 2fr" gap={2}>
 						<Box
@@ -348,7 +359,7 @@ class ValidatorApp extends React.Component {
 									x={width - 348}
 									y={height - 50}
 									radius={10}
-									fill={this.props.colorMode === "light" ? "#000" : "#40B5AF"}
+									fill="#319795"
 								/>
 								<TextRK
 									x={width - 325}
