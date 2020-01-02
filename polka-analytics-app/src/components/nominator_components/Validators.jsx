@@ -22,6 +22,7 @@ class Validators extends React.Component {
 				<Rectangleandlines
 					colorMode={this.props.colorMode}
 					key={index}
+					validatorTableData={this.props.validatorTableData}
 					totalinfo={this.props.totalinfo}
 					valinfo={element.validator}
 					staked={element.staked}
