@@ -7,7 +7,7 @@
     "@chakra-ui/core": "^0.4.1",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
-    "@polkadot/api": "^0.99.1",
+    "@polkadot/api": "^0.100.0-beta.15",
     "amplitude-js": "^5.7.0",
     "antd": "^3.26.0",
     "emotion-theming": "^10.0.19",
