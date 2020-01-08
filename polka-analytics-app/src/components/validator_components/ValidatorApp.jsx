@@ -132,7 +132,7 @@ class ValidatorApp extends React.Component {
 
 	render() {
 		const width = window.innerWidth - 400;
-		const height = window.innerHeight;
+		const height = window.innerHeight - (64 + 69 + 50);
 		let radius = 120;
 
 		let value = "";

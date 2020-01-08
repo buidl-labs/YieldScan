@@ -231,7 +231,7 @@ class NominatorApp extends React.Component {
 
 		let arr = valbacked;
 		const width = window.innerWidth - 400;
-		const height = window.innerHeight;
+		const height = window.innerHeight - (64 + 69 + 50);;
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
@@ -269,7 +269,7 @@ class NominatorApp extends React.Component {
 									Key Stats
 								</Text>
 							</Flex>
-							<Divider />
+							{/* <Divider /> */}
 							{/* <Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
 									Earning in previous era
