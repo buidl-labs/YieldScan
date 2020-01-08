@@ -24,6 +24,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
+import {Helmet} from "react-helmet";
 
 const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
@@ -177,6 +178,10 @@ class ValidatorApp extends React.Component {
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
+					<Helmet>
+						<title>Nominator View</title>
+						<meta name="description" content="Nominator key stats" />
+					</Helmet>
 					<Box textAlign="center">
 						<Box
 							display="flex"

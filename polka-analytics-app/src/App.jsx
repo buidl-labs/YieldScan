@@ -22,6 +22,7 @@ import {
 	CircularProgress,
 	Link as ChakraLink
 } from "@chakra-ui/core";
+import {Helmet} from "react-helmet";
 import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
@@ -106,6 +107,10 @@ function App() {
 			amplitudeInstance={amplitude.getInstance()}
 			apiKey={AMPLITUDE_KEY}
 		>
+			<Helmet>
+				<title>Analytics platform for the Polkadot Network - Polka Analytics</title>
+				<meta name="description" content="An analytics platform for the Polkadot Network" />
+			</Helmet>
 			<LogOnMount eventType="Use Count" />
 			<Router>
 				<ScrollToTop />

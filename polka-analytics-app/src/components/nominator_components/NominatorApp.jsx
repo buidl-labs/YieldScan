@@ -4,6 +4,7 @@ import { Stage, Layer, Arc, Circle, Text as KonvaText, Rect } from "react-konva"
 import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
 import { Spinner, Box, Text, Flex, Grid, Divider } from "@chakra-ui/core";
+import {Helmet} from "react-helmet";
 
 const ERA_PER_DAY = 4;
 class NominatorApp extends React.Component {
@@ -231,10 +232,14 @@ class NominatorApp extends React.Component {
 
 		let arr = valbacked;
 		const width = window.innerWidth - 400;
-		const height = window.innerHeight - (64 + 69 + 50);;
+		const height = window.innerHeight - (64 + 69 + 50);
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
+					<Helmet>
+						<title>Validator View</title>
+						<meta name="description" content="Validator key stats" />
+					</Helmet>
 					<Box textAlign="center">
 						<Box display="flex" justifyContent="center">
 							<Text fontSize="2xl" fontWeight="bold" alignSelf="center">
