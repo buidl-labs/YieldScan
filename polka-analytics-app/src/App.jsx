@@ -19,7 +19,8 @@ import {
 	InputRightAddon,
 	Spinner,
 	Link,
-	CircularProgress
+	CircularProgress,
+	Link as ChakraLink
 } from "@chakra-ui/core";
 import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
@@ -339,8 +340,15 @@ function App() {
 									fontWeight: 'normal',
 									margin: '0 50px',
 									textAlign: "center"
-								}}>If they think this is a mistake on our end, 
-								then please bear with us and report it, we will
+								}}>If you think this is a mistake on our end, 
+								then please bear with us and report it here {' '}
+								<ChakraLink
+									href="mailto:bhaskar@thevantageproject.com"
+									color="teal.500"
+								>
+									bhaskar@thevantageproject.com
+								</ChakraLink>
+								, we will
 								reach out to you as soon as possible</p>
 								</p>
 							</div>
