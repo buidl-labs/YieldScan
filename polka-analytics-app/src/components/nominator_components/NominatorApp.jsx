@@ -55,19 +55,19 @@ class NominatorApp extends React.Component {
 		);
 		const parsedNominators = JSON.parse(JSON.stringify(nominators));
 
-		const nominatorId = this.props.history.location.pathname.split("/")[3].toString();
-		let totalBalance = await api.query.balances.freeBalance(nominatorId);
-		// Here we subscribe to any balance changes and update the on-screen value
-		api.query.balances.freeBalance(nominatorId, (current) => {
-			// Calculate the delta
-			const change = current.sub(totalBalance);
+		// const nominatorId = this.props.history.location.pathname.split("/")[3].toString();
+		// let totalBalance = await api.query.balances.freeBalance(nominatorId);
+		// // Here we subscribe to any balance changes and update the on-screen value
+		// api.query.balances.freeBalance(nominatorId, (current) => {
+		// 	// Calculate the delta
+		// 	const change = current.sub(totalBalance);
 		
-			// Only display positive value changes (Since we are pulling `previous` above already,
-			// the initial balance change will also be zero)
-			if (!change.isZero()) {
-			  this.earningInPreviousEra = (JSON.parse(JSON.stringify(change)) / 10 ** 12).toFixed(3);
-			}
-		  });
+		// 	// Only display positive value changes (Since we are pulling `previous` above already,
+		// 	// the initial balance change will also be zero)
+		// 	if (!change.isZero()) {
+		// 	  this.earningInPreviousEra = (JSON.parse(JSON.stringify(change)) / 10 ** 12).toFixed(3);
+		// 	}
+		//   });
 		if (!this.ismounted) {
 			this.nominators = parsedNominators;
 			this.totalinfo = totalinfo;
@@ -270,7 +270,7 @@ class NominatorApp extends React.Component {
 								</Text>
 							</Flex>
 							<Divider />
-							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
+							{/* <Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
 									Earning in previous era
 								</Text>
@@ -285,7 +285,7 @@ class NominatorApp extends React.Component {
 										{this.earningInPreviousEra} KSM
 									</span>
 								</Text>
-							</Flex>
+							</Flex> */}
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text fontWeight="bold">Expected daily ROI</Text>
