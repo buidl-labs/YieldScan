@@ -232,13 +232,13 @@ class NominatorApp extends React.Component {
 
 		let arr = valbacked;
 		const width = window.innerWidth - 400;
-		const height = window.innerHeight - (64 + 69 + 50);
+		const height = window.innerHeight;
 		if (this.state.isLoaded) {
 			return (
 				<React.Fragment>
 					<Helmet>
-						<title>Validator View</title>
-						<meta name="description" content="Validator key stats" />
+						<title>Nominator View</title>
+						<meta name="description" content="Nominator key stats" />
 					</Helmet>
 					<Box textAlign="center">
 						<Box display="flex" justifyContent="center">

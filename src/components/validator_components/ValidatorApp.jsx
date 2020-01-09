@@ -179,8 +179,8 @@ class ValidatorApp extends React.Component {
 			return (
 				<React.Fragment>
 					<Helmet>
-						<title>Nominator View</title>
-						<meta name="description" content="Nominator key stats" />
+						<title>Validator View</title>
+						<meta name="description" content="Validator key stats" />
 					</Helmet>
 					<Box textAlign="center">
 						<Box
