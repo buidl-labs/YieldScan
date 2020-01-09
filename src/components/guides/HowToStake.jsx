@@ -6,10 +6,12 @@ import {
 	VerticalTimelineElement
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
+import LogEvent from '../LogEvent';
 
 export default function HowToStake() {
 	return (
 		<React.Fragment>
+			<LogEvent eventType="Staking guide view" />
 			<Heading as="h2" size="xl" textAlign="center" mt={16}>
 				How to stake?
 			</Heading>

@@ -5,6 +5,7 @@ import Validators from "./Validators";
 import { withRouter } from "react-router-dom";
 import { Spinner, Box, Text, Flex, Grid, Divider } from "@chakra-ui/core";
 import {Helmet} from "react-helmet";
+import LogEvent from '../LogEvent';
 
 const ERA_PER_DAY = 4;
 class NominatorApp extends React.Component {
@@ -240,6 +241,7 @@ class NominatorApp extends React.Component {
 						<title>Nominator View</title>
 						<meta name="description" content="Nominator key stats" />
 					</Helmet>
+					<LogEvent eventType="Nominator view" />
 					<Box textAlign="center">
 						<Box display="flex" justifyContent="center">
 							<Text fontSize="2xl" fontWeight="bold" alignSelf="center">

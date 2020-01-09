@@ -25,7 +25,7 @@ import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
 import {Helmet} from "react-helmet";
-
+import LogEvent from '../LogEvent';
 const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
 	constructor(props) {
@@ -182,6 +182,7 @@ class ValidatorApp extends React.Component {
 						<title>Validator View</title>
 						<meta name="description" content="Validator key stats" />
 					</Helmet>
+					<LogEvent eventType="Validator view" />
 					<Box textAlign="center">
 						<Box
 							display="flex"

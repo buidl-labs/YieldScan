@@ -27,14 +27,14 @@ import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
 import amplitude from "amplitude-js";
-import { AmplitudeProvider, LogOnMount } from "@amplitude/react-amplitude";
+import { AmplitudeProvider } from "@amplitude/react-amplitude";
 import ScrollToTop from "./ScrollToTop";
 import ValidatorApp from "./components/validator_components/ValidatorApp";
 import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
+import LogEvent from './components/LogEvent';
 
 const AMPLITUDE_KEY = "1d3873d97d87e9193e7e30529d8a10ab";
-
 function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const [electedInfo, setElectedInfo] = React.useState({});
@@ -111,7 +111,7 @@ function App() {
 				<title>Analytics platform for the Polkadot Network - Polka Analytics</title>
 				<meta name="description" content="An analytics platform for the Polkadot Network" />
 			</Helmet>
-			<LogOnMount eventType="Use Count" />
+			<LogEvent eventType="Home dashboard view" />
 			<Router>
 				<ScrollToTop />
 				<Route exact path="/">

@@ -14,11 +14,13 @@ import {
 } from "@chakra-ui/core";
 import FAQs from "./FAQs";
 import HowToStake from "./guides/HowToStake";
+import LogEvent from './LogEvent';
 
 export default function HelpCenter() {
     return (
         <React.Fragment>
             {/* Help Center Home */}
+            <LogEvent eventType="Help center view" />
             <Route exact path="/help-center">
                 <Heading as="h2" size="xl" textAlign="center" mt={16}>
                     Help Center
