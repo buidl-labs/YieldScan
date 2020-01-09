@@ -24,6 +24,7 @@ export default function ValidatorTable(props) {
 	return (
 		<React.Fragment>
 			{redirect ? <Redirect to={validatorPath} /> : ""}
+			<div style={{overflowX: 'auto'}}>
 			<Table
 				className={props.colorMode === "light" ? "table-light" : "table-dark"}
 				rowKey="stashId"
@@ -232,6 +233,7 @@ export default function ValidatorTable(props) {
 					)}
 				/>
 			</Table>
+			</div>
 		</React.Fragment>
 	);
 }
