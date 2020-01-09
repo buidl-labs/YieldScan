@@ -27,7 +27,7 @@ import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
 import amplitude from "amplitude-js";
-import { AmplitudeProvider } from "@amplitude/react-amplitude";
+import { AmplitudeProvider, LogOnChange } from "@amplitude/react-amplitude";
 import ScrollToTop from "./ScrollToTop";
 import ValidatorApp from "./components/validator_components/ValidatorApp";
 import NominatorApp from "./components/nominator_components/NominatorApp";
@@ -112,6 +112,8 @@ function App() {
 				<meta name="description" content="An analytics platform for the Polkadot Network" />
 			</Helmet>
 			<LogEvent eventType="Home dashboard view" />
+			<LogOnChange eventType={`(${stakeInput}) Expected daily earning from stake (Input Change) : (dashboard view)`}
+			 value={stakeInput} />
 			<Router>
 				<ScrollToTop />
 				<Route exact path="/">
