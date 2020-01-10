@@ -79,8 +79,9 @@ class ValidatorApp extends React.Component {
 
 		let validatorInfo = undefined;
 		let nominators = [];
-		let name = "";
-		name = await api.query.nicks.nameOf(validator);
+		// let name = "";
+		// name = `Validator (...${validator.toString().slice(-6, -1)})`
+		// name = await api.query.nicks.nameOf(validator);
 		validatorInfo = this.props.electedInfo.info.find(
 			data => data.stashId.toString() === validator
 		);
@@ -93,7 +94,7 @@ class ValidatorApp extends React.Component {
 				validatorInfo = this.props.electedInfo.info.find(
 					data => data.stashId.toString() === validator
 				);
-				name = await api.query.nicks.nameOf(validator);
+				// name = await api.query.nicks.nameOf(validator);
 				nominators = await validatorInfo.stakers.others;
 			}
 		}
@@ -102,9 +103,10 @@ class ValidatorApp extends React.Component {
 				...state,
 				validatorInfo: validatorInfo,
 				nominators: nominators,
-				name: name.raw[0]
-					? hexToString(name.raw[0].toString())
-					: `Validator (...${validator.slice(-6, -1)})`,
+				name: `Validator (...${validator.toString().slice(-6, -1)})`,
+				// name: name.raw[0]
+				// 	? hexToString(name.raw[0].toString())
+				// 	: `Validator (...${validator.slice(-6, -1)})`,
 				isloading: false,
 				isLoaded: true
 			}));
