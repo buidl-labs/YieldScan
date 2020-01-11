@@ -34,10 +34,14 @@ class ValidatorApp extends React.Component {
 			validator: props.history.location.pathname.split("/")[3].toString(),
 			validatorsandintentions: props.validatorsandintentions,
 			nominators: [],
+			totalStaked: 0,
+			stakedBySelf: 0,
+			stakedByOther: 0,
+			backers: 0,
 			showValidatorAddress: false,
 			stash: "",
 			controller: "",
-			name: "",
+			name: `Validator (...${props.history.location.pathname.split("/")[3].toString().slice(-6, -1)})`,
 			isloading: true,
 			totalinfo: [],
 			valinfo: {},
@@ -68,51 +72,66 @@ class ValidatorApp extends React.Component {
 	}
 
 	componentDidMount() {
-		this.deriveInfo();
-	}
-
-	deriveInfo = async () => {
-		const { validator } = this.state;
-		const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io");
-		const api = await ApiPromise.create({ provider: wsProvider });
-		await api.isReady;
-
-		let validatorInfo = undefined;
-		let nominators = [];
-		// let name = "";
-		// name = `Validator (...${validator.toString().slice(-6, -1)})`
-		// name = await api.query.nicks.nameOf(validator);
-		validatorInfo = this.props.electedInfo.info.find(
-			data => data.stashId.toString() === validator
-		);
-		nominators = await validatorInfo.stakers.others;
-		if (!this.props.validatorandintentionloading) {
-			const validatorList = this.props.validatorsandintentions
-				.toString()
-				.split(",");
-			if (validatorList.includes(validator)) {
-				validatorInfo = this.props.electedInfo.info.find(
-					data => data.stashId.toString() === validator
-				);
-				// name = await api.query.nicks.nameOf(validator);
-				nominators = await validatorInfo.stakers.others;
-			}
-		}
-		if (!this.ismounted) {
-			this.setState(state => ({
-				...state,
-				validatorInfo: validatorInfo,
-				nominators: nominators,
-				name: `Validator (...${validator.toString().slice(-6, -1)})`,
-				// name: name.raw[0]
-				// 	? hexToString(name.raw[0].toString())
-				// 	: `Validator (...${validator.slice(-6, -1)})`,
+		// this.deriveInfo();
+		fetch(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
+		.then(res => res.json())
+		.then(res => {
+			this.setState({
+				totalinfo: res.currentvalidator,
+				nominators: res.nominators,
+				totalStaked: res.totalStaked,
+				stakedBySelf: res.stakedBySelf,
+				stakedByOther: res.stakedByOther,
+				backers: res.backers,
 				isloading: false,
 				isLoaded: true
-			}));
-		}
-		this.ismounted = true;
-	};
+			})
+		})
+		.catch(err => console.log(err));
+	}
+
+	// deriveInfo = async () => {
+	// 	const { validator } = this.state;
+	// 	const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io");
+	// 	const api = await ApiPromise.create({ provider: wsProvider });
+	// 	await api.isReady;
+
+	// 	let validatorInfo = undefined;
+	// 	let nominators = [];
+	// 	// let name = "";
+	// 	// name = `Validator (...${validator.toString().slice(-6, -1)})`
+	// 	// name = await api.query.nicks.nameOf(validator);
+	// 	validatorInfo = this.props.electedInfo.info.find(
+	// 		data => data.stashId.toString() === validator
+	// 	);
+	// 	nominators = await validatorInfo.stakers.others;
+	// 	if (!this.props.validatorandintentionloading) {
+	// 		const validatorList = this.props.validatorsandintentions
+	// 			.toString()
+	// 			.split(",");
+	// 		if (validatorList.includes(validator)) {
+	// 			validatorInfo = this.props.electedInfo.info.find(
+	// 				data => data.stashId.toString() === validator
+	// 			);
+	// 			// name = await api.query.nicks.nameOf(validator);
+	// 			nominators = await validatorInfo.stakers.others;
+	// 		}
+	// 	}
+	// 	if (!this.ismounted) {
+	// 		this.setState(state => ({
+	// 			...state,
+	// 			validatorInfo: validatorInfo,
+	// 			nominators: nominators,
+	// 			name: `Validator (...${validator.toString().slice(-6, -1)})`,
+	// 			// name: name.raw[0]
+	// 			// 	? hexToString(name.raw[0].toString())
+	// 			// 	: `Validator (...${validator.slice(-6, -1)})`,
+	// 			isloading: false,
+	// 			isLoaded: true
+	// 		}));
+	// 	}
+	// 	this.ismounted = true;
+	// };
 
 	handleOnMouseOver = () => {
 		this.setState({ showValidatorAddress: true });
@@ -138,32 +157,32 @@ class ValidatorApp extends React.Component {
 		const height = window.innerHeight - (64 + 69 + 50);
 		let radius = 120;
 
-		let value = "";
+		// let value = "";
 		// let validator = "";
-		let valinfo = "";
-		let totalinfo = "";
-		if (!this.props.validatorandintentionloading && !this.state.isloading) {
-			totalinfo = this.props.valtotalinfo;
-			this.totalvalue =
-				this.pathArray[4] === "kusama"
-					? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
-					: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
-			this.ownvalue =
-				this.pathArray[4] === "kusama"
-					? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
-					: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
-			// validator = this.state.validatorInfo.accountId;
-			valinfo = value;
-			if (
-				this.props.intentions.includes(
-					this.props.history.location.pathname.split("/")[3].toString()
-				)
-			) {
-				this.totalvalue =
-					this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-				this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
-			}
-		}
+		// let valinfo = "";
+		// let totalinfo = "";
+		// if (!this.props.validatorandintentionloading && !this.state.isloading) {
+		// 	totalinfo = this.props.valtotalinfo;
+		// 	this.totalvalue =
+		// 		this.pathArray[4] === "kusama"
+		// 			? this.state.validatorInfo.stakers.total / Math.pow(10, 12)
+		// 			: this.state.validatorInfo.stakers.total / Math.pow(10, 15);
+		// 	this.ownvalue =
+		// 		this.pathArray[4] === "kusama"
+		// 			? this.state.validatorInfo.stakers.own / Math.pow(10, 12)
+		// 			: this.state.validatorInfo.stakers.own / Math.pow(10, 15);
+		// 	// validator = this.state.validatorInfo.accountId;
+		// 	valinfo = value;
+		// 	if (
+		// 		this.props.intentions.includes(
+		// 			this.props.history.location.pathname.split("/")[3].toString()
+		// 		)
+		// 	) {
+		// 		this.totalvalue =
+		// 			this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+		// 		this.ownvalue = this.state.validatorInfo.stakingLedger.total / 10 ** 12;
+		// 	}
+		// }
 
 		// let totalBonded = 0;
 		// totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
@@ -294,8 +313,7 @@ class ValidatorApp extends React.Component {
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text fontWeight="bold">Commission</Text>
 								<Text>
-									{this.state.validatorInfo &&
-										this.state.currentValidatorData.commission}
+									{this.state.currentValidatorData.commission}
 									%
 								</Text>
 							</Flex>
@@ -308,8 +326,7 @@ class ValidatorApp extends React.Component {
 									</span>
 								</Text>
 								<Text>
-									{this.state.validatorInfo &&
-										this.state.validatorInfo.stakers.others.length}
+									{this.state.backers}
 								</Text>
 							</Flex>
 							<Divider />
@@ -319,13 +336,13 @@ class ValidatorApp extends React.Component {
 									Total
 								</Text>
 								<Text style={{ color: "#E50B7B", fontWeight: "bold" }}>
-									{this.totalvalue.toFixed(3)} KSM
+									{this.state.totalStaked} KSM
 								</Text>
 								<Text fontSize="12px">Staked by self</Text>
-								<Text fontWeight="bold">{this.ownvalue.toFixed(3)} KSM</Text>
+								<Text fontWeight="bold">{this.state.stakedBySelf} KSM</Text>
 								<Text fontSize="12px">staked by others</Text>
 								<Text fontWeight="bold">
-									{(this.totalvalue - this.ownvalue).toFixed(3)} KSM
+									{this.state.stakedByOther} KSM
 								</Text>
 							</Flex>
 						</Box>
@@ -344,8 +361,8 @@ class ValidatorApp extends React.Component {
 									y={height / 2 + 6}
 									nominators={this.state.nominators}
 									history={this.props.history}
-									totalinfo={totalinfo}
-									valinfo={valinfo}
+									totalinfo={this.state.totalinfo}
+									valinfo={""}
 								/>
 
 								{/* Arc used to create the semicircle on the right,
