@@ -34,7 +34,8 @@ import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
 import LogEvent from './components/LogEvent';
 
-const AMPLITUDE_KEY = "1d3873d97d87e9193e7e30529d8a10ab";
+const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
+
 function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const [electedInfo, setElectedInfo] = React.useState({});
