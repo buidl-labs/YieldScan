@@ -185,59 +185,6 @@ export default function ValidatorTable(props) {
 								};
 							}}
 						/>
-						<Column
-							title={() => (
-								<React.Fragment>
-									<Popover isOpen={activePopover === "action"} trigger="hover">
-										<PopoverTrigger>
-											<Text>Copy Address</Text>
-										</PopoverTrigger>
-										<PopoverContent border="0" zIndex={1000}>
-											<PopoverArrow />
-											<PopoverBody>
-												<Text fontSize="md" fontWeight="normal" textAlign="left">
-													Click on the icon to copy validator's stash id
-												</Text>
-											</PopoverBody>
-										</PopoverContent>
-									</Popover>
-								</React.Fragment>
-							)}
-							key="action"
-							align="center"
-							onHeaderCell={column => {
-								return {
-									onMouseEnter: () => {
-										setActivePopover(column.key);
-									},
-									onMouseLeave: () => {
-										setActivePopover("");
-									}
-								};
-							}}
-							render={record => (
-								<React.Fragment>
-									<IconButton
-										ml={4}
-										icon="copy"
-										onClick={() => {
-											logEvent(`Validator Address Copied for ${record.name} with id ${record.stashId}`);
-											navigator.clipboard.writeText(record.stashId).then(
-												() =>
-													toast({
-														title: "Validator Address Copied",
-														description: `The Stash Id of ${record.name} has been copied to your clipboard`,
-														status: "success",
-														duration: 5000,
-														isClosable: true
-													}),
-												() => console.log(`Something went wrong`)
-											);
-										}}
-									/>
-								</React.Fragment>
-							)}
-						/>
 					</Table>
 				</div>
 				)}
