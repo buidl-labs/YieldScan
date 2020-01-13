@@ -59,11 +59,13 @@ function App() {
 				name,
 				commission,
 				totalStake,
-				poolReward
+				poolReward,
+				noOfNominators
 			} = validator;
 			const userStakeFraction = stakeAmount / (stakeAmount + totalStake);
 			const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
 			return {
+				noOfNominators: noOfNominators,
 				stashId: stashId,
 				stashIdTruncated: stashIdTruncated,
 				name: name,
@@ -76,6 +78,7 @@ function App() {
 		});
 		const earnings = data.map(data => data.dailyEarningPrecise);
 		setMaxDailyEarning(Math.max(...earnings));
+		console.log("table data", data);
 		setValidatorTableData(data);
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
