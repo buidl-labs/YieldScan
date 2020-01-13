@@ -19,7 +19,7 @@ const customTheme = {
     }
 };
 
-ReactDOM.render(
+ReactDOM.hydrate(
     <ThemeProvider theme={customTheme}>
         <ColorModeProvider>
             <CSSReset />
