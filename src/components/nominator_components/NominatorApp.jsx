@@ -293,7 +293,7 @@ class NominatorApp extends React.Component {
 							</Flex> */}
               <Divider />
               <Flex flexDirection="column" style={{ padding: '0 20px' }}>
-                <Text fontWeight="bold">Expected daily ROI</Text>
+                <Text fontWeight="bold">Expect Daily Earning</Text>
                 <Text
                   style={{
                     textTransform: 'uppercase',
