@@ -313,6 +313,9 @@ class ValidatorApp extends React.Component {
 										placeholder="Stake Amount"
 										variant="filled"
 										type="number"
+										min="0"
+										step="0.000000000001"
+										max="999999999999999"
 										value={this.state.stakeInput}
 										textAlign="center"
 										roundedLeft="2rem"
