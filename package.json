@@ -13,6 +13,7 @@
     "@polkadot/api": "^0.100.0-beta.27",
     "amplitude-js": "^5.7.0",
     "antd": "^3.26.0",
+    "axios": "^0.19.1",
     "emotion-theming": "^10.0.19",
     "express": "^4.17.1",
     "ignore-styles": "^5.0.1",

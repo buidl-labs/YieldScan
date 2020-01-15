@@ -13,6 +13,8 @@ import { withRouter } from 'react-router-dom';
 import { Spinner, Box, Text, Flex, Grid, Divider } from '@chakra-ui/core';
 import { Helmet } from 'react-helmet';
 import LogEvent from '../LogEvent';
+import axios from 'axios';
+import ErrorMessage from '../ErrorMessage';
 
 class NominatorApp extends React.Component {
   constructor() {
@@ -28,7 +30,8 @@ class NominatorApp extends React.Component {
       othersStaked: 0,
       expectedDailyRoi: 0,
       backers: 0,
-      nominatorId: ''
+      nominatorId: '',
+      errorState: false
     };
     this.pathArray = window.location.href.split('/');
     this.ismounted = false;
@@ -42,12 +45,10 @@ class NominatorApp extends React.Component {
   }
 
   async componentDidMount() {
-    // this.deriveInfo();
     const id = this.props.history.location.pathname.split('/')[3].toString();
-    fetch(`https://evening-sea-52088.herokuapp.com/nominatorinfo/${id}`)
-      .then(res => res.json())
-      .then(currentNominator => {
-        console.log('currentNominator', currentNominator);
+    axios
+      .get(`https://evening-sea-52088.herokuapp.com/nominatorinf/${id}`)
+      .then(({ data: currentNominator }) => {
         const nominatorId = currentNominator.nominatorId;
         this.setState({
           nominatorId: `${nominatorId.slice(0, 8)}.....${nominatorId.slice(
@@ -62,7 +63,11 @@ class NominatorApp extends React.Component {
           isLoaded: true
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        this.setState({
+          errorState: true
+        });
+      });
   }
 
   // deriveInfo = async () => {
@@ -227,6 +232,10 @@ class NominatorApp extends React.Component {
 
     // 	this.expectedDailyRoi = (sum * ERA_PER_DAY).toFixed(3);
     // }
+
+    if (this.state.errorState) {
+      return <ErrorMessage />;
+    }
 
     let arr = valbacked;
     const width = window.innerWidth - 400;
