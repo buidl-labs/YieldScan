@@ -44,10 +44,10 @@ class NominatorApp extends React.Component {
     this.expectedDailyRoi = 0;
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const id = this.props.history.location.pathname.split('/')[3].toString();
     axios
-      .get(`https://evening-sea-52088.herokuapp.com/nominatorinf/${id}`)
+      .get(`https://evening-sea-52088.herokuapp.com/nominatorinfo/${id}`)
       .then(({ data: currentNominator }) => {
         const nominatorId = currentNominator.nominatorId;
         this.setState({
