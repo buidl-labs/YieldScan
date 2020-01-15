@@ -198,7 +198,7 @@ class ValidatorApp extends React.Component {
 		// let totalBonded = 0;
 		// totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
 
-		if (this.state.nominators.length !== undefined && this.state.nominators.length > 10) {
+		if (this.state.nominators !== undefined && this.state.nominators.length > 10) {
 			radius = 200;
 		}
 		let opacity = 0.3;
@@ -312,6 +312,7 @@ class ValidatorApp extends React.Component {
 									<Input
 										placeholder="Stake Amount"
 										variant="filled"
+										type="number"
 										value={this.state.stakeInput}
 										textAlign="center"
 										roundedLeft="2rem"

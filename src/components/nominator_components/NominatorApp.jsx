@@ -311,7 +311,10 @@ class NominatorApp extends React.Component {
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text fontWeight="bold">Diversity</Text>
-								<Text>Backing {this.state.backers} {this.state.backers > 1 ? "different" : ""} validator</Text>
+								<Text>
+									Backing {this.state.backers}{" "}
+									{this.state.backers > 1 ? "different validators" : "validator"}
+								</Text>
 							</Flex>
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>

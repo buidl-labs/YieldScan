@@ -47,7 +47,7 @@ function App() {
 	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
-	const [stakeAmount] = useDebounce(stakeInput, 1000);
+	const [stakeAmount] = useDebounce(stakeInput, 1000.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
@@ -117,9 +117,7 @@ function App() {
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>
-					Polka Analytics - Analytics for Polkadot Network
-				</title>
+				<title>Polka Analytics - Analytics for Polkadot Network</title>
 				<meta
 					name="description"
 					content="An analytics platform for the Polkadot Network"
@@ -224,15 +222,12 @@ function App() {
 										<Input
 											placeholder="Stake Amount"
 											variant="filled"
+											type="number"
 											value={stakeInput}
 											textAlign="center"
 											roundedLeft="2rem"
 											onChange={e => {
-												setStakeInput(
-													isNaN(parseFloat(e.target.value))
-														? 0
-														: parseFloat(e.target.value)
-												);
+												setStakeInput(parseFloat(e.target.value));
 											}}
 										/>
 										<InputRightAddon
