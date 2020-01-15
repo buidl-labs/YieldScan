@@ -9,7 +9,12 @@ import {
 	InputRightAddon,
 	Input,
 	Grid,
-	Link
+	Link,
+	Alert,
+	AlertIcon,
+	AlertTitle,
+	AlertDescription,
+	CloseButton
 } from "@chakra-ui/core";
 import {
 	Stage,
@@ -24,8 +29,8 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import WhiteCircles from "./WhiteCircles";
 import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
-import {Helmet} from "react-helmet";
-import LogEvent from '../LogEvent';
+import { Helmet } from "react-helmet";
+import LogEvent from "../LogEvent";
 const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
 	constructor(props) {
@@ -41,7 +46,10 @@ class ValidatorApp extends React.Component {
 			showValidatorAddress: false,
 			stash: "",
 			controller: "",
-			name: `Validator (...${props.history.location.pathname.split("/")[3].toString().slice(-6, -1)})`,
+			name: `Validator (...${props.history.location.pathname
+				.split("/")[3]
+				.toString()
+				.slice(-6, -1)})`,
 			isloading: true,
 			totalinfo: [],
 			valinfo: {},
@@ -63,7 +71,8 @@ class ValidatorApp extends React.Component {
 				const userStakeFraction = 1000 / (1000 + totalStake);
 				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
 				return dailyEarning.toFixed(3);
-			})()
+			})(),
+			showInfo: true
 		};
 		this.pathArray = window.location.href.split("/");
 		this.ismounted = false;
@@ -73,21 +82,23 @@ class ValidatorApp extends React.Component {
 
 	componentDidMount() {
 		// this.deriveInfo();
-		fetch(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
-		.then(res => res.json())
-		.then(res => {
-			this.setState({
-				totalinfo: res.currentvalidator,
-				nominators: res.nominators,
-				totalStaked: res.totalStaked,
-				stakedBySelf: res.stakedBySelf,
-				stakedByOther: res.stakedByOther,
-				backers: res.backers,
-				isloading: false,
-				isLoaded: true
+		fetch(
+			`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`
+		)
+			.then(res => res.json())
+			.then(res => {
+				this.setState({
+					totalinfo: res.currentvalidator,
+					nominators: res.nominators,
+					totalStaked: res.totalStaked,
+					stakedBySelf: res.stakedBySelf,
+					stakedByOther: res.stakedByOther,
+					backers: res.backers,
+					isloading: false,
+					isLoaded: true
+				});
 			})
-		})
-		.catch(err => console.log(err));
+			.catch(err => console.log(err));
 	}
 
 	// deriveInfo = async () => {
@@ -187,7 +198,7 @@ class ValidatorApp extends React.Component {
 		// let totalBonded = 0;
 		// totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
 
-		if (this.state.nominators.length > 10) {
+		if (this.state.nominators.length !== undefined && this.state.nominators.length > 10) {
 			radius = 200;
 		}
 		let opacity = 0.3;
@@ -200,7 +211,7 @@ class ValidatorApp extends React.Component {
 			return (
 				<React.Fragment>
 					<Helmet>
-						<title>Validator View</title>
+						<title>Specific View - {this.state.name} - Polka Analytics</title>
 						<meta name="description" content="Validator key stats" />
 					</Helmet>
 					<LogEvent eventType="Validator view" />
@@ -208,6 +219,7 @@ class ValidatorApp extends React.Component {
 						<Box
 							display="flex"
 							justifyContent="center"
+							alignItems="center"
 							flexDirection="column"
 							// mt={20}
 							// mb={8}
@@ -221,17 +233,50 @@ class ValidatorApp extends React.Component {
 									"https://polkadot.js.org/apps/#/staking/query/" +
 									this.state.validator
 								}
+								width="fit-content"
 								isExternal
 							>
 								View on Polkadot UI
 							</Link>
-							{/* <Text>Infrastructure operator for proof-of-stake networks</Text> */}
+							<Alert
+								status="info"
+								display={this.state.showInfo ? "flex" : "none"}
+								flexDirection="column"
+								mt={4}
+							>
+								<Box
+									as="span"
+									display="flex"
+									flexDirection="row"
+									alignItems="end"
+								>
+									<AlertIcon />
+									<AlertTitle mr={2}>
+										Instructions to view nominator specific view
+									</AlertTitle>
+								</Box>
+								<AlertDescription>
+									Click on the nominator circles to open nominator's specfic
+									view data and visualization
+								</AlertDescription>
+								<CloseButton
+									position="absolute"
+									right="8px"
+									top="8px"
+									onClick={() =>
+										this.setState({
+											...this.state,
+											showInfo: !this.state.showInfo
+										})
+									}
+								/>
+							</Alert>
 						</Box>
 						{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
 						</Text> */}
 					</Box>
-					<Grid templateColumns="1fr 2fr" gap={2}>
+					<Grid templateColumns="1fr 2fr" gap={2} overflowX="hidden">
 						<Box
 							width={350}
 							height={580}
@@ -312,10 +357,7 @@ class ValidatorApp extends React.Component {
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text fontWeight="bold">Commission</Text>
-								<Text>
-									{this.state.currentValidatorData.commission}
-									%
-								</Text>
+								<Text>{this.state.currentValidatorData.commission}%</Text>
 							</Flex>
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
@@ -325,9 +367,7 @@ class ValidatorApp extends React.Component {
 										(number of stakers)
 									</span>
 								</Text>
-								<Text>
-									{this.state.backers}
-								</Text>
+								<Text>{this.state.backers}</Text>
 							</Flex>
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
@@ -341,9 +381,7 @@ class ValidatorApp extends React.Component {
 								<Text fontSize="12px">Staked by self</Text>
 								<Text fontWeight="bold">{this.state.stakedBySelf} KSM</Text>
 								<Text fontSize="12px">staked by others</Text>
-								<Text fontWeight="bold">
-									{this.state.stakedByOther} KSM
-								</Text>
+								<Text fontWeight="bold">{this.state.stakedByOther} KSM</Text>
 							</Flex>
 						</Box>
 						<Stage width={width} height={height} draggable={true}>
@@ -389,7 +427,7 @@ class ValidatorApp extends React.Component {
 								<TextRK
 									x={width - 325}
 									y={height - 56}
-									text="Nominators"
+									text="Nominator"
 									fill={
 										this.props.colorMode === "light" ? "#1A202C" : "#718096"
 									}
@@ -430,6 +468,16 @@ class ValidatorApp extends React.Component {
 										this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
 									}
 									opacity={opacity}
+								/>
+
+								<TextRK
+									x={width / 2 + 25}
+									y={height / 2 - 15}
+									text={this.state.name}
+									fill={
+										this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
+									}
+									fontSize={15}
 								/>
 
 								<Rect

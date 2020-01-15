@@ -7,10 +7,16 @@ import {
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import LogEvent from '../LogEvent';
+import Helmet from "react-helmet";
 
 export default function HowToStake() {
 	return (
 		<React.Fragment>
+			<Helmet>
+				<title>How to stake - Guide - Help Center - Polka Analytics</title>
+				
+				<meta name="description" content="Validator key stats" />
+			</Helmet>
 			<LogEvent eventType="Staking guide view" />
 			<Heading as="h2" size="xl" textAlign="center" mt={16}>
 				How to stake?

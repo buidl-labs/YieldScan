@@ -22,7 +22,7 @@ import {
 	CircularProgress,
 	Link as ChakraLink
 } from "@chakra-ui/core";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
 import HelpCenter from "./components/HelpCenter";
@@ -32,7 +32,7 @@ import ScrollToTop from "./ScrollToTop";
 import ValidatorApp from "./components/validator_components/ValidatorApp";
 import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
-import LogEvent from './components/LogEvent';
+import LogEvent from "./components/LogEvent";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -47,7 +47,7 @@ function App() {
 	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
-	const [stakeAmount] = useDebounce(stakeInput, 1000)
+	const [stakeAmount] = useDebounce(stakeInput, 1000);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
@@ -88,23 +88,28 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/")
-		socket.on("initial", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			setApiConnected(true);
-			setValidatorData(filteredValidatorsList);
-			setElectedInfo(electedInfo[0]);
-			setIntentionData(intentionsData[0].intentions);
-			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
-		});
+		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/");
+		socket.on(
+			"initial",
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
+				setApiConnected(true);
+				setValidatorData(filteredValidatorsList);
+				setElectedInfo(electedInfo[0]);
+				setIntentionData(intentionsData[0].intentions);
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+			}
+		);
 
-		socket.on("onDataChange", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			setValidatorData(filteredValidatorsList);
-			setElectedInfo(electedInfo[0]);
-			setIntentionData(intentionsData[0].intentions);
-			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
-		});
-	}, [])
-
+		socket.on(
+			"onDataChange",
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
+				setValidatorData(filteredValidatorsList);
+				setElectedInfo(electedInfo[0]);
+				setIntentionData(intentionsData[0].intentions);
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+			}
+		);
+	}, []);
 
 	return (
 		<AmplitudeProvider
@@ -112,12 +117,19 @@ function App() {
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>Analytics platform for the Polkadot Network - Polka Analytics</title>
-				<meta name="description" content="An analytics platform for the Polkadot Network" />
+				<title>
+					Polka Analytics - Analytics for Polkadot Network
+				</title>
+				<meta
+					name="description"
+					content="An analytics platform for the Polkadot Network"
+				/>
 			</Helmet>
 			<LogEvent eventType="Home dashboard view" />
-			<LogOnChange eventType={`(${stakeInput}) Expected daily earning from stake (Input Change) : (dashboard view)`}
-			 value={stakeInput} />
+			<LogOnChange
+				eventType={`(${stakeInput}) Expected daily earning from stake (Input Change) : (dashboard view)`}
+				value={stakeInput}
+			/>
 			<Router>
 				<ScrollToTop />
 				<Route exact path="/">
@@ -281,93 +293,111 @@ function App() {
 					</Route>
 				</Flex>
 				{/* Validator specific view */}
-				<Route path="/kusama/validator/" render={(props) => {
-					if(!props.history.location.pathname.split("/")[3]){
-						return <div style={{
-								display: 'grid',
-								justifyContent: 'center',
-								alignItems: 'center',
-								height: 'calc(100vh - 40px)',
-							}}><p style={{
-								fontSize: '30px',
-								fontWeight: 'bold'}}>
-								Oops! URL must include a validator's address
-								</p>
-							</div>
-					}else{
-						if(validatorData.some(validator => validator.stashId === props.history.location.pathname.split("/")[3].toString())){
-							return isLoaded && apiConnected ? (
-								<ValidatorApp
-									colorMode={colorMode}
-									electedInfo={electedInfo}
-									valtotalinfo={validatorData.map(data => data.stashId)}
-									validatorData={validatorData}
-									validatorTableData={validatorTableData}
-									intentions={intentionData}
-									validatorsandintentions={validatorsAndIntentions}
-									validatorandintentionloading={!isLoaded}
-									isKusama={true}
-								/>
-							) : (
-								<Box
-									display="flex"
-									flexDirection="column"
-									position="absolute"
-									top="50%"
-									left="50%"
-									transform="translate(-50%, -50%)"
-									alignSelf="center"
-									justifyContent="center"
-									textAlign="center"
-									mt={-16}
-									zIndex={-1}
+				<Route
+					path="/kusama/validator/"
+					render={props => {
+						if (!props.history.location.pathname.split("/")[3]) {
+							return (
+								<div
+									style={{
+										display: "grid",
+										justifyContent: "center",
+										alignItems: "center",
+										height: "calc(100vh - 40px)"
+									}}
 								>
-									<Spinner as="span" size="lg" alignSelf="center" />
-									<Text
-										mt={4}
-										fontSize="xl"
-										color="gray.500"
-										textAlign="center"
-										alignSelf="center"
+									<p
+										style={{
+											fontSize: "30px",
+											fontWeight: "bold"
+										}}
 									>
-										Unboxing pure awesomeness...
-									</Text>
-								</Box>
-							)
-						}else{
-							return <div style={{
-								display: 'grid',
-								justifyContent: 'center',
-								alignItems: 'center',
-								height: 'calc(100vh - 40px)',
-								textAlign: "center"
-							}}><p style={{
-								fontSize: '30px',
-								fontWeight: 'bold',
-								margin: '0 50px'}}>
-								Oops! validator's address doesn't exist, or it might not be activated yet.
-								<p style={{
-									fontSize: '20px',
-									fontWeight: 'normal',
-									margin: '0 50px',
-									textAlign: "center"
-								}}>If you think this is a mistake on our end, 
-								then please bear with us and report it here {' '}
-								<ChakraLink
-									href="mailto:bhaskar@thevantageproject.com"
-									color="teal.500"
-								>
-									bhaskar@thevantageproject.com
-								</ChakraLink>
-								, we will
-								reach out to you as soon as possible</p>
-								</p>
-							</div>
+										Oops! URL must include a validator's address
+									</p>
+								</div>
+							);
+						} else {
+							if (
+								validatorData.some(
+									validator =>
+										validator.stashId ===
+										props.history.location.pathname.split("/")[3].toString()
+								)
+							) {
+								return isLoaded && apiConnected ? (
+									<ValidatorApp
+										colorMode={colorMode}
+										electedInfo={electedInfo}
+										valtotalinfo={validatorData.map(data => data.stashId)}
+										validatorData={validatorData}
+										validatorTableData={validatorTableData}
+										intentions={intentionData}
+										validatorsandintentions={validatorsAndIntentions}
+										validatorandintentionloading={!isLoaded}
+										isKusama={true}
+									/>
+								) : (
+									<Box
+										display="flex"
+										flexDirection="column"
+										position="absolute"
+										top="50%"
+										left="50%"
+										transform="translate(-50%, -50%)"
+										alignSelf="center"
+										justifyContent="center"
+										textAlign="center"
+										mt={-16}
+										zIndex={-1}
+									>
+										<Spinner as="span" size="lg" alignSelf="center" />
+										<Text
+											mt={4}
+											fontSize="xl"
+											color="gray.500"
+											textAlign="center"
+											alignSelf="center"
+										>
+											Unboxing pure awesomeness...
+										</Text>
+									</Box>
+								);
+							} else {
+								return (
+									<Box maxW="960px" mx="auto" textAlign="center" mt={16}>
+										<Heading as="h1" size="xl">
+											Validator address not found
+										</Heading>
+										<Text>
+											The validator you're looking for either doesn't exist or
+											hasn't finished loading yet.
+										</Text>
+										<Text color="gray.500" mt={8}>
+											If you think this is a mistake, then please report it to{" "}
+											<ChakraLink
+												href="mailto:bhaskar@thevantageproject.com"
+												color="teal.500"
+											>
+												bhaskar@thevantageproject.com
+											</ChakraLink>
+											, we will reach out to you as soon as possible
+										</Text>
+										{/* <p
+											style={{
+												fontSize: "30px",
+												fontWeight: "bold",
+												margin: "0 50px"
+											}}
+										>
+											Oops! validator's address doesn't exist, or it might not
+											be activated yet.
+										</p> */}
+									</Box>
+								);
+							}
 						}
-					}
-				}}>
-					
-				</Route>
+					}}
+				></Route>
 				{/* Nominator specific view */}
 				<Route path="/kusama/nominator/">
 					{isLoaded && apiConnected ? (
