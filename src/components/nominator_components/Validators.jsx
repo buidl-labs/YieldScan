@@ -4,16 +4,16 @@ import Rectangleandlines from "./Rectangleandlines";
 class Validators extends React.Component {
 	render() {
 		let arr1 = [];
-		let initial_Y = window.innerHeight / 3;
-		let windowlength = window.innerHeight / 3;
+		let initial_Y = (window.innerHeight - 183) / 3;
+		let windowlength = (window.innerHeight - 183) / 3;
 		if (this.props.allvals.length > 10) {
-			initial_Y = window.innerHeight / 4;
-			windowlength = window.innerHeight / 2;
+			initial_Y = (window.innerHeight - 183) / 4;
+			windowlength = (window.innerHeight - 183) / 2;
 		}
 
 		let y_cord = initial_Y;
 		let width = window.innerWidth;
-		let height = window.innerHeight;
+		let height = window.innerHeight - 183;
 		let rad = height / 2 - 24;
 		this.props.allvals.forEach((element, index) => {
 			// console.log(element)

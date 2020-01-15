@@ -28,7 +28,8 @@ class NominatorApp extends React.Component {
       othersStaked: 0,
       expectedDailyRoi: 0,
       backers: 0,
-      nominatorId: ''
+      nominatorId: '',
+      name: ''
     };
     this.pathArray = window.location.href.split('/');
     this.ismounted = false;
@@ -53,6 +54,9 @@ class NominatorApp extends React.Component {
           nominatorId: `${nominatorId.slice(0, 8)}.....${nominatorId.slice(
             -8
           )}`,
+          name: `Nominator(...${nominatorId.slice(
+            -5
+          )})`,
           validators: currentNominator.validators,
           totalStaked: currentNominator.totalStaked,
           highestStaked: currentNominator.highestStaked,
@@ -229,53 +233,53 @@ class NominatorApp extends React.Component {
     // }
 
     let arr = valbacked;
-    const width = window.innerWidth - 400;
-    const height = window.innerHeight;
+    const width = window.innerWidth - 420;
+    const height = window.innerHeight - 183;
     console.log('state', this.state);
     if (this.state.isLoaded) {
       return (
-        <React.Fragment>
-          <Helmet>
-            <title>Nominator View</title>
-            <meta name="description" content="Nominator key stats" />
-          </Helmet>
-          <LogEvent eventType="Nominator view" />
-          <Box textAlign="center">
-            <Box display="flex" justifyContent="center">
-              <Text fontSize="2xl" fontWeight="bold" alignSelf="center">
-                {`Nominator(${this.state.nominatorId})`}
-              </Text>
-            </Box>
-            {/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+				<React.Fragment>
+					<Helmet>
+						<title>Specific View - {this.state.name} - Polka Analytics</title>
+						<meta name="description" content="Nominator key stats" />
+					</Helmet>
+					<LogEvent eventType="Nominator view" />
+					<Box textAlign="center">
+						<Box display="flex" justifyContent="center">
+							<Text fontSize="3xl" alignSelf="center">
+								{this.state.name}
+							</Text>
+						</Box>
+						{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
 							Copied to your clipboard
 						</Text> */}
-          </Box>
-          <Grid templateColumns="1fr 2fr" gap={2}>
-            <Box
-              width={350}
-              height={540}
-              style={{
-                marginLeft: 40,
-                marginTop: 40,
-                boxShadow:
-                  '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-                borderRadius: '10px',
-                padding: '5px 10px'
-              }}
-            >
-              <Flex flexDirection="column" alignItems="center">
-                <Text
-                  align="center"
-                  mt={2}
-                  fontSize="2xl"
-                  fontWeight="semibold"
-                  lineHeight="short"
-                >
-                  Key Stats
-                </Text>
-              </Flex>
-              {/* <Divider /> */}
-              {/* <Flex flexDirection="column" style={{ padding: "0 20px" }}>
+					</Box>
+					<Grid templateColumns="1fr 2fr" gap={2}>
+						<Box
+							width={350}
+							height={540}
+							style={{
+								marginLeft: 40,
+								marginTop: 40,
+								boxShadow:
+									"0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+								borderRadius: "10px",
+								padding: "5px 10px"
+							}}
+						>
+							<Flex flexDirection="column" alignItems="center">
+								<Text
+									align="center"
+									mt={2}
+									fontSize="2xl"
+									fontWeight="semibold"
+									lineHeight="short"
+								>
+									Key Stats
+								</Text>
+							</Flex>
+							{/* <Divider /> */}
+							{/* <Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text mt={2} fontSize="md" fontWeight="bold" lineHeight="short">
 									Earning in previous era
 								</Text>
@@ -291,131 +295,131 @@ class NominatorApp extends React.Component {
 									</span>
 								</Text>
 							</Flex> */}
-              <Divider />
-              <Flex flexDirection="column" style={{ padding: '0 20px' }}>
-                <Text fontWeight="bold">Expected daily ROI</Text>
-                <Text
-                  style={{
-                    textTransform: 'uppercase',
-                    fontWeight: 'bold',
-                    color: '#E50B7B'
-                  }}
-                >
-                  {this.state.expectedDailyRoi} KSM
-                </Text>
-              </Flex>
-              <Divider />
-              <Flex flexDirection="column" style={{ padding: '0 20px' }}>
-                <Text fontWeight="bold">Diversity</Text>
-                <Text>Backing {this.state.backers} different validator</Text>
-              </Flex>
-              <Divider />
-              <Flex flexDirection="column" style={{ padding: '0 20px' }}>
-                <Text fontWeight="bold">Amount at stake</Text>
-                <Text mt={3} fontSize="12px">
-                  Total
-                </Text>
-                <Text style={{ color: '#E50B7B', fontWeight: 'bold' }}>
-                  {this.state.totalStaked} KSM
-                </Text>
-                <Text mt={3} fontSize="12px">
-                  On highest
-                </Text>
-                <Text fontWeight="bold">{this.state.highestStaked} KSM</Text>
-                <Text style={{ color: '#718096', fontSize: 12 }}>
-                  Highest amount staked on this validator
-                </Text>
-                <Text mt={3} fontSize="12px">
-                  On others
-                </Text>
-                <Text fontWeight="bold">{this.state.othersStaked} KSM</Text>
-                <Text style={{ color: '#718096', fontSize: 12 }}>
-                  Amount at stake for all validators combined excluding (Highest
-                  staked validator)
-                </Text>
-              </Flex>
-            </Box>
-            <Stage width={width} height={height}>
-              <Layer>
-                <Validators
-                  colorMode={this.props.colorMode}
-                  allvals={this.state.validators}
-                  rect_x={width / 2}
-                  circ_x={width / 2 - 200 - 100}
-                  circ_y={height / 2}
-                  totalinfo={[]}
-                  history={this.props.history}
-                  validatorTableData={this.props.validatorTableData}
-                />
-                <Arc
-                  x={width - 2}
-                  y={height / 2}
-                  innerRadius={height / 2 - 25}
-                  outerRadius={height / 2 - 24}
-                  rotation={90}
-                  angle={180}
-                  stroke={
-                    this.props.colorMode === 'light' ? '#CBD5E0' : '#718096'
-                  }
-                  strokeWidth={4}
-                />
+							<Divider />
+							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
+								<Text fontWeight="bold">Expected daily earning</Text>
+								<Text
+									style={{
+										textTransform: "uppercase",
+										fontWeight: "bold",
+										color: "#E50B7B"
+									}}
+								>
+									{this.state.expectedDailyRoi} KSM
+								</Text>
+							</Flex>
+							<Divider />
+							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
+								<Text fontWeight="bold">Diversity</Text>
+								<Text>Backing {this.state.backers} {this.state.backers > 1 ? "different" : ""} validator</Text>
+							</Flex>
+							<Divider />
+							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
+								<Text fontWeight="bold">Amount at stake</Text>
+								<Text mt={3} fontSize="12px">
+									Total
+								</Text>
+								<Text style={{ color: "#E50B7B", fontWeight: "bold" }}>
+									{this.state.totalStaked} KSM
+								</Text>
+								<Text mt={3} fontSize="12px">
+									On highest
+								</Text>
+								<Text fontWeight="bold">{this.state.highestStaked} KSM</Text>
+								<Text style={{ color: "#718096", fontSize: 12 }}>
+									Highest amount staked on this validator
+								</Text>
+								<Text mt={3} fontSize="12px">
+									On others
+								</Text>
+								<Text fontWeight="bold">{this.state.othersStaked} KSM</Text>
+								<Text style={{ color: "#718096", fontSize: 12 }}>
+									Amount at stake for all validators combined excluding (Highest
+									staked validator)
+								</Text>
+							</Flex>
+						</Box>
+						<Stage width={width} height={height}>
+							<Layer>
+								<Validators
+									colorMode={this.props.colorMode}
+									allvals={this.state.validators}
+									rect_x={width / 2}
+									circ_x={width / 2 - 200 - 100}
+									circ_y={height / 2}
+									totalinfo={[]}
+									history={this.props.history}
+									validatorTableData={this.props.validatorTableData}
+								/>
+								<Arc
+									x={width - 2}
+									y={height / 2}
+									innerRadius={height / 2 - 25}
+									outerRadius={height / 2 - 24}
+									rotation={90}
+									angle={180}
+									stroke={
+										this.props.colorMode === "light" ? "#CBD5E0" : "#718096"
+									}
+									strokeWidth={4}
+								/>
 
-                <Circle
-                  x={width - 348}
-                  y={height - 50}
-                  radius={10}
-                  fill="#319795"
-                />
-                <KonvaText
-                  x={width - 325}
-                  y={height - 56}
-                  text="Nominator"
-                  fill={
-                    this.props.colorMode === 'light' ? '#1A202C' : '#718096'
-                  }
-                  fontSize={15}
-                />
-                <Rect
-                  x={width - 360}
-                  y={height - 30}
-                  width={26}
-                  height={15}
-                  fill="#E50B7B"
-                  cornerRadius={10}
-                />
-                <KonvaText
-                  x={width - 325}
-                  y={height - 30}
-                  text="Validators"
-                  fill={
-                    this.props.colorMode === 'light' ? '#1A202C' : '#718096'
-                  }
-                  fontSize={15}
-                />
+								<Circle
+									x={width - 348}
+									y={height - 50}
+									radius={10}
+									fill="#319795"
+								/>
+								<KonvaText
+									x={width - 325}
+									y={height - 56}
+									text="Nominator"
+									fill={
+										this.props.colorMode === "light" ? "#1A202C" : "#718096"
+									}
+									fontSize={15}
+								/>
+								<Rect
+									x={width - 360}
+									y={height - 30}
+									width={26}
+									height={15}
+									fill="#E50B7B"
+									cornerRadius={10}
+								/>
+								<KonvaText
+									x={width - 325}
+									y={height - 30}
+									text="Validators"
+									fill={
+										this.props.colorMode === "light" ? "#1A202C" : "#718096"
+									}
+									fontSize={15}
+								/>
 
-                <Circle
-                  x={width / 2 - 200 - 100}
-                  y={height / 2}
-                  radius={7}
-                  fill="#319795"
-                  onMouseOver={this.handleOnMouseOver}
-                  onMouseOut={this.handleOnMouseOut}
-                />
+								<Circle
+									x={width / 2 - 200 - 100}
+									y={height / 2}
+									radius={7}
+									fill="#319795"
+									onMouseOver={this.handleOnMouseOver}
+									onMouseOut={this.handleOnMouseOut}
+								/>
 
-                {this.state.showValidatorAddress && (
-                  <KonvaText
-                    text={this.state.nominatorId}
-                    x={width / 2 - 350}
-                    y={height / 2 - 18}
-                    fill={
-                      this.props.colorMode === 'light' ? '#1A202C' : '#FFFFFF'
-                    }
-                  />
-                )}
-              </Layer>
-            </Stage>
-          </Grid>
-          {/* <Flex justifyContent="center">
+								{this.state.showValidatorAddress && (
+									<KonvaText
+										text={this.state.nominatorId}
+										x={width / 2 - 350}
+										y={height / 2 - 18}
+										fill={
+											this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"
+										}
+									/>
+								)}
+							</Layer>
+						</Stage>
+					</Grid>
+					{/* <Flex justifyContent="center">
 						<Box
 							mt={12}
 							display="flex"
@@ -429,8 +433,8 @@ class NominatorApp extends React.Component {
 							<Text>{bondvalue}</Text>
 						</Box>
 					</Flex> */}
-        </React.Fragment>
-      );
+				</React.Fragment>
+			);
     } else {
       return (
         <Box
