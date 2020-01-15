@@ -119,13 +119,6 @@ function App() {
 			}
 		});
 
-		socket.on("error", () => {
-			setErrorState(true)
-		})
-
-		socket.on("reconnect_error", () => {
-			setErrorState(true)
-		})
 	}, [])
 
 	if(errorState){
