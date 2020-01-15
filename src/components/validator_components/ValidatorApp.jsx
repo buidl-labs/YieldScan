@@ -14,7 +14,9 @@ import {
 	AlertIcon,
 	AlertTitle,
 	AlertDescription,
-	CloseButton
+	CloseButton,
+	Heading,
+	Link as ChakraLink
 } from "@chakra-ui/core";
 import {
 	Stage,
@@ -61,23 +63,13 @@ class ValidatorApp extends React.Component {
 			copied: false,
 			isLoaded: false,
 			stakeInput: 1000,
-			currentValidatorData: props.validatorData.filter(
-				data =>
-					data.stashId ===
-					props.history.location.pathname.split("/")[3].toString()
-			)[0],
-			dailyEarning: (() => {
-				const { totalStake, poolReward } = props.validatorData.filter(
-					data =>
-						data.stashId ===
-						props.history.location.pathname.split("/")[3].toString()
-				)[0];
-				const userStakeFraction = 1000 / (1000 + totalStake);
-				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
-				return dailyEarning.toFixed(3);
-			})(),
+			currentValidatorData: [],
+			dailyEarning: 0,
 			errorState: false,
-			showInfo: true
+			showInfo: true,
+			noValidator: false,
+			poolReward: 0,
+			commission: 0,
 		};
 		this.pathArray = window.location.href.split("/");
 		this.ismounted = false;
@@ -90,15 +82,32 @@ class ValidatorApp extends React.Component {
 		axios
 		.get(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
       	.then(({data: res}) => {
+
+		if(res.noValidator){
+			this.setState({
+				noValidator: true,
+			})
+		}
+
 		this.setState({
 			totalinfo: res.currentvalidator,
+			currentValidatorData: res.currentvalidator,
 			nominators: res.nominators,
 			totalStaked: res.totalStaked,
 			stakedBySelf: res.stakedBySelf,
 			stakedByOther: res.stakedByOther,
 			backers: res.backers,
+			dailyEarning: (() => {
+				const poolReward = res.poolReward;
+				const totalStaked = res.totalStaked;
+				const userStakeFraction = 1000 / (1000 + parseFloat(totalStaked));
+				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
+				return parseFloat(dailyEarning.toFixed(3)) ;
+			})(),
+			poolReward: res.poolReward,
+			commission: res.commission,
 			isloading: false,
-			isLoaded: true
+			isLoaded: true,
 			});
 		})
 		.catch(err => {
@@ -107,49 +116,6 @@ class ValidatorApp extends React.Component {
 			});
 		});
 	}
-
-	// deriveInfo = async () => {
-	// 	const { validator } = this.state;
-	// 	const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io");
-	// 	const api = await ApiPromise.create({ provider: wsProvider });
-	// 	await api.isReady;
-
-	// 	let validatorInfo = undefined;
-	// 	let nominators = [];
-	// 	// let name = "";
-	// 	// name = `Validator (...${validator.toString().slice(-6, -1)})`
-	// 	// name = await api.query.nicks.nameOf(validator);
-	// 	validatorInfo = this.props.electedInfo.info.find(
-	// 		data => data.stashId.toString() === validator
-	// 	);
-	// 	nominators = await validatorInfo.stakers.others;
-	// 	if (!this.props.validatorandintentionloading) {
-	// 		const validatorList = this.props.validatorsandintentions
-	// 			.toString()
-	// 			.split(",");
-	// 		if (validatorList.includes(validator)) {
-	// 			validatorInfo = this.props.electedInfo.info.find(
-	// 				data => data.stashId.toString() === validator
-	// 			);
-	// 			// name = await api.query.nicks.nameOf(validator);
-	// 			nominators = await validatorInfo.stakers.others;
-	// 		}
-	// 	}
-	// 	if (!this.ismounted) {
-	// 		this.setState(state => ({
-	// 			...state,
-	// 			validatorInfo: validatorInfo,
-	// 			nominators: nominators,
-	// 			name: `Validator (...${validator.toString().slice(-6, -1)})`,
-	// 			// name: name.raw[0]
-	// 			// 	? hexToString(name.raw[0].toString())
-	// 			// 	: `Validator (...${validator.slice(-6, -1)})`,
-	// 			isloading: false,
-	// 			isLoaded: true
-	// 		}));
-	// 	}
-	// 	this.ismounted = true;
-	// };
 
 	handleOnMouseOver = () => {
 		this.setState({ showValidatorAddress: true });
@@ -175,6 +141,38 @@ class ValidatorApp extends React.Component {
 		const desktopWidth = window.innerWidth - 400;
 		const height = window.innerHeight - (64 + 69 + 50);
 		let radius = 120;
+
+		if(this.state.noValidator){
+			return <Box maxW="960px" mx="auto" textAlign="center" mt={16}>
+			<Heading as="h1" size="xl">
+				Validator address not found
+			</Heading>
+			<Text>
+				The validator you're looking for either doesn't exist or
+				hasn't finished loading yet.
+			</Text>
+			<Text color="gray.500" mt={8}>
+				If you think this is a mistake, then please report it to{" "}
+				<ChakraLink
+					href="mailto:bhaskar@thevantageproject.com"
+					color="teal.500"
+				>
+					bhaskar@thevantageproject.com
+				</ChakraLink>
+				, we will reach out to you as soon as possible
+			</Text>
+			{/* <p
+				style={{
+					fontSize: "30px",
+					fontWeight: "bold",
+					margin: "0 50px"
+				}}
+			>
+				Oops! validator's address doesn't exist, or it might not
+				be activated yet.
+			</p> */}
+		</Box>
+		}
 
 		if (this.state.errorState) {
 			return <ErrorMessage />;
@@ -305,15 +303,13 @@ class ValidatorApp extends React.Component {
 														textAlign="center"
 														roundedLeft="2rem"
 														onChange={e => {
+															const poolReward = this.state.poolReward;
+															const totalStaked =  this.state.totalStaked;
 															const stakeAmount = isNaN(parseFloat(e.target.value))
 																? 0
 																: parseFloat(e.target.value);
-															const {
-																totalStake,
-																poolReward
-															} = this.state.currentValidatorData;
 															const userStakeFraction =
-																stakeAmount / (stakeAmount + totalStake);
+																stakeAmount / (stakeAmount + parseFloat(totalStaked));
 															const dailyEarning =
 																userStakeFraction * poolReward * ERA_PER_DAY; //if pool reward is zero then what ?
 															this.setState({
@@ -346,7 +342,7 @@ class ValidatorApp extends React.Component {
 											<Divider />
 											<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 												<Text fontWeight="bold">Commission</Text>
-												<Text>{this.state.currentValidatorData.commission}%</Text>
+												<Text>{this.state.commission}%</Text>
 											</Flex>
 											<Divider />
 											<Flex flexDirection="column" style={{ padding: "0 20px" }}>
@@ -531,11 +527,11 @@ class ValidatorApp extends React.Component {
 												? 0
 												: parseFloat(e.target.value);
 											const {
-												totalStake,
+												totalStaked,
 												poolReward
-											} = this.state.currentValidatorData;
+											} = this.state;
 											const userStakeFraction =
-												stakeAmount / (stakeAmount + totalStake);
+												stakeAmount / (stakeAmount + parseFloat(totalStaked));
 											const dailyEarning =
 												userStakeFraction * poolReward * ERA_PER_DAY; //if pool reward is zero then what ?
 											this.setState({
@@ -568,7 +564,7 @@ class ValidatorApp extends React.Component {
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>
 								<Text fontWeight="bold">Commission</Text>
-								<Text>{this.state.currentValidatorData.commission}%</Text>
+								<Text>{this.state.commission}%</Text>
 							</Flex>
 							<Divider />
 							<Flex flexDirection="column" style={{ padding: "0 20px" }}>

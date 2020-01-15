@@ -330,13 +330,6 @@ function App() {
 								</div>
 							);
 						} else {
-							if (
-								validatorData.some(
-									validator =>
-										validator.stashId ===
-										props.history.location.pathname.split("/")[3].toString()
-								)
-							) {
 								return isLoaded && apiConnected ? (
 									<ValidatorApp
 										colorMode={colorMode}
@@ -375,39 +368,6 @@ function App() {
 										</Text>
 									</Box>
 								);
-							} else {
-								return (
-									<Box maxW="960px" mx="auto" textAlign="center" mt={16}>
-										<Heading as="h1" size="xl">
-											Validator address not found
-										</Heading>
-										<Text>
-											The validator you're looking for either doesn't exist or
-											hasn't finished loading yet.
-										</Text>
-										<Text color="gray.500" mt={8}>
-											If you think this is a mistake, then please report it to{" "}
-											<ChakraLink
-												href="mailto:bhaskar@thevantageproject.com"
-												color="teal.500"
-											>
-												bhaskar@thevantageproject.com
-											</ChakraLink>
-											, we will reach out to you as soon as possible
-										</Text>
-										{/* <p
-											style={{
-												fontSize: "30px",
-												fontWeight: "bold",
-												margin: "0 50px"
-											}}
-										>
-											Oops! validator's address doesn't exist, or it might not
-											be activated yet.
-										</p> */}
-									</Box>
-								);
-							}
 						}
 					}}
 				></Route>
