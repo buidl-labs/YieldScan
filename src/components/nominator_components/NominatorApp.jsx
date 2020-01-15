@@ -31,7 +31,8 @@ class NominatorApp extends React.Component {
       expectedDailyRoi: 0,
       backers: 0,
       nominatorId: '',
-      errorState: false
+      errorState: false,
+      name: ''
     };
     this.pathArray = window.location.href.split('/');
     this.ismounted = false;
@@ -54,6 +55,7 @@ class NominatorApp extends React.Component {
           nominatorId: `${nominatorId.slice(0, 8)}.....${nominatorId.slice(
             -8
           )}`,
+          name: `Nominator(...${nominatorId.slice(-5)})`,
           validators: currentNominator.validators,
           totalStaked: currentNominator.totalStaked,
           highestStaked: currentNominator.highestStaked,
@@ -238,21 +240,21 @@ class NominatorApp extends React.Component {
     }
 
     let arr = valbacked;
-    const width = window.innerWidth - 400;
-    const height = window.innerHeight;
+    const width = window.innerWidth - 420;
+    const height = window.innerHeight - 183;
     console.log('state', this.state);
     if (this.state.isLoaded) {
       return (
         <React.Fragment>
           <Helmet>
-            <title>Nominator View</title>
+            <title>Specific View - {this.state.name} - Polka Analytics</title>
             <meta name="description" content="Nominator key stats" />
           </Helmet>
           <LogEvent eventType="Nominator view" />
           <Box textAlign="center">
             <Box display="flex" justifyContent="center">
-              <Text fontSize="2xl" fontWeight="bold" alignSelf="center">
-                {`Nominator(${this.state.nominatorId})`}
+              <Text fontSize="3xl" alignSelf="center">
+                {this.state.name}
               </Text>
             </Box>
             {/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
@@ -302,7 +304,7 @@ class NominatorApp extends React.Component {
 							</Flex> */}
               <Divider />
               <Flex flexDirection="column" style={{ padding: '0 20px' }}>
-                <Text fontWeight="bold">Expect Daily Earning</Text>
+                <Text fontWeight="bold">Expected daily earning</Text>
                 <Text
                   style={{
                     textTransform: 'uppercase',
@@ -316,7 +318,12 @@ class NominatorApp extends React.Component {
               <Divider />
               <Flex flexDirection="column" style={{ padding: '0 20px' }}>
                 <Text fontWeight="bold">Diversity</Text>
-                <Text>Backing {this.state.backers} different validator</Text>
+                <Text>
+                  Backing {this.state.backers}{' '}
+                  {this.state.backers > 1
+                    ? 'different validators'
+                    : 'validator'}
+                </Text>
               </Flex>
               <Divider />
               <Flex flexDirection="column" style={{ padding: '0 20px' }}>

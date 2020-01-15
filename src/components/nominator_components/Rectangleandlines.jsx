@@ -70,7 +70,7 @@ class Rectangleandlines extends React.Component {
 					points={[
 						this.props.x - 100,
 						this.props.y,
-						this.props.xline - 400,
+						this.props.xline - 420,
 						this.props.y
 					]}
 					stroke={this.props.colorMode === "light" ? "#1A202C" : "#FFFFFF"}
