@@ -26,6 +26,9 @@ import { withRouter } from "react-router-dom";
 import { hexToString } from "@polkadot/util";
 import {Helmet} from "react-helmet";
 import LogEvent from '../LogEvent';
+import axios from 'axios';
+import ErrorMessage from '../ErrorMessage';
+
 const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
 	constructor(props) {
@@ -63,7 +66,8 @@ class ValidatorApp extends React.Component {
 				const userStakeFraction = 1000 / (1000 + totalStake);
 				const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
 				return dailyEarning.toFixed(3);
-			})()
+			})(),
+			errorState: false,
 		};
 		this.pathArray = window.location.href.split("/");
 		this.ismounted = false;
@@ -73,21 +77,25 @@ class ValidatorApp extends React.Component {
 
 	componentDidMount() {
 		// this.deriveInfo();
-		fetch(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
-		.then(res => res.json())
-		.then(res => {
-			this.setState({
-				totalinfo: res.currentvalidator,
-				nominators: res.nominators,
-				totalStaked: res.totalStaked,
-				stakedBySelf: res.stakedBySelf,
-				stakedByOther: res.stakedByOther,
-				backers: res.backers,
-				isloading: false,
-				isLoaded: true
-			})
+		axios
+		.get(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
+      	.then(({data: res}) => {
+		this.setState({
+			totalinfo: res.currentvalidator,
+			nominators: res.nominators,
+			totalStaked: res.totalStaked,
+			stakedBySelf: res.stakedBySelf,
+			stakedByOther: res.stakedByOther,
+			backers: res.backers,
+			isloading: false,
+			isLoaded: true
+			});
 		})
-		.catch(err => console.log(err));
+		.catch(err => {
+			this.setState({
+			errorState: true
+			});
+		});
 	}
 
 	// deriveInfo = async () => {
@@ -186,6 +194,9 @@ class ValidatorApp extends React.Component {
 
 		// let totalBonded = 0;
 		// totalBonded = this.totalvalue.toFixed(3) - this.ownvalue.toFixed(3);
+		if (this.state.errorState) {
+			return <ErrorMessage />;
+		}	  
 
 		if (this.state.nominators.length > 10) {
 			radius = 200;
