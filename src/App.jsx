@@ -33,6 +33,7 @@ import ValidatorApp from "./components/validator_components/ValidatorApp";
 import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
 import LogEvent from './components/LogEvent';
+import ErrorMessage from "./components/ErrorMessage";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -40,6 +41,7 @@ function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
+	const [errorState, setErrorState] = React.useState(false);
 	const [validatorTableData, setValidatorTableData] = React.useState([]);
 	const [intentionData, setIntentionData] = React.useState([]);
 	const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
@@ -90,20 +92,45 @@ function App() {
 	React.useEffect(() => {
 		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/")
 		socket.on("initial", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			setApiConnected(true);
-			setValidatorData(filteredValidatorsList);
-			setElectedInfo(electedInfo[0]);
-			setIntentionData(intentionsData[0].intentions);
+			if(intentionsData[0]){
+				setApiConnected(true);
+				setValidatorData(filteredValidatorsList);
+				setElectedInfo(electedInfo[0]);
+				setIntentionData(intentionsData[0].intentions);
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
 			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
+			}else{
+				setErrorState(true)
+			}
 		});
 
 		socket.on("onDataChange", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			setValidatorData(filteredValidatorsList);
-			setElectedInfo(electedInfo[0]);
-			setIntentionData(intentionsData[0].intentions);
+			if(intentionsData[0]){
+				setApiConnected(true);
+				setValidatorData(filteredValidatorsList);
+				setElectedInfo(electedInfo[0]);
+				setIntentionData(intentionsData[0].intentions);
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
 			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
+				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
+			}else{
+				setErrorState(true)
+			}
 		});
+
+		socket.on("error", () => {
+			setErrorState(true)
+		})
+
+		socket.on("reconnect_error", () => {
+			setErrorState(true)
+		})
 	}, [])
+
+	if(errorState){
+		return <ErrorMessage />
+	}
 
 
 	return (
