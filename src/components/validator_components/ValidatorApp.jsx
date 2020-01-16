@@ -55,7 +55,7 @@ class ValidatorApp extends React.Component {
 			name: `Validator (...${props.history.location.pathname
 				.split("/")[3]
 				.toString()
-				.slice(-6, -1)})`,
+				.slice(-6)})`,
 			isloading: true,
 			totalinfo: [],
 			valinfo: {},
@@ -89,7 +89,9 @@ class ValidatorApp extends React.Component {
 			})
 		}
 
+		const currentValidator = this.props.validatorTableData.find(validator => validator.stashId === this.state.validator);
 		this.setState({
+			name: currentValidator.name,
 			totalinfo: res.currentvalidator,
 			currentValidatorData: res.currentvalidator,
 			nominators: res.nominators,
@@ -107,7 +109,7 @@ class ValidatorApp extends React.Component {
 			poolReward: res.poolReward,
 			commission: res.commission,
 			isloading: false,
-			isLoaded: true,
+			isLoaded: true
 			});
 		})
 		.catch(err => {

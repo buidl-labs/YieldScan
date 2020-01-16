@@ -32,7 +32,7 @@ import ScrollToTop from "./ScrollToTop";
 import ValidatorApp from "./components/validator_components/ValidatorApp";
 import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
-import LogEvent from './components/LogEvent';
+import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
@@ -49,7 +49,7 @@ function App() {
 	);
 	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
 	const [stakeInput, setStakeInput] = React.useState(1000.0);
-	const [stakeAmount] = useDebounce(stakeInput, 1000.0);
+	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
@@ -90,41 +90,45 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/")
-		socket.on("initial", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			if(intentionsData[0]){
-				setApiConnected(true);
-				setValidatorData(filteredValidatorsList);
-				setElectedInfo(electedInfo[0]);
-				setIntentionData(intentionsData[0].intentions);
-				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
-			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
-				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
-			}else{
-				setErrorState(true)
+		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/");
+		socket.on(
+			"initial",
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
+				if (intentionsData[0]) {
+					setApiConnected(true);
+					setValidatorData(filteredValidatorsList);
+					setElectedInfo(electedInfo[0]);
+					setIntentionData(intentionsData[0].intentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+				} else {
+					setErrorState(true);
+				}
 			}
-		});
+		);
 
-		socket.on("onDataChange", ({filteredValidatorsList, electedInfo, intentionsData}) => {
-			if(intentionsData[0]){
-				setApiConnected(true);
-				setValidatorData(filteredValidatorsList);
-				setElectedInfo(electedInfo[0]);
-				setIntentionData(intentionsData[0].intentions);
-				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
-			setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)
-				setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions)	
-			}else{
-				setErrorState(true)
+		socket.on(
+			"onDataChange",
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
+				if (intentionsData[0]) {
+					setApiConnected(true);
+					setValidatorData(filteredValidatorsList);
+					setElectedInfo(electedInfo[0]);
+					setIntentionData(intentionsData[0].intentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
+				} else {
+					setErrorState(true);
+				}
 			}
-		});
+		);
+	}, []);
 
-	}, [])
-
-	if(errorState){
-		return <ErrorMessage />
+	if (errorState) {
+		return <ErrorMessage />;
 	}
-
 
 	return (
 		<AmplitudeProvider
@@ -330,44 +334,44 @@ function App() {
 								</div>
 							);
 						} else {
-								return isLoaded && apiConnected ? (
-									<ValidatorApp
-										colorMode={colorMode}
-										electedInfo={electedInfo}
-										valtotalinfo={validatorData.map(data => data.stashId)}
-										validatorData={validatorData}
-										validatorTableData={validatorTableData}
-										intentions={intentionData}
-										validatorsandintentions={validatorsAndIntentions}
-										validatorandintentionloading={!isLoaded}
-										isKusama={true}
-									/>
-								) : (
-									<Box
-										display="flex"
-										flexDirection="column"
-										position="absolute"
-										top="50%"
-										left="50%"
-										transform="translate(-50%, -50%)"
-										alignSelf="center"
-										justifyContent="center"
+							return isLoaded && apiConnected ? (
+								<ValidatorApp
+									colorMode={colorMode}
+									electedInfo={electedInfo}
+									valtotalinfo={validatorData.map(data => data.stashId)}
+									validatorData={validatorData}
+									validatorTableData={validatorTableData}
+									intentions={intentionData}
+									validatorsandintentions={validatorsAndIntentions}
+									validatorandintentionloading={!isLoaded}
+									isKusama={true}
+								/>
+							) : (
+								<Box
+									display="flex"
+									flexDirection="column"
+									position="absolute"
+									top="50%"
+									left="50%"
+									transform="translate(-50%, -50%)"
+									alignSelf="center"
+									justifyContent="center"
+									textAlign="center"
+									mt={-16}
+									zIndex={-1}
+								>
+									<Spinner as="span" size="lg" alignSelf="center" />
+									<Text
+										mt={4}
+										fontSize="xl"
+										color="gray.500"
 										textAlign="center"
-										mt={-16}
-										zIndex={-1}
+										alignSelf="center"
 									>
-										<Spinner as="span" size="lg" alignSelf="center" />
-										<Text
-											mt={4}
-											fontSize="xl"
-											color="gray.500"
-											textAlign="center"
-											alignSelf="center"
-										>
-											Unboxing pure awesomeness...
-										</Text>
-									</Box>
-								);
+										Unboxing pure awesomeness...
+									</Text>
+								</Box>
+							);
 						}
 					}}
 				></Route>
