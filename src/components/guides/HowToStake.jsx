@@ -248,7 +248,7 @@ export default function HowToStake() {
 						Ready to stake?
 					</Heading>
 					<Link as={RouterLink} to="/dashboard" color="teal.500">
-						See how much you could earn
+						Return to dashboard
 					</Link>
 				</VerticalTimelineElement>
 			</VerticalTimeline>
