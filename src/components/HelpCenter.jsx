@@ -16,6 +16,7 @@ import FAQs from "./FAQs";
 import HowToStake from "./guides/HowToStake";
 import LogEvent from './LogEvent';
 import Helmet from "react-helmet";
+import Footer from "./Footer";
 
 export default function HelpCenter() {
     return (
@@ -90,6 +91,7 @@ export default function HelpCenter() {
 				<Route exact path="/help-center/guides/how-to-stake">
 					<HowToStake />
 				</Route>
+				<Footer />
 			</React.Fragment>
 		);
 }

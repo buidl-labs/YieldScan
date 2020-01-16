@@ -15,6 +15,7 @@ import { Helmet } from 'react-helmet';
 import LogEvent from '../LogEvent';
 import axios from 'axios';
 import ErrorMessage from '../ErrorMessage';
+import Footer from '../Footer';
 
 class NominatorApp extends React.Component {
   constructor() {
@@ -431,6 +432,7 @@ class NominatorApp extends React.Component {
               </Layer>
             </Stage>
           </Grid>
+          <Footer />
           {/* <Flex justifyContent="center">
 						<Box
 							mt={12}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Heading, Text, Link, Icon } from "@chakra-ui/core";
+import { Heading, Text, Link, Icon, Box } from "@chakra-ui/core";
 import {
 	VerticalTimeline,
 	VerticalTimelineElement
@@ -11,7 +11,7 @@ import Helmet from "react-helmet";
 
 export default function HowToStake() {
 	return (
-		<React.Fragment>
+		<Box mb={8}>
 			<Helmet>
 				<title>How to stake - Guide - Help Center - Polka Analytics</title>
 				
@@ -252,6 +252,6 @@ export default function HowToStake() {
 					</Link>
 				</VerticalTimelineElement>
 			</VerticalTimeline>
-		</React.Fragment>
+		</Box>
 	);
 }

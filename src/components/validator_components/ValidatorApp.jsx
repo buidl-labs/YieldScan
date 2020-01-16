@@ -36,6 +36,7 @@ import LogEvent from '../LogEvent';
 import axios from 'axios';
 import ErrorMessage from '../ErrorMessage';
 import Media from 'react-media';
+import Footer from "../Footer";
 
 const ERA_PER_DAY = 4;
 class ValidatorApp extends React.Component {
@@ -705,6 +706,7 @@ class ValidatorApp extends React.Component {
 							)
 						}
 					</Media>
+					<Footer />
 					{/* <Flex justifyContent="center">
 						<Box
 							mt={12}

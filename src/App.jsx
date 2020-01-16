@@ -422,21 +422,6 @@ function App() {
 						</Box>
 					)}
 				</Route>
-				{/* Footer */}
-				{isLoaded && apiConnected ? (
-					<Box width="100%" textAlign="center" my={4}>
-						Made with ❤️ by people @ BUIDL Labs, a portfolio company of{" "}
-						<Link
-							href="https://www.thevantageproject.com/"
-							color="teal.500"
-							isExternal
-						>
-							The Vantage Project
-						</Link>
-					</Box>
-				) : (
-					""
-				)}
 			</Router>
 		</AmplitudeProvider>
 	);
