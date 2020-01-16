@@ -19,8 +19,7 @@ import {
 	InputRightAddon,
 	Spinner,
 	Link,
-	CircularProgress,
-	Link as ChakraLink
+	CircularProgress
 } from "@chakra-ui/core";
 import { Helmet } from "react-helmet";
 import { useDebounce } from "use-debounce";
@@ -263,16 +262,15 @@ function App() {
 											roundedRight="2rem"
 										/>
 									</InputGroup>
-									<Link
-										as={RouterLink}
-										to="/help-center/guides/how-to-stake"
-										color="teal.500"
-										textAlign="center"
-										mt={4}
-									>
-										How to stake?
-									</Link>
 								</Flex>
+								<Link
+									as={RouterLink}
+									to="/help-center/guides/how-to-stake"
+									color="teal.500"
+									textAlign="center"
+								>
+									How to stake?
+								</Link>
 								{/* Validator Table */}
 								<Text textAlign="center" mt={8} mb={8}>
 									Looking for a list of active validators to stake on? Look no
@@ -424,6 +422,21 @@ function App() {
 						</Box>
 					)}
 				</Route>
+				{/* Footer */}
+				{isLoaded && apiConnected ? (
+					<Box width="100%" textAlign="center" my={4}>
+						Made with ❤️ by people @ BUIDL Labs, a portfolio company of{" "}
+						<Link
+							href="https://www.thevantageproject.com/"
+							color="teal.500"
+							isExternal
+						>
+							The Vantage Project
+						</Link>
+					</Box>
+				) : (
+					""
+				)}
 			</Router>
 		</AmplitudeProvider>
 	);
