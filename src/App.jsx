@@ -234,7 +234,12 @@ function App() {
 									pt={8}
 									pb={12}
 								>
-									<Text mb={2} fontSize="md" color="gray.500">
+									<Text
+										mb={2}
+										textAlign="center"
+										fontSize="md"
+										color="gray.500"
+									>
 										Stake amount (change input to see potential earnings)
 									</Text>
 									<InputGroup>
@@ -258,14 +263,18 @@ function App() {
 											roundedRight="2rem"
 										/>
 									</InputGroup>
-								</Flex>
-								<Box as="span" color="teal.500" textAlign="center">
-									<Link as={RouterLink} to="/help-center/guides/how-to-stake">
+									<Link
+										as={RouterLink}
+										to="/help-center/guides/how-to-stake"
+										color="teal.500"
+										textAlign="center"
+										mt={4}
+									>
 										How to stake?
 									</Link>
-								</Box>
+								</Flex>
 								{/* Validator Table */}
-								<Text textAlign="center" mt={16} mb={8}>
+								<Text textAlign="center" mt={8} mb={8}>
 									Looking for a list of active validators to stake on? Look no
 									further!
 								</Text>
