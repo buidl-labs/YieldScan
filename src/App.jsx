@@ -8,10 +8,8 @@ import {
 } from "react-router-dom";
 import {
 	Flex,
-	IconButton,
 	useColorMode,
 	Box,
-	Image,
 	Heading,
 	Text,
 	Input,
@@ -33,6 +31,7 @@ import NominatorApp from "./components/nominator_components/NominatorApp";
 import socketIOClient from "socket.io-client";
 import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
+import NavBar from "./components/NavBar";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -151,6 +150,7 @@ function App() {
 				<Route exact path="/">
 					<Redirect to="/dashboard" />
 				</Route>
+				<NavBar />
 				<Flex
 					className="App"
 					maxW="960px"
@@ -158,52 +158,8 @@ function App() {
 					direction="column"
 					m="auto"
 					pb={8}
+					px={{ base: 4, md: 0 }}
 				>
-					{/* Navbar */}
-					<Flex
-						direction="row"
-						justifyContent="space-between"
-						zIndex={999}
-						p={2}
-					>
-						{/* Polka Analytics Logo - Left hand part of navbar */}
-						<Flex justify="flex-start" alignItems="center">
-							<NavLink to="/">
-								<Box as="span" display="inline-flex" alignItems="center">
-									<Image src="/logo192.png" height="2rem" mr={4} />
-									<Heading as="h3" size="lg">
-										Polka Analytics
-									</Heading>
-								</Box>
-							</NavLink>
-						</Flex>
-						{/* Navigation Menu & color mode toggle - Right hand part of navbar */}
-						<Flex justify="flex-end">
-							<Flex alignItems="center">
-								<Box mr={8}>
-									<Link as={NavLink} className="nav-link" to="/dashboard">
-										Dashboard
-									</Link>
-								</Box>
-								<Box mr={8}>
-									<Link as={NavLink} className="nav-link" to="/help-center">
-										Help Center
-									</Link>
-								</Box>
-							</Flex>
-							<IconButton
-								aria-label={
-									colorMode === "light"
-										? "Switch to dark mode"
-										: "Switch to light mode"
-								}
-								icon={colorMode === "light" ? "moon" : "sun"}
-								size="lg"
-								onClick={toggleColorMode}
-								backgroundColor={colorMode === "light" ? "#fff" : "gray.800"}
-							/>
-						</Flex>
-					</Flex>
 					{/* Homepage - Dashboard */}
 					<Route exact path="/(|dashboard)">
 						{isLoaded && apiConnected ? (
