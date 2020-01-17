@@ -89,7 +89,7 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("https://evening-sea-52088.herokuapp.com/");
+		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
 		socket.on(
 			"initial",
 			({ filteredValidatorsList, electedInfo, intentionsData }) => {

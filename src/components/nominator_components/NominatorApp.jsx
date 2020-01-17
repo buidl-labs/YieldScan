@@ -48,7 +48,7 @@ class NominatorApp extends React.Component {
   componentDidMount() {
     const id = this.props.history.location.pathname.split('/')[3].toString();
     axios
-      .get(`https://evening-sea-52088.herokuapp.com/nominatorinfo/${id}`)
+      .get(`https://polka-analytic-api.herokuapp.com/nominatorinfo/${id}`)
       .then(({ data: currentNominator }) => {
         const nominatorId = currentNominator.nominatorId;
         this.setState({

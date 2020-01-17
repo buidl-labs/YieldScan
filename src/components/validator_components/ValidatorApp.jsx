@@ -80,7 +80,7 @@ class ValidatorApp extends React.Component {
 	componentDidMount() {
 		// this.deriveInfo();
 		axios
-		.get(`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`)
+		.get(`https://polka-analytic-api.herokuapp.com/validatorinfo/${this.state.validator}`)
       	.then(({data: res}) => {
 
 		if(res.noValidator){
