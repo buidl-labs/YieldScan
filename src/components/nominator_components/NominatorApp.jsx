@@ -248,7 +248,7 @@ class NominatorApp extends React.Component {
 			return (
 				<React.Fragment>
 					<Helmet>
-						<title>Specific View - {this.state.name} - Polka Analytics</title>
+						<title>{this.state.name} | Polka Analytics</title>
 						<meta name="description" content="Nominator key stats" />
 					</Helmet>
 					<LogEvent eventType="Nominator view" />
