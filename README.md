@@ -1,68 +1,48 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Polka Analytics
+---
+A data analytics and visualization platform to enable informed decision making around the Polkadot Network
 
-## Available Scripts
+## Table of contents
+---
+[TOC]
 
-In the project directory, you can run:
+## Currently supported networks
+---
+- [Kusama Network](https://kusama.network/)
 
-### `npm start`
+## Description
+---
+This project aims to create a platform for people to make informed decisions by creating transparency around every decision that is being taken inside the Polkadot Ecosystem. It inherits the specific views from [Polkaviz Project](https://github.com/thevantageproject/polkaviz) for the Kusama Network and adds more information about every participant in the network.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+A project funded and supported by [PolkaDAO](https://medium.com/polkadot-network/announcing-polkadao-fund-your-project-1891e6d895a)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### Potential Daily Earnings
+---
+[Polka Analytics Dashboard](https://polkanalytics.com/#/dashboard) allows users to enter a stake amount and see their potential daily earnings if that amount was staked across each validator along with other important information about the validators.
 
-### `npm test`
+![Polka Analytics Dashboard](https://user-images.githubusercontent.com/40575379/72682952-e9fa0b00-3af8-11ea-87b0-b797a006c33b.png)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Validator Specific View
+---
+On clicking any particular validator data row on the table, the user is taken to the validator's specific view, where they can gain more information about nominators backing that validator and the amount that is at stake.
+![Validator Specific View](https://user-images.githubusercontent.com/40575379/72682953-e9fa0b00-3af8-11ea-893f-294fe2a035cc.png)
 
-### `npm run build`
+### Nominator Specific View
+---
+On clicking the nominator circles on the validator specific view, the user is take to the nominator's specific view, which contains information about the validators on whom the nominator has staked along with information about the nominators expected daily earning.
+![Nominator Specific View](https://user-images.githubusercontent.com/40575379/72682954-e9fa0b00-3af8-11ea-959a-4f7694a14f27.png)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⛏️ Built Using
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+-   [React.js](https://reactjs.org/)
+-   [Konva.js](https://konvajs.org/)
+-   [polkadot-js/api](https://polkadot.js.org/api/)
+-   [Surge](https://surge.sh/)
+-   [chakra-ui](https://chakra-ui.com/)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ✍️ Authors
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+-   @prastut
+-   @sahil1995
+-   @bhaskarSingh
+-   @saumyakaran
