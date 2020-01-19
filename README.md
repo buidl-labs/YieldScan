@@ -2,13 +2,13 @@
 A data analytics and visualization platform to enable informed decision making around the Polkadot Network
 
 ## Table of contents
-[Currently supported networks(#supported_networks)
-[Description](#description)
+- [Currently supported networks](#supported_networks)
+- [Description](#description)
   - [Dashboard](#dashboard)
   - [Validator Specific View](#validator_specific_view)
   - [Nominator Specific View](#nominator_specific_view)
-[⛏️ Built Using](#built_using)
-[✍️ Authors](#author)
+- [⛏️ Built Using](#built_using)
+- [✍️ Authors](#author)
 
 ## Currently supported networks <a name = "supported_networks"></a>
 - [Kusama Network](https://kusama.network/)
