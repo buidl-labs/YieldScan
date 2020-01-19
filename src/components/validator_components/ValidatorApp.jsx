@@ -81,15 +81,8 @@ class ValidatorApp extends React.Component {
 	componentDidMount() {
 		// this.deriveInfo();
 		axios
-			.get(
-				`https://evening-sea-52088.herokuapp.com/validatorinfo/${this.state.validator}`
-			)
-			.then(({ data: res }) => {
-				if (res.noValidator) {
-					this.setState({
-						noValidator: true
-					});
-				}
+		.get(`https://polka-analytic-api.herokuapp.com/validatorinfo/${this.state.validator}`)
+      	.then(({data: res}) => {
 
 				const currentValidator = this.props.validatorTableData.find(
 					validator => validator.stashId === this.state.validator

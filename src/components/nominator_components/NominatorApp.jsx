@@ -46,32 +46,32 @@ class NominatorApp extends React.Component {
 		this.expectedDailyRoi = 0;
 	}
 
-	componentDidMount() {
-		const id = this.props.history.location.pathname.split("/")[3].toString();
-		axios
-			.get(`https://evening-sea-52088.herokuapp.com/nominatorinfo/${id}`)
-			.then(({ data: currentNominator }) => {
-				const nominatorId = currentNominator.nominatorId;
-				this.setState({
-					nominatorId: `${nominatorId.slice(0, 8)}.....${nominatorId.slice(
-						-8
-					)}`,
-					name: `Nominator(...${nominatorId.slice(-5)})`,
-					validators: currentNominator.validators,
-					totalStaked: currentNominator.totalStaked,
-					highestStaked: currentNominator.highestStaked,
-					othersStaked: currentNominator.othersStaked,
-					expectedDailyRoi: currentNominator.expectedDailyRoi,
-					backers: currentNominator.backers,
-					isLoaded: true
-				});
-			})
-			.catch(err => {
-				this.setState({
-					errorState: true
-				});
-			});
-	}
+  componentDidMount() {
+    const id = this.props.history.location.pathname.split('/')[3].toString();
+    axios
+      .get(`https://polka-analytic-api.herokuapp.com/nominatorinfo/${id}`)
+      .then(({ data: currentNominator }) => {
+        const nominatorId = currentNominator.nominatorId;
+        this.setState({
+          nominatorId: `${nominatorId.slice(0, 8)}.....${nominatorId.slice(
+            -8
+          )}`,
+          name: `Nominator(...${nominatorId.slice(-5)})`,
+          validators: currentNominator.validators,
+          totalStaked: currentNominator.totalStaked,
+          highestStaked: currentNominator.highestStaked,
+          othersStaked: currentNominator.othersStaked,
+          expectedDailyRoi: currentNominator.expectedDailyRoi,
+          backers: currentNominator.backers,
+          isLoaded: true
+        });
+      })
+      .catch(err => {
+        this.setState({
+          errorState: true
+        });
+      });
+  }
 
 	// deriveInfo = async () => {
 	// 	console.log("derive info running");
