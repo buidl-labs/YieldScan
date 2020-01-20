@@ -206,561 +206,339 @@ class ValidatorApp extends React.Component {
 						<meta name="description" content="Validator key stats" />
 					</Helmet>
 					<LogEvent eventType="Validator view" />
-					<Box textAlign="center">
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							flexDirection="column"
-							// mt={20}
-							// mb={8}
-						>
-							<Text fontSize="3xl" alignSelf="center">
-								{this.state.name}
-							</Text>
-							<Link
-								color="teal.500"
-								href={
-									"https://polkadot.js.org/apps/#/staking/query/" +
-									this.state.validator
-								}
-								width="fit-content"
-								isExternal
-							>
-								View on Polkadot UI
-							</Link>
-							<Alert
-								status="info"
-								display={this.state.showInfo ? "flex" : "none"}
-								flexDirection="column"
-								mt={4}
-							>
-								<Box
-									as="span"
-									display="flex"
-									flexDirection="row"
-									alignItems="end"
-								>
-									<AlertIcon />
-									<AlertTitle mr={2}>
-										Instructions to view nominator specific view
-									</AlertTitle>
-								</Box>
-								<AlertDescription>
-									Click on the nominator circles to open nominator's specfic
-									view data and visualization
-								</AlertDescription>
-								<CloseButton
-									position="absolute"
-									right="8px"
-									top="8px"
-									onClick={() =>
-										this.setState({
-											...this.state,
-											showInfo: !this.state.showInfo
-										})
-									}
-								/>
-							</Alert>
-						</Box>
-						{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
-							Copied to your clipboard
-						</Text> */}
-					</Box>
 					<Media queries={{ small: "(max-width: 500px)" }}>
 						{matches =>
 							matches.small ? (
-								<Grid templateColumns="1fr" gap={2} overflowX="hidden">
-									<Box
-										width={350}
-										height={580}
-										style={{
-											marginLeft: 20,
-											marginTop: 30,
-											boxShadow:
-												"0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-											borderRadius: "10px",
-											padding: "5px 10px"
-										}}
-									>
-										<Flex flexDirection="column" alignItems="center">
-											<Text
-												align="center"
-												mt={2}
-												fontSize="2xl"
-												fontWeight="semibold"
-												lineHeight="short"
-											>
-												Key Stats
-											</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text
-												mt={2}
-												fontSize="md"
-												fontWeight="bold"
-												lineHeight="short"
-											>
-												Stake amount
-											</Text>
-											<Text fontSize="md" color="gray.500">
-												(change input to see potential earnings)
-											</Text>
-											<InputGroup>
-												<Input
-													placeholder="Stake Amount"
-													variant="filled"
-													type="number"
-													min="0"
-													step="0.000000000001"
-													max="999999999999999"
-													value={this.state.stakeInput}
-													textAlign="center"
-													roundedLeft="2rem"
-													onChange={e => {
-														const poolReward = this.state.poolReward;
-														const totalStaked = this.state.totalStaked;
-														const stakeAmount = isNaN(
-															parseFloat(e.target.value)
-														)
-															? 0
-															: parseFloat(e.target.value);
-														const userStakeFraction =
-															stakeAmount /
-															(stakeAmount + parseFloat(totalStaked));
-														const dailyEarning =
-															userStakeFraction * poolReward * ERA_PER_DAY; //if pool reward is zero then what ?
-														this.setState({
-															stakeInput: stakeAmount,
-															dailyEarning: dailyEarning.toFixed(3)
-														});
-													}}
-												/>
-												<InputRightAddon
-													children="KSM"
-													backgroundColor="teal.500"
-													roundedRight="2rem"
-												/>
-											</InputGroup>
-											<Text fontWeight="bold" mt="3" fontSize="md">
-												Daily Earning
-											</Text>
-											<Text>
-												<span
-													style={{
-														textTransform: "uppercase",
-														fontWeight: "bold",
-														color: "#E50B7B"
-													}}
-												>
-													{this.state.dailyEarning} KSM
-												</span>
-											</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">Commission</Text>
-											<Text>{this.state.commission}%</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">
-												Backers{" "}
-												<span style={{ color: "#718096", fontSize: 12 }}>
-													(number of stakers)
-												</span>
-											</Text>
-											<Text>{this.state.backers}</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">Amount of stake</Text>
-											<Text mt={3} fontSize="12px">
-												Total
-											</Text>
-											<Text style={{ color: "#E50B7B", fontWeight: "bold" }}>
-												{this.state.totalStaked} KSM
-											</Text>
-											<Text fontSize="12px">Staked by self</Text>
-											<Text fontWeight="bold">
-												{this.state.stakedBySelf} KSM
-											</Text>
-											<Text fontSize="12px">staked by others</Text>
-											<Text fontWeight="bold">
-												{this.state.stakedByOther} KSM
-											</Text>
-										</Flex>
-									</Box>
-									<Stage
-										width={width}
-										height={height}
-										scaleX={0.7}
-										scaleY={0.7}
-									>
-										<Layer>
-											{/* Here n is number of white circles to draw
-											r is radius of the imaginary circle on which we have to draw white circles
-											x,y is center of imaginary circle
-										*/}
-
-											<WhiteCircles
-												colorMode={this.props.colorMode}
-												n={this.state.nominators.length}
-												r={radius}
-												x={width / 2 + 13 - 10}
-												y={height / 2 + 6}
-												nominators={this.state.nominators}
-												history={this.props.history}
-												totalinfo={this.state.totalinfo}
-												valinfo={""}
-											/>
-
-											{/* Arc used to create the semicircle on the right,
-											Rotation is used to rotate the arc drawn by 90 degrees in clockwise direction
-										*/}
-											<Arc
-												x={width - 2}
-												y={height / 2}
-												innerRadius={height / 2 - 25}
-												outerRadius={height / 2 - 24}
-												rotation={90}
-												angle={180}
-												stroke={
-													this.props.colorMode === "light"
-														? "#CBD5E0"
-														: "#718096"
-												}
-												strokeWidth={4}
-											/>
-											<Circle
-												x={width - 348}
-												y={height - 50}
-												radius={10}
-												fill="#319795"
-											/>
-											<TextRK
-												x={width - 325}
-												y={height - 56}
-												text="Nominator"
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#718096"
-												}
-												fontSize={15}
-											/>
-											<Rect
-												x={width - 360}
-												y={height - 30}
-												width={26}
-												height={15}
-												fill={color}
-												cornerRadius={10}
-											/>
-											<TextRK
-												x={width - 325}
-												y={height - 30}
-												text="Validator"
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#718096"
-												}
-												fontSize={15}
-											/>
-											{/* Adding 6 to stating and ending y point and 24 to length of line
-											because the upper left corner of rectangle is at width/2,height/2
-											so mid point of rectangle becomes width/2+12,height/2+6
-										*/}
-											<Line
-												points={[
-													width / 2 - 10,
-													height / 2 + 6,
-													width - height / 2 + 23,
-													height / 2 + 6
-												]}
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												stroke={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												opacity={opacity}
-											/>
-
-											<TextRK
-												x={width / 2 + 25}
-												y={height / 2 - 15}
-												text={this.state.name}
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												fontSize={15}
-											/>
-
-											<Rect
-												x={width / 2 - 10}
-												y={height / 2}
-												width={26}
-												height={12}
-												fill={color}
-												cornerRadius={10}
-												onMouseOver={this.handleOnMouseOver}
-												onMouseOut={this.handleOnMouseOut}
-											/>
-										</Layer>
-									</Stage>
-								</Grid>
+								<Box width="90%" textAlign="center" mx="auto" mt={32}>
+									<Text>
+										We're working on mobile support for specific views, we
+										apologize for the inconvenience. You can view this page on a
+										larger device.
+									</Text>
+								</Box>
 							) : (
-								<Grid templateColumns="1fr 2fr" gap={2} overflowX="hidden">
-									<Box
-										width={350}
-										height={580}
-										style={{
-											marginLeft: 40,
-											marginTop: 30,
-											boxShadow:
-												"0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-											borderRadius: "10px",
-											padding: "5px 10px"
-										}}
-									>
-										<Flex flexDirection="column" alignItems="center">
-											<Text
-												align="center"
-												mt={2}
-												fontSize="2xl"
-												fontWeight="semibold"
-												lineHeight="short"
+								<React.Fragment>
+									<Box textAlign="center">
+										<Box
+											display="flex"
+											justifyContent="center"
+											alignItems="center"
+											flexDirection="column"
+											// mt={20}
+											// mb={8}
+										>
+											<Text fontSize="3xl" alignSelf="center">
+												{this.state.name}
+											</Text>
+											<Link
+												color="teal.500"
+												href={
+													"https://polkadot.js.org/apps/#/staking/query/" +
+													this.state.validator
+												}
+												width="fit-content"
+												isExternal
 											>
-												Key Stats
-											</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text
-												mt={2}
-												fontSize="md"
-												fontWeight="bold"
-												lineHeight="short"
+												View on Polkadot UI
+											</Link>
+											<Alert
+												status="info"
+												display={this.state.showInfo ? "flex" : "none"}
+												flexDirection="column"
+												mt={4}
 											>
-												Stake amount
-											</Text>
-											<Text fontSize="md" color="gray.500">
-												(change input to see potential earnings)
-											</Text>
-											<InputGroup>
-												<Input
-													placeholder="Stake Amount"
-													variant="filled"
-													type="number"
-													min="0"
-													step="0.000000000001"
-													max="999999999999999"
-													value={this.state.stakeInput}
-													textAlign="center"
-													roundedLeft="2rem"
-													onChange={e => {
-														const stakeAmount = isNaN(
-															parseFloat(e.target.value)
-														)
-															? 0
-															: parseFloat(e.target.value);
-														const { totalStaked, poolReward } = this.state;
-														const userStakeFraction =
-															stakeAmount /
-															(stakeAmount + parseFloat(totalStaked));
-														const dailyEarning =
-															userStakeFraction * poolReward * ERA_PER_DAY; //if pool reward is zero then what ?
-														this.setState({
-															stakeInput: stakeAmount,
-															dailyEarning: dailyEarning.toFixed(3)
-														});
-													}}
-												/>
-												<InputRightAddon
-													children="KSM"
-													backgroundColor="teal.500"
-													roundedRight="2rem"
-												/>
-											</InputGroup>
-											<Text fontWeight="bold" mt="3" fontSize="md">
-												Daily Earning
-											</Text>
-											<Text>
-												<span
-													style={{
-														textTransform: "uppercase",
-														fontWeight: "bold",
-														color: "#E50B7B"
-													}}
+												<Box
+													as="span"
+													display="flex"
+													flexDirection="row"
+													alignItems="end"
 												>
-													{this.state.dailyEarning} KSM
-												</span>
-											</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">Commission</Text>
-											<Text>{this.state.commission}%</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">
-												Backers{" "}
-												<span style={{ color: "#718096", fontSize: 12 }}>
-													(number of stakers)
-												</span>
-											</Text>
-											<Text>{this.state.backers}</Text>
-										</Flex>
-										<Divider />
-										<Flex flexDirection="column" style={{ padding: "0 20px" }}>
-											<Text fontWeight="bold">Amount of stake</Text>
-											<Text mt={3} fontSize="12px">
-												Total
-											</Text>
-											<Text style={{ color: "#E50B7B", fontWeight: "bold" }}>
-												{this.state.totalStaked} KSM
-											</Text>
-											<Text fontSize="12px">Staked by self</Text>
-											<Text fontWeight="bold">
-												{this.state.stakedBySelf} KSM
-											</Text>
-											<Text fontSize="12px">staked by others</Text>
-											<Text fontWeight="bold">
-												{this.state.stakedByOther} KSM
-											</Text>
-										</Flex>
+													<AlertIcon />
+													<AlertTitle mr={2}>
+														Instructions to view nominator specific view
+													</AlertTitle>
+												</Box>
+												<AlertDescription>
+													Click on the nominator circles to open nominator's
+													specfic view data and visualization
+												</AlertDescription>
+												<CloseButton
+													position="absolute"
+													right="8px"
+													top="8px"
+													onClick={() =>
+														this.setState({
+															...this.state,
+															showInfo: !this.state.showInfo
+														})
+													}
+												/>
+											</Alert>
+										</Box>
+										{/* <Text mt={8} color="brand.900" opacity={this.state.copied ? 1 : 0}>
+							Copied to your clipboard
+						</Text> */}
 									</Box>
-									<Stage width={desktopWidth} height={height} draggable={true}>
-										<Layer>
-											{/* Here n is number of white circles to draw
+
+									<Grid templateColumns="1fr 2fr" gap={2} overflowX="hidden">
+										<Box
+											width={350}
+											height={580}
+											style={{
+												marginLeft: 40,
+												marginTop: 30,
+												boxShadow:
+													"0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+												borderRadius: "10px",
+												padding: "5px 10px"
+											}}
+										>
+											<Flex flexDirection="column" alignItems="center">
+												<Text
+													align="center"
+													mt={2}
+													fontSize="2xl"
+													fontWeight="semibold"
+													lineHeight="short"
+												>
+													Key Stats
+												</Text>
+											</Flex>
+											<Divider />
+											<Flex
+												flexDirection="column"
+												style={{ padding: "0 20px" }}
+											>
+												<Text
+													mt={2}
+													fontSize="md"
+													fontWeight="bold"
+													lineHeight="short"
+												>
+													Stake amount
+												</Text>
+												<Text fontSize="md" color="gray.500">
+													(change input to see potential earnings)
+												</Text>
+												<InputGroup>
+													<Input
+														placeholder="Stake Amount"
+														variant="filled"
+														type="number"
+														min="0"
+														step="0.000000000001"
+														max="999999999999999"
+														value={this.state.stakeInput}
+														textAlign="center"
+														roundedLeft="2rem"
+														onChange={e => {
+															const stakeAmount = isNaN(
+																parseFloat(e.target.value)
+															)
+																? 0
+																: parseFloat(e.target.value);
+															const { totalStaked, poolReward } = this.state;
+															const userStakeFraction =
+																stakeAmount /
+																(stakeAmount + parseFloat(totalStaked));
+															const dailyEarning =
+																userStakeFraction * poolReward * ERA_PER_DAY; //if pool reward is zero then what ?
+															this.setState({
+																stakeInput: stakeAmount,
+																dailyEarning: dailyEarning.toFixed(3)
+															});
+														}}
+													/>
+													<InputRightAddon
+														children="KSM"
+														backgroundColor="teal.500"
+														roundedRight="2rem"
+													/>
+												</InputGroup>
+												<Text fontWeight="bold" mt="3" fontSize="md">
+													Daily Earning
+												</Text>
+												<Text>
+													<span
+														style={{
+															textTransform: "uppercase",
+															fontWeight: "bold",
+															color: "#E50B7B"
+														}}
+													>
+														{this.state.dailyEarning} KSM
+													</span>
+												</Text>
+											</Flex>
+											<Divider />
+											<Flex
+												flexDirection="column"
+												style={{ padding: "0 20px" }}
+											>
+												<Text fontWeight="bold">Commission</Text>
+												<Text>{this.state.commission}%</Text>
+											</Flex>
+											<Divider />
+											<Flex
+												flexDirection="column"
+												style={{ padding: "0 20px" }}
+											>
+												<Text fontWeight="bold">
+													Backers{" "}
+													<span style={{ color: "#718096", fontSize: 12 }}>
+														(number of stakers)
+													</span>
+												</Text>
+												<Text>{this.state.backers}</Text>
+											</Flex>
+											<Divider />
+											<Flex
+												flexDirection="column"
+												style={{ padding: "0 20px" }}
+											>
+												<Text fontWeight="bold">Amount of stake</Text>
+												<Text mt={3} fontSize="12px">
+													Total
+												</Text>
+												<Text style={{ color: "#E50B7B", fontWeight: "bold" }}>
+													{this.state.totalStaked} KSM
+												</Text>
+												<Text fontSize="12px">Staked by self</Text>
+												<Text fontWeight="bold">
+													{this.state.stakedBySelf} KSM
+												</Text>
+												<Text fontSize="12px">staked by others</Text>
+												<Text fontWeight="bold">
+													{this.state.stakedByOther} KSM
+												</Text>
+											</Flex>
+										</Box>
+										<Stage
+											width={desktopWidth}
+											height={height}
+											draggable={true}
+										>
+											<Layer>
+												{/* Here n is number of white circles to draw
 		                	r is radius of the imaginary circle on which we have to draw white circles
 		                	x,y is center of imaginary circle
 		             	*/}
 
-											<WhiteCircles
-												colorMode={this.props.colorMode}
-												n={this.state.nominators.length}
-												r={radius}
-												x={desktopWidth / 2 + 13 - 10}
-												y={height / 2 + 6}
-												nominators={this.state.nominators}
-												history={this.props.history}
-												totalinfo={this.state.totalinfo}
-												valinfo={""}
-											/>
+												<WhiteCircles
+													colorMode={this.props.colorMode}
+													n={this.state.nominators.length}
+													r={radius}
+													x={desktopWidth / 2 + 13 - 10}
+													y={height / 2 + 6}
+													nominators={this.state.nominators}
+													history={this.props.history}
+													totalinfo={this.state.totalinfo}
+													valinfo={""}
+												/>
 
-											{/* Arc used to create the semicircle on the right,
+												{/* Arc used to create the semicircle on the right,
 		            		Rotation is used to rotate the arc drawn by 90 degrees in clockwise direction
 		       			*/}
-											<Arc
-												x={desktopWidth - 2}
-												y={height / 2}
-												innerRadius={height / 2 - 25}
-												outerRadius={height / 2 - 24}
-												rotation={90}
-												angle={180}
-												stroke={
-													this.props.colorMode === "light"
-														? "#CBD5E0"
-														: "#718096"
-												}
-												strokeWidth={4}
-											/>
-											<Circle
-												x={desktopWidth - 348}
-												y={height - 50}
-												radius={10}
-												fill="#319795"
-											/>
-											<TextRK
-												x={desktopWidth - 325}
-												y={height - 56}
-												text="Nominator"
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#718096"
-												}
-												fontSize={15}
-											/>
-											<Rect
-												x={desktopWidth - 360}
-												y={height - 30}
-												width={26}
-												height={15}
-												fill={color}
-												cornerRadius={10}
-											/>
-											<TextRK
-												x={desktopWidth - 325}
-												y={height - 30}
-												text="Validator"
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#718096"
-												}
-												fontSize={15}
-											/>
-											{/* Adding 6 to stating and ending y point and 24 to length of line
+												<Arc
+													x={desktopWidth - 2}
+													y={height / 2}
+													innerRadius={height / 2 - 25}
+													outerRadius={height / 2 - 24}
+													rotation={90}
+													angle={180}
+													stroke={
+														this.props.colorMode === "light"
+															? "#CBD5E0"
+															: "#718096"
+													}
+													strokeWidth={4}
+												/>
+												<Circle
+													x={desktopWidth - 348}
+													y={height - 50}
+													radius={10}
+													fill="#319795"
+												/>
+												<TextRK
+													x={desktopWidth - 325}
+													y={height - 56}
+													text="Nominator"
+													fill={
+														this.props.colorMode === "light"
+															? "#1A202C"
+															: "#718096"
+													}
+													fontSize={15}
+												/>
+												<Rect
+													x={desktopWidth - 360}
+													y={height - 30}
+													width={26}
+													height={15}
+													fill={color}
+													cornerRadius={10}
+												/>
+												<TextRK
+													x={desktopWidth - 325}
+													y={height - 30}
+													text="Validator"
+													fill={
+														this.props.colorMode === "light"
+															? "#1A202C"
+															: "#718096"
+													}
+													fontSize={15}
+												/>
+												{/* Adding 6 to stating and ending y point and 24 to length of line
 		            		because the upper left corner of rectangle is at width/2,height/2
 		            		so mid point of rectangle becomes width/2+12,height/2+6
 		         		*/}
-											<Line
-												points={[
-													desktopWidth / 2 - 10,
-													height / 2 + 6,
-													desktopWidth - height / 2 + 23,
-													height / 2 + 6
-												]}
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												stroke={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												opacity={opacity}
-											/>
+												<Line
+													points={[
+														desktopWidth / 2 - 10,
+														height / 2 + 6,
+														desktopWidth - height / 2 + 23,
+														height / 2 + 6
+													]}
+													fill={
+														this.props.colorMode === "light"
+															? "#1A202C"
+															: "#FFFFFF"
+													}
+													stroke={
+														this.props.colorMode === "light"
+															? "#1A202C"
+															: "#FFFFFF"
+													}
+													opacity={opacity}
+												/>
 
-											<TextRK
-												x={desktopWidth / 2 + 25}
-												y={height / 2 - 15}
-												text={this.state.name}
-												fill={
-													this.props.colorMode === "light"
-														? "#1A202C"
-														: "#FFFFFF"
-												}
-												fontSize={15}
-											/>
+												<TextRK
+													x={desktopWidth / 2 + 25}
+													y={height / 2 - 15}
+													text={this.state.name}
+													fill={
+														this.props.colorMode === "light"
+															? "#1A202C"
+															: "#FFFFFF"
+													}
+													fontSize={15}
+												/>
 
-											<Rect
-												x={desktopWidth / 2 - 10}
-												y={height / 2}
-												width={26}
-												height={12}
-												fill={color}
-												cornerRadius={10}
-												onMouseOver={this.handleOnMouseOver}
-												onMouseOut={this.handleOnMouseOut}
-											/>
-										</Layer>
-									</Stage>
-								</Grid>
+												<Rect
+													x={desktopWidth / 2 - 10}
+													y={height / 2}
+													width={26}
+													height={12}
+													fill={color}
+													cornerRadius={10}
+													onMouseOver={this.handleOnMouseOver}
+													onMouseOut={this.handleOnMouseOut}
+												/>
+											</Layer>
+										</Stage>
+									</Grid><Footer />
+								</React.Fragment>
 							)
 						}
 					</Media>
@@ -783,7 +561,7 @@ class ValidatorApp extends React.Component {
 							</Text>
 						</Box>
 					</Flex> */}
-					<Footer />
+					
 				</React.Fragment>
 			);
 		} else {
