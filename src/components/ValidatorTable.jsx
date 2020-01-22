@@ -133,6 +133,9 @@ export default function ValidatorTable(props) {
                 key="commission"
                 dataIndex="commission"
                 align="left"
+                sorter={(a, b) =>
+                  a.commission.slice(0, -1) - b.commission.slice(0, -1)
+                }
                 onHeaderCell={column => {
                   return {
                     onMouseEnter: () => {
