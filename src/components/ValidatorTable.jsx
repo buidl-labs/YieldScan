@@ -18,13 +18,18 @@ import {
 import Identicon from '@polkadot/react-identicon';
 import { Amplitude } from '@amplitude/react-amplitude';
 import './validatorTableStyle.css';
+import { isWeb3Injected } from '@polkadot/extension-dapp';
 
 export default function ValidatorTable(props) {
   const [activePopover, setActivePopover] = React.useState('');
   const [redirect, setRedirect] = React.useState(false);
   const [validatorPath, setValidatorPath] = React.useState('');
   const [selectedValidators, updateSelectValidators] = React.useState([]);
-  const { dataSource } = props;
+  const {
+    dataSource,
+    onExtensionDialogOpen,
+    onCreateAccountDialogOpen
+  } = props;
   const { Column } = Table;
   const toast = useToast();
   // rowSelection object indicates the need for row selection
@@ -229,6 +234,23 @@ export default function ValidatorTable(props) {
                   borderRadius: '18px',
                   background: '#40B5AF 0% 0% no-repeat padding-box',
                   color: '#fff'
+                }}
+                onClick={() => {
+                  //check if extension is available or not
+                  if (!isWeb3Injected) {
+                    onExtensionDialogOpen();
+                    console.log('add polkadot extensions');
+                    return;
+                  }
+
+                  const users = localStorage.getItem('users');
+                  const listOfUsers = JSON.parse(users);
+
+                  //check if atleast have one account
+                  if (listOfUsers && listOfUsers.length <= 0) {
+                    onCreateAccountDialogOpen();
+                    return;
+                  }
                 }}
               >
                 Proceed

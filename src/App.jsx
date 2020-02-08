@@ -17,8 +17,10 @@ import {
 	InputRightAddon,
 	Spinner,
 	Link,
-	CircularProgress
+	CircularProgress,
+	useDisclosure
 } from "@chakra-ui/core";
+import AlertDialogContainer from './components/LoginFlow/AlertDialogContainer';
 import { Helmet } from "react-helmet";
 import { useDebounce } from "use-debounce";
 import ValidatorTable from "./components/ValidatorTable";
@@ -50,6 +52,16 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
+	const {
+		isOpen: isExtensionDialogOpen,
+		onOpen: onExtensionDialogOpen,
+		onClose: onExtensionDialogClose
+	  } = useDisclosure();
+	  const {
+		isOpen: isCreateAccountDialogOpen,
+		onOpen: onCreateAccountDialogOpen,
+		onClose: onCreateAccountDialogClose
+	  } = useDisclosure();
 	const ERA_PER_DAY = 4;
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
@@ -150,7 +162,9 @@ function App() {
 				<Route exact path="/">
 					<Redirect to="/dashboard" />
 				</Route>
-				<NavBar />
+				<NavBar 
+				onExtensionDialogOpen={onExtensionDialogOpen}
+				onCreateAccountDialogOpen={onCreateAccountDialogOpen} />
 				<Flex
 					className="App"
 					maxW="960px"
@@ -233,6 +247,8 @@ function App() {
 									further!
 								</Text>
 								<ValidatorTable
+									onExtensionDialogOpen={onExtensionDialogOpen}
+									onCreateAccountDialogOpen={onCreateAccountDialogOpen}
 									colorMode={colorMode}
 									dataSource={
 										validatorTableData !== undefined ? validatorTableData : []
@@ -379,6 +395,38 @@ function App() {
 					)}
 				</Route>
 			</Router>
+			<AlertDialogContainer
+        isOpen={isExtensionDialogOpen}
+        onClose={onExtensionDialogClose}
+        title="Polkadot JS Extension Required!"
+        body={
+          <>
+            PolkadotJs extension allows you to manage your polkadot accounts
+            outside of dapps. Injects the accounts and allows signs transactions
+            for a specific account.
+            <div>
+              <Link
+                href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd?hl=en"
+                isExternal
+                color="teal.500"
+              >
+                Add PolkadotJs Extension
+              </Link>
+            </div>
+          </>
+        }
+      />
+      <AlertDialogContainer
+        isOpen={isCreateAccountDialogOpen}
+        onClose={onCreateAccountDialogClose}
+        title="Create atleast one account from polkadot extension!"
+        body={
+          <>
+            Create atleast one account from PolkadotJs extension for making
+            transactions for a specific account.
+          </>
+        }
+      />
 		</AmplitudeProvider>
 	);
 }

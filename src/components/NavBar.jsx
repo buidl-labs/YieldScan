@@ -26,30 +26,16 @@ import {
 import { NavLink } from 'react-router-dom';
 import { AiOutlineMenu } from 'react-icons/ai';
 import {
-  web3Accounts,
   web3Enable,
-  web3FromAddress,
   isWeb3Injected,
   web3AccountsSubscribe
 } from '@polkadot/extension-dapp';
 
 import Identicon from '@polkadot/react-identicon';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import AlertDialogContainer from './LoginFlow/AlertDialogContainer';
 
-export default () => {
+export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isExtensionDialogOpen,
-    onOpen: onExtensionDialogOpen,
-    onClose: onExtensionDialogClose
-  } = useDisclosure();
-  const {
-    isOpen: isCreateAccountDialogOpen,
-    onOpen: onCreateAccountDialogOpen,
-    onClose: onCreateAccountDialogClose
-  } = useDisclosure();
   const [isUserLoggedIn, setIsLoggedIn] = useState(false);
   const [listOfUsers, updateListOfUsers] = useState([]);
 
@@ -141,7 +127,7 @@ export default () => {
                     color: '#E50B7B',
                     height: '35px'
                   }}
-                  onClick={async () => {
+                  onClick={() => {
                     //if yes continue
                     //Check if extension is available
                     if (!isWeb3Injected) {
@@ -251,38 +237,6 @@ export default () => {
           </Drawer>
         </Flex>
       </Flex>
-      <AlertDialogContainer
-        isOpen={isExtensionDialogOpen}
-        onClose={onExtensionDialogClose}
-        title="Polkadot JS Extension Required!"
-        body={
-          <>
-            PolkadotJs extension allows you to manage your polkadot accounts
-            outside of dapps. Injects the accounts and allows signs transactions
-            for a specific account.
-            <div>
-              <Link
-                href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd?hl=en"
-                isExternal
-                color="teal.500"
-              >
-                Add PolkadotJs Extension
-              </Link>
-            </div>
-          </>
-        }
-      />
-      <AlertDialogContainer
-        isOpen={isCreateAccountDialogOpen}
-        onClose={onCreateAccountDialogClose}
-        title="Create atleast one account from polkadot extension!"
-        body={
-          <>
-            Create atleast one account from PolkadotJs extension for making
-            transactions for a specific account.
-          </>
-        }
-      />
     </React.Fragment>
   );
 };
