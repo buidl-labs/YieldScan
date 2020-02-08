@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/core';
 import Identicon from '@polkadot/react-identicon';
 import { Amplitude } from '@amplitude/react-amplitude';
+import './validatorTableStyle.css';
 
 export default function ValidatorTable(props) {
   const [activePopover, setActivePopover] = React.useState('');
@@ -213,47 +214,12 @@ export default function ValidatorTable(props) {
         )}
       </Amplitude>
       {selectedValidators.length > 0 && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '5px',
-            padding: '0 40px',
-            width: '1000px'
-          }}
-        >
-          <div
-            style={{
-              height: '51px',
-              background: '#FFFFFF 0% 0% no-repeat padding-box',
-              boxShadow: '0px 0px 6px #00000029',
-              borderRadius: '26px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row'
-              }}
-            >
+        <div className="bottomCart">
+          <div className="bottomCart-inner">
+            <div className="selectView-outer">
               {selectedValidators.map(validator => (
-                <div
-                  style={{
-                    border: '1px solid #40B5AF',
-                    borderRadius: '20px',
-                    margin: '0 5px'
-                  }}
-                >
-                  <p
-                    style={{
-                      padding: '5px 10px'
-                    }}
-                  >
-                    {validator.name}
-                  </p>
+                <div className="selectView-inner">
+                  <p className="selectView-content">{validator.name}</p>
                 </div>
               ))}
             </div>
