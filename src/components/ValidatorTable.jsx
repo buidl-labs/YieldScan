@@ -13,7 +13,8 @@ import {
   Text,
   Link,
   Flex,
-  Button
+  Button,
+  useColorMode
 } from '@chakra-ui/core';
 import Identicon from '@polkadot/react-identicon';
 import { Amplitude } from '@amplitude/react-amplitude';
@@ -24,6 +25,7 @@ export default function ValidatorTable(props) {
   const [activePopover, setActivePopover] = React.useState('');
   const [redirect, setRedirect] = React.useState(false);
   const [validatorPath, setValidatorPath] = React.useState('');
+  const { colorMode, toggleColorMode } = useColorMode();
   const [selectedValidators, updateSelectValidators] = React.useState([]);
   const {
     dataSource,
@@ -220,7 +222,12 @@ export default function ValidatorTable(props) {
       </Amplitude>
       {selectedValidators.length > 0 && (
         <div className="bottomCart">
-          <div className="bottomCart-inner">
+          <div
+            style={{
+              backgroundColor: colorMode === 'light' ? '#fff' : '#1A202C'
+            }}
+            className="bottomCart-inner"
+          >
             <div className="selectView-outer">
               {selectedValidators.map(validator => (
                 <div className="selectView-inner">
@@ -251,6 +258,20 @@ export default function ValidatorTable(props) {
                     onCreateAccountDialogOpen();
                     return;
                   }
+
+                  //open modal
+                  //step one
+                  //bonding some amount of ksm for staking
+                  //key input fields
+                  //stash account and controller account(give warning if they are the same)
+                  //value to be bonded (might be in raw form--confirm 10**12)
+                  //payment destination --> three options
+                  //(stash account:do not increase the amount at stake)
+                  //(stash account: increase the amount at stake)
+                  //(controller account)
+                  //after that show confirmation dialog with transaction fee
+                  //sign in and confirm dialog redirect to polkadot extension
+                  //Allow user to add there
                 }}
               >
                 Proceed

@@ -8,7 +8,7 @@
 .bottomCart-inner {
   height: 51px;
   background: 0% 0% no-repeat padding-box padding-box rgb(255, 255, 255);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 0px 6px;
+  box-shadow: rgba(0, 0, 0, 0.16) -3px -7px 6px;
   border-radius: 26px;
   display: flex;
   align-items: center;
