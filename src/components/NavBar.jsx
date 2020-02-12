@@ -102,7 +102,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
                     {listOfUsers.length > 0 &&
                       listOfUsers.map(user => {
                         return (
-                          <MenuItem minH="48px">
+                          <MenuItem key={user.address} minH="48px">
                             <Identicon
                               value={user.address}
                               size={36}

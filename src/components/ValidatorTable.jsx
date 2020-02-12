@@ -14,18 +14,29 @@ import {
   Link,
   Flex,
   Button,
-  useColorMode
+  useColorMode,
+  useDisclosure,
+  ModalOverlay,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter
 } from '@chakra-ui/core';
 import Identicon from '@polkadot/react-identicon';
 import { Amplitude } from '@amplitude/react-amplitude';
 import './validatorTableStyle.css';
-import { isWeb3Injected } from '@polkadot/extension-dapp';
-
+import { isWeb3Injected, web3FromAddress } from '@polkadot/extension-dapp';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import StakeForm from './StakeForm';
+import Feature from './Feature';
 export default function ValidatorTable(props) {
   const [activePopover, setActivePopover] = React.useState('');
   const [redirect, setRedirect] = React.useState(false);
   const [validatorPath, setValidatorPath] = React.useState('');
   const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedValidators, updateSelectValidators] = React.useState([]);
   const {
     dataSource,
@@ -230,7 +241,7 @@ export default function ValidatorTable(props) {
           >
             <div className="selectView-outer">
               {selectedValidators.map(validator => (
-                <div className="selectView-inner">
+                <div key={validator.name} className="selectView-inner">
                   <p className="selectView-content">{validator.name}</p>
                 </div>
               ))}
@@ -252,15 +263,22 @@ export default function ValidatorTable(props) {
 
                   const users = localStorage.getItem('users');
                   const listOfUsers = JSON.parse(users);
-
+                  console.log('listOfUsers', listOfUsers);
                   //check if atleast have one account
                   if (listOfUsers && listOfUsers.length <= 0) {
                     onCreateAccountDialogOpen();
                     return;
                   }
 
+                  //open modal(step 1)
+                  onOpen();
+                  //with inputs for staking
+                  //step 2:
+                  //confirmation modal view with all the information
+                  //stake CTA button
+
                   //open modal
-                  //step one
+                  //step one(Will happen under the hood, i.e the bonding process)
                   //bonding some amount of ksm for staking
                   //key input fields
                   //stash account and controller account(give warning if they are the same)
@@ -271,6 +289,10 @@ export default function ValidatorTable(props) {
                   //(controller account)
                   //after that show confirmation dialog with transaction fee
                   //sign in and confirm dialog redirect to polkadot extension
+                  //done with bonding
+                  //step two(Step one from ui point of view)
+                  //staking process....
+                  //
                   //Allow user to add there
                 }}
               >
@@ -280,6 +302,92 @@ export default function ValidatorTable(props) {
           </div>
         </div>
       )}
+      <Button
+        onClick={async () => {
+          const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+          const api = await ApiPromise.create({ provider });
+
+          const users = localStorage.getItem('users');
+          const listOfUsers = JSON.parse(users);
+          console.log('listOfUsers', listOfUsers);
+
+          // finds an injector for an address
+          const injector = await web3FromAddress(listOfUsers[1].address);
+          console.log('injector', injector);
+          // sets the signer for the address on the @polkadot/api
+          // is required for making
+          api.setSigner(injector.signer);
+          const controllerId = listOfUsers[1].address;
+          const bondValue = 0.01 * 10 ** 12;
+          //payment destination --> three options
+          //(stash account:do not increase the amount at stake) staked: 0
+          //(stash account: increase the amount at stake) stash: 1
+          //(controller account) controller: 2
+          const rewardDestinationId = 1;
+
+          //before stake amount is added or x amount is unbounded,
+          //validate if that amount is there or not
+
+          api.tx.staking
+            // can't be bonded if it's already bonded
+            // .bond(controllerId, bondValue, 'Staked')
+            // .bondExtra(bondValue)
+            // .nominate(['D5Xo7N2jginhYchuMNud2dYtby899koFcaRo2YWNmUquo5H'])
+            // before sign and send confirm dialog to be shown
+            .signAndSend(controllerId, status => {
+              //
+              console.log('status', JSON.parse(JSON.stringify(status)));
+            });
+        }}
+      >
+        Test
+      </Button>
+      <Modal onClose={onClose} size={'sm'} isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent
+          style={{
+            background: '#FFFFFF 0% 0% no-repeat padding-box',
+            boxShadow: '0px 3px 6px #00000029',
+            borderRadius: '16px'
+          }}
+        >
+          <ModalHeader>Staking Preference</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedValidators.map(validator => (
+              <Feature
+                title={`${validator.name}`}
+                desc="Validator Being staked on"
+              />
+            ))}
+            <StakeForm selectedValidators={selectedValidators} />
+            {/*
+            //Add form component
+            //step one
+              //first two input being stash id(signed id) and controller id(controller id)
+              //stake amount input
+                //convert into ksm initially is in raw form
+                //validate that user has the amount to be bonded
+                //show error message otherwise
+            
+            //show validator account id/name that is being staked on
+            //show fee being charged
+
+            //is confirmation dialog needed
+            //stake confirm/next CTA button
+
+            //step two
+              // Confirmation dialog
+              // Back button
+              // Stake CTA button
+
+           */}
+          </ModalBody>
+          {/* <ModalFooter>
+            <Button>Close</Button>
+          </ModalFooter> */}
+        </ModalContent>
+      </Modal>
     </React.Fragment>
   );
 }
