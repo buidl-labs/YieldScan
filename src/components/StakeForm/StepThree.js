@@ -36,6 +36,7 @@ function StakeForm(props) {
                     const injector = await web3FromAddress(stashId)
                     api.setSigner(injector.signer)
 
+                    // TODO: nominating removes previous nomination: confirmation is needed
                     api.tx.staking
                         .nominate(
                             props.selectedValidators.map(

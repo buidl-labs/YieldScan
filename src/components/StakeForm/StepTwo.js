@@ -1,5 +1,5 @@
 import React from 'react'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 import {
     Button,
     FormControl,
@@ -9,12 +9,33 @@ import {
     InputRightAddon,
 } from '@chakra-ui/core'
 import { ApiPromise, WsProvider } from '@polkadot/api'
-import { isWeb3Injected, web3FromAddress } from '@polkadot/extension-dapp'
+import { web3FromAddress } from '@polkadot/extension-dapp'
+
+function getFreeBalanceOnce() {
+    let callOnce = false
+    let freeBalance
+    return async function(stashId) {
+        const provider = new WsProvider('wss://kusama-rpc.polkadot.io/')
+        const api = await ApiPromise.create({ provider })
+        if (callOnce) {
+            return freeBalance
+        } else {
+            try {
+                const result = await api.query.balances.freeBalance(stashId)
+                freeBalance = parseFloat(
+                    (JSON.parse(JSON.stringify(result)) / 10 ** 12).toFixed(3)
+                )
+                callOnce = true
+                return freeBalance
+            } catch (err) {
+                console.error('error', err)
+            }
+        }
+    }
+}
 
 function BondForm(props) {
-    const listOfUsers = localStorage.getItem('users')
-    const users = JSON.parse(listOfUsers)
-
+    const callGetFreeBalanceOnce = getFreeBalanceOnce()
     console.log('Props', props)
     return (
         <Formik
@@ -33,6 +54,7 @@ function BondForm(props) {
                 const injector = await web3FromAddress(stashId)
                 api.setSigner(injector.signer)
 
+                //TODO: check is balance available for bonding
                 const bonded = values.bondValue * 10 ** 12
 
                 //check whether user has already bonded some amt or not
@@ -69,60 +91,19 @@ function BondForm(props) {
                             console.log('Error', error)
                         })
                 }
-
-                //Step two
-                //check whether user has given inputted amt amount or not for bonding
-                //if yes --> proceed
-                //else --> show error "Not enough balance"
-
-                //Step Three
-                //Nominate selected validators
-                //show success message if everything goes alright
-                //else --> show whatever error occurred
-
-                // //check if some amount is already bonded or not
-                // //if yes then
-
-                // //check is already bonded or not
-                // api.tx.staking
-                //   .bond(values.controllerId, values.stakeAmount * 10 ** 12, 0)
-                //   .bondExtra(values.stakeAmount * 10 ** 12)
-                //   .signAndSend(values.stashId, status => {
-                //     console.log('status', JSON.parse(JSON.stringify(status)));
-                //   })
-                //   .catch(error => {
-                //     console.log('Error', error);
-                //   });
-
-                // api.tx.staking
-                //   //   .bond(values.controllerId, values.stakeAmount * 10 ** 12, 0)
-                //   //   .bondExtra(values.stakeAmount * 10 ** 12)
-                //   .nominate(
-                //     props.selectedValidators.map(validator => validator.stashId)
-                //   )
-                //   .signAndSend(values.stashId, status => {
-                //     console.log('status', JSON.parse(JSON.stringify(status)));
-                //   })
-                //   .catch(error => {
-                //     console.log('Error', error);
-                //   });
-
-                // .bond(controllerId, bondValue, 'Staked')
-                // .bondExtra(bondValue)
-                // .nominate(['D5Xo7N2jginhYchuMNud2dYtby899koFcaRo2YWNmUquo5H'])
-                //if yes execute extra bonded
-                //after that nominate the selected validator
-                // setTimeout(() => {
-                //   alert(JSON.stringify(values, null, 2));
-                //   actions.setSubmitting(false);
-                // }, 1000);
             }}
-            validate={values => {
+            validate={async values => {
+                //TODO: might lead to unexpected user behaviour(to keep in mind)
                 const errors = {}
-                if (!values.bondValue) {
+                const freeBalance = await callGetFreeBalanceOnce(
+                    props.ids.stashId
+                )
+
+                if (values.bondValue > freeBalance) {
+                    errors.bondValue = `Your current free balance is: ${freeBalance} KSM, you can't bond value of more then your free balance!`
+                } else if (!values.bondValue) {
                     errors.bondValue = 'Bond Value is required!'
                 }
-                // TODO: also check that if bonded is available in balance, if not show error
                 return errors
             }}
             render={props => (
@@ -157,6 +138,11 @@ function BondForm(props) {
                                 <FormHelperText id="email-helper-text">
                                     Amount Allocation for staking
                                 </FormHelperText>
+                                <ErrorMessage
+                                    style={{ color: 'red' }}
+                                    name="bondValue"
+                                    component="div"
+                                />
                             </FormControl>
                         )}
                     />
