@@ -1,5 +1,5 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import React from "react";
+import { Formik, Form, Field } from "formik";
 import {
   Button,
   FormControl,
@@ -7,27 +7,27 @@ import {
   FormHelperText,
   InputGroup,
   InputRightAddon
-} from '@chakra-ui/core';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { isWeb3Injected, web3FromAddress } from '@polkadot/extension-dapp';
+} from "@chakra-ui/core";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import { isWeb3Injected, web3FromAddress } from "@polkadot/extension-dapp";
 
 function BondForm(props) {
-  const listOfUsers = localStorage.getItem('users');
+  const listOfUsers = localStorage.getItem("users");
   const users = JSON.parse(listOfUsers);
 
-  console.log('Props', props);
+  console.log("Props", props);
   return (
     <Formik
       initialValues={{
-        bondValue: ''
+        bondValue: ""
       }}
       onSubmit={async (values, actions) => {
         const { stashId, controllerId } = props.ids;
-        const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+        const provider = new WsProvider("wss://kusama-rpc.polkadot.io/");
         const api = await ApiPromise.create({ provider });
         //Add logic for staking via polkadot extension here
 
-        console.log('values', values);
+        console.log("values", values);
 
         // finds an injector for an address
         const injector = await web3FromAddress(stashId);
@@ -39,28 +39,28 @@ function BondForm(props) {
         const ledger = await api.query.staking.ledger(stashId);
 
         if (!ledger) {
-          console.log('api.tx.staking.bond');
+          console.log("api.tx.staking.bond");
           api.tx.staking
             .bond(controllerId, bonded, 0)
             .signAndSend(stashId, status => {
-              console.log('status', JSON.parse(JSON.stringify(status)));
+              console.log("status", JSON.parse(JSON.stringify(status)));
               props.goToStep(3);
               actions.setSubmitting(false);
             })
             .catch(error => {
-              console.log('Error', error);
+              console.log("Error", error);
             });
         } else {
-          console.log('api.tx.staking.bondExtra');
+          console.log("api.tx.staking.bondExtra");
           api.tx.staking
             .bondExtra(bonded)
             .signAndSend(stashId, status => {
-              console.log('status', JSON.parse(JSON.stringify(status)));
+              console.log("status", JSON.parse(JSON.stringify(status)));
               props.goToStep(3);
               actions.setSubmitting(false);
             })
             .catch(error => {
-              console.log('Error', error);
+              console.log("Error", error);
             });
         }
 
@@ -114,7 +114,7 @@ function BondForm(props) {
       validate={values => {
         const errors = {};
         if (!values.bondValue) {
-          errors.bondValue = 'Bond Value is required!';
+          errors.bondValue = "Bond Value is required!";
         }
         // TODO: also check that if bonded is available in balance, if not show error
         return errors;
@@ -152,7 +152,7 @@ function BondForm(props) {
             )}
           />
           <Button
-            style={{ float: 'right' }}
+            style={{ float: "right" }}
             mt={4}
             variantColor="teal"
             isLoading={props.isSubmitting}

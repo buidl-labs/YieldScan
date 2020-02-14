@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   useDisclosure,
   Button,
@@ -18,7 +18,7 @@ import {
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogCloseButton
-} from '@chakra-ui/core';
+} from "@chakra-ui/core";
 
 function AlertDialogContainer({ isOpen, onClose, title, body }) {
   const cancelRef = React.useRef();

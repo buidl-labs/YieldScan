@@ -1,13 +1,13 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Button, FormControl, Input, FormLabel, Select } from '@chakra-ui/core';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { isWeb3Injected, web3FromAddress } from '@polkadot/extension-dapp';
-import Feature from '../Feature/index';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Button, FormControl, Input, FormLabel, Select } from "@chakra-ui/core";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import { isWeb3Injected, web3FromAddress } from "@polkadot/extension-dapp";
+import Feature from "../Feature/index";
 function StakeForm(props) {
-  const listOfUsers = localStorage.getItem('users');
+  const listOfUsers = localStorage.getItem("users");
   const users = JSON.parse(listOfUsers);
-  console.log('users', users);
+  console.log("users", users);
 
   return (
     <div>
@@ -21,15 +21,15 @@ function StakeForm(props) {
       </div>
       <Formik
         initialValues={{
-          stakeAmount: '',
+          stakeAmount: "",
           confirmation: false
         }}
         onSubmit={async (values, actions) => {
           const { stashId } = props.ids;
-          const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+          const provider = new WsProvider("wss://kusama-rpc.polkadot.io/");
           const api = await ApiPromise.create({ provider });
 
-          console.log('values', values);
+          console.log("values", values);
           // finds an injector for an address
           const injector = await web3FromAddress(stashId);
           api.setSigner(injector.signer);
@@ -39,17 +39,17 @@ function StakeForm(props) {
               props.selectedValidators.map(validator => validator.stashId)
             )
             .signAndSend(stashId, status => {
-              console.log('status', JSON.parse(JSON.stringify(status)));
+              console.log("status", JSON.parse(JSON.stringify(status)));
               props.goToStep(4);
             })
             .catch(error => {
-              console.log('Error', error);
+              console.log("Error", error);
             });
         }}
         validate={values => {
           const errors = {};
           if (!values.confirmation) {
-            errors.confirmation = 'Confirmation is required';
+            errors.confirmation = "Confirmation is required";
           }
           return errors;
         }}
@@ -66,9 +66,9 @@ function StakeForm(props) {
                   <label>
                     <input {...field} type="checkbox" id="confirmation" />
                     <span
-                      style={{ color: '#171923', fontSize: 10, lineHeight: 1 }}
+                      style={{ color: "#171923", fontSize: 10, lineHeight: 1 }}
                     >
-                      {' '}
+                      {" "}
                       I understand that the funds will be bonded, meaning the
                       tokens would be locked for a period of time and can only
                       be redeemed after that period ends, and could be slashed
@@ -76,7 +76,7 @@ function StakeForm(props) {
                     </span>
                   </label>
                   <ErrorMessage
-                    style={{ color: 'red' }}
+                    style={{ color: "red" }}
                     name="confirmation"
                     component="div"
                   />
@@ -84,7 +84,7 @@ function StakeForm(props) {
               )}
             />
             <Button
-              style={{ float: 'right' }}
+              style={{ float: "right" }}
               mt={4}
               variantColor="teal"
               isLoading={props.isSubmitting}

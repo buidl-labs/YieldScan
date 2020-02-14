@@ -1,21 +1,21 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Button, FormControl, FormLabel, Select } from '@chakra-ui/core';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Button, FormControl, FormLabel, Select } from "@chakra-ui/core";
 
 function StakeForm(props) {
   //List of users
-  const listOfUsers = localStorage.getItem('users');
+  const listOfUsers = localStorage.getItem("users");
   const users = JSON.parse(listOfUsers);
-  console.log('users', users);
+  console.log("users", users);
 
   return (
     <Formik
       initialValues={{
-        stashId: '',
-        controllerId: ''
+        stashId: "",
+        controllerId: ""
       }}
       onSubmit={(values, actions) => {
-        console.log('values', values);
+        console.log("values", values);
         actions.setSubmitting(false);
         props.nextStep();
         props.onNext(values);
@@ -23,9 +23,9 @@ function StakeForm(props) {
       validate={values => {
         const errors = {};
         if (!values.stashId) {
-          errors.stashId = 'Stash ID is required!';
+          errors.stashId = "Stash ID is required!";
         } else if (!values.controllerId) {
-          errors.controllerId = 'Controller ID is required!';
+          errors.controllerId = "Controller ID is required!";
         }
         return errors;
       }}
@@ -46,7 +46,7 @@ function StakeForm(props) {
                   ))}
                 </Select>
                 <ErrorMessage
-                  style={{ color: 'red' }}
+                  style={{ color: "red" }}
                   name="stashId"
                   component="div"
                 />
@@ -75,7 +75,7 @@ function StakeForm(props) {
                   ))}
                 </Select>
                 <ErrorMessage
-                  style={{ color: 'red' }}
+                  style={{ color: "red" }}
                   name="controllerId"
                   component="div"
                 />
@@ -83,7 +83,7 @@ function StakeForm(props) {
             )}
           />
           <Button
-            style={{ float: 'right' }}
+            style={{ float: "right" }}
             mt={4}
             variantColor="teal"
             isLoading={props.isSubmitting}

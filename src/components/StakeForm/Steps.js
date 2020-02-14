@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import StepWizard from 'react-step-wizard';
-import StepOne from './StepOne';
-import StepTwo from './StepTwo';
-import StepThree from './StepThree';
-import StepFour from './StepFour';
+import React, { useState } from "react";
+import StepWizard from "react-step-wizard";
+import StepOne from "./StepOne";
+import StepTwo from "./StepTwo";
+import StepThree from "./StepThree";
+import StepFour from "./StepFour";
 
 export default function Steps(props) {
   const [ids, setIds] = useState({
-    controllerId: '',
-    stashId: ''
+    controllerId: "",
+    stashId: ""
   });
 
   const onStepOneCompletion = values => {

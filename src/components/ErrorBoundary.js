@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import * as Sentry from '@sentry/browser';
-import ErrorMessage from './ErrorMessage';
+import React, { Component } from "react";
+import * as Sentry from "@sentry/browser";
+import ErrorMessage from "./ErrorMessage";
 
 class ErrorBoundary extends Component {
   constructor(props) {

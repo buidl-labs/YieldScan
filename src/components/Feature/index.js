@@ -1,10 +1,10 @@
-import React from 'react';
-import { Box, Heading, Text } from '@chakra-ui/core';
+import React from "react";
+import { Box, Heading, Text } from "@chakra-ui/core";
 
 function Feature({ title, desc, ...rest }) {
   return (
     <Box
-      style={{ marginTop: '5px', marginBottom: '5px' }}
+      style={{ marginTop: "5px", marginBottom: "5px" }}
       p={5}
       shadow="md"
       borderWidth="1px"

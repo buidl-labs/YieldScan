@@ -20,9 +20,11 @@
     "emotion-theming": "^10.0.19",
     "express": "^4.17.1",
     "formik": "^2.1.4",
+    "husky": "^4.2.3",
     "ignore-styles": "^5.0.1",
     "konva": "^4.0.18",
     "node-sass": "^4.13.1",
+    "pretty-quick": "^2.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
@@ -58,5 +60,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
   }
 }

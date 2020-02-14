@@ -1,5 +1,5 @@
-import React from 'react';
-import './stake.css';
+import React from "react";
+import "./stake.css";
 
 export default function StepFour(props) {
   return (
@@ -13,7 +13,7 @@ export default function StepFour(props) {
         </div>
       </div>
       <p className="success-para">
-        Yay! You have successfully nominated validator{' '}
+        Yay! You have successfully nominated validator{" "}
         <span className="validator-name">
           {props.selectedValidators.map(validator => validator.name)}
         </span>
