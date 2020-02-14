@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Table } from 'antd';
+import StepWizard from 'react-step-wizard';
 import {
   IconButton,
   useToast,
@@ -29,12 +30,15 @@ import { Amplitude } from '@amplitude/react-amplitude';
 import './validatorTableStyle.css';
 import { isWeb3Injected, web3FromAddress } from '@polkadot/extension-dapp';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import StakeForm from './StakeForm';
+import StakeForm from './StakeForm/StepThree';
 import Feature from './Feature';
+import BondForm from './StakeForm/StepTwo';
+import Steps from './StakeForm/Steps';
 export default function ValidatorTable(props) {
   const [activePopover, setActivePopover] = React.useState('');
   const [redirect, setRedirect] = React.useState(false);
   const [validatorPath, setValidatorPath] = React.useState('');
+  const [showBottomCart, setShowBottomCart] = React.useState(true);
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedValidators, updateSelectValidators] = React.useState([]);
@@ -54,6 +58,7 @@ export default function ValidatorTable(props) {
         selectedRows
       );
       updateSelectValidators(selectedRows);
+      setShowBottomCart(true);
     },
     getCheckboxProps: record => {
       //   console.log('record', record);
@@ -231,7 +236,7 @@ export default function ValidatorTable(props) {
           </div>
         )}
       </Amplitude>
-      {selectedValidators.length > 0 && (
+      {selectedValidators.length > 0 && showBottomCart && (
         <div className="bottomCart">
           <div
             style={{
@@ -342,7 +347,14 @@ export default function ValidatorTable(props) {
       >
         Test
       </Button>
-      <Modal onClose={onClose} size={'sm'} isOpen={isOpen}>
+      <Modal
+        onClose={() => {
+          onClose();
+          setShowBottomCart();
+        }}
+        size={'sm'}
+        isOpen={isOpen}
+      >
         <ModalOverlay />
         <ModalContent
           style={{
@@ -354,13 +366,29 @@ export default function ValidatorTable(props) {
           <ModalHeader>Staking Preference</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {selectedValidators.map(validator => (
-              <Feature
-                title={`${validator.name}`}
-                desc="Validator Being staked on"
-              />
-            ))}
-            <StakeForm selectedValidators={selectedValidators} />
+            <Steps
+              setShowBottomCart={setShowBottomCart}
+              onModalClose={onClose}
+              selectedValidators={selectedValidators}
+            />
+            {/* <div>
+                {selectedValidators.map(validator => (
+                  <Feature
+                    title={`${validator.name}`}
+                    desc="Validator Being staked on"
+                  />
+                ))}
+                <StakeForm selectedValidators={selectedValidators} />
+              </div> */}
+            {/* <StepWizard>
+              <div>
+                {props.currentStep}
+                <BondForm {...props} />
+              </div>
+              <div>2.staking</div>
+              <div>3.confirmation</div>
+              <div>4.Success status</div>
+            </StepWizard> */}
             {/*
             //Add form component
             //step one
