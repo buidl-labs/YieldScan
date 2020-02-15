@@ -15,16 +15,23 @@ function getFreeBalanceOnce() {
     let callOnce = false
     let freeBalance
     return async function(stashId) {
-        const provider = new WsProvider('wss://kusama-rpc.polkadot.io/')
-        const api = await ApiPromise.create({ provider })
         if (callOnce) {
             return freeBalance
         } else {
             try {
-                const result = await api.query.balances.freeBalance(stashId)
-                freeBalance = parseFloat(
-                    (JSON.parse(JSON.stringify(result)) / 10 ** 12).toFixed(3)
-                )
+                const provider = new WsProvider('wss://kusama-rpc.polkadot.io/')
+                const api = await ApiPromise.create({ provider })
+                // Total Balance
+                const balance = await api.query.balances.freeBalance(stashId)
+                // Locked Balance
+                const locks = await api.query.balances.locks(stashId)
+                const locksJSON = locks.toJSON()
+                // Transferrable
+                const transferrable =
+                    balance.toString() / 10 ** 12 -
+                    locksJSON[0].amount / 10 ** 12
+                freeBalance = parseFloat(transferrable.toFixed(3))
+                // console.log('freeBalance', freeBalance)
                 callOnce = true
                 return freeBalance
             } catch (err) {
