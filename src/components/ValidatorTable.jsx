@@ -338,7 +338,8 @@ export default function ValidatorTable(props) {
                 <ModalOverlay />
                 <ModalContent
                     style={{
-                        background: '#FFFFFF 0% 0% no-repeat padding-box',
+                        background:
+                            props.colorMode === 'light' ? '#FFFFFF' : '#1A202C',
                         boxShadow: '0px 3px 6px #00000029',
                         borderRadius: '16px',
                     }}
@@ -350,6 +351,7 @@ export default function ValidatorTable(props) {
                             setShowBottomCart={setShowBottomCart}
                             onModalClose={onClose}
                             selectedValidators={selectedValidators}
+                            colorMode={props.colorMode}
                         />
                     </ModalBody>
                 </ModalContent>

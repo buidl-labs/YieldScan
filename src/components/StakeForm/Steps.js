@@ -29,16 +29,18 @@ export default function Steps(props) {
                 },
             }}
         >
+            <StepFour
+                onModalClose={props.onModalClose}
+                setShowBottomCart={props.setShowBottomCart}
+                selectedValidators={props.selectedValidators}
+                colorMode={props.colorMode}
+            />
             <StepOne onNext={onStepOneCompletion} />
             <StepTwo ids={ids} />
             <StepThree
                 ids={ids}
                 selectedValidators={props.selectedValidators}
-            />
-            <StepFour
-                onModalClose={props.onModalClose}
-                setShowBottomCart={props.setShowBottomCart}
-                selectedValidators={props.selectedValidators}
+                colorMode={props.colorMode}
             />
         </StepWizard>
     )

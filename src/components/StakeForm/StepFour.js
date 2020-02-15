@@ -12,9 +12,20 @@ export default function StepFour(props) {
                     <div class="icon-fix"></div>
                 </div>
             </div>
-            <p className="success-para">
+            <p
+                style={{
+                    color: props.colorMode === 'light' ? '#3c393c' : '#fff',
+                }}
+                className="success-para"
+            >
                 Yay! You have successfully nominated validator{' '}
-                <span className="validator-name">
+                <span
+                    style={{
+                        color:
+                            props.colorMode === 'light' ? '#656565' : '#bdbcbc',
+                    }}
+                    className="validator-name"
+                >
                     {props.selectedValidators.map(validator => validator.name)}
                 </span>
             </p>

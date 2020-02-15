@@ -8,7 +8,7 @@ function StakeForm(props) {
     const listOfUsers = localStorage.getItem('users')
     const users = JSON.parse(listOfUsers)
     console.log('users', users)
-
+    console.log('stepThree', props)
     return (
         <div>
             <div>
@@ -80,7 +80,10 @@ function StakeForm(props) {
                                         />
                                         <span
                                             style={{
-                                                color: '#171923',
+                                                color:
+                                                    props.colorMode === 'light'
+                                                        ? '#171923'
+                                                        : '#fff',
                                                 fontSize: 10,
                                                 lineHeight: 1,
                                             }}
