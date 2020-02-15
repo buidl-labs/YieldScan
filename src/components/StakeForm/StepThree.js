@@ -52,6 +52,9 @@ function StakeForm(props) {
                         })
                         .catch(error => {
                             console.log('Error', error)
+                            actions.setErrors({
+                                confirmation: error.toString(),
+                            })
                         })
                 }}
                 validate={values => {

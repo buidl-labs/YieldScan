@@ -88,7 +88,10 @@ function BondForm(props) {
                             actions.setSubmitting(false)
                         })
                         .catch(error => {
-                            console.log('Error', error)
+                            console.log('Error', error.toString())
+                            actions.setErrors({
+                                bondValue: error.toString(),
+                            })
                         })
                 }
             }}
