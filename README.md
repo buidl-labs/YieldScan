@@ -1,15 +1,6 @@
 # YieldScan
 Scanning yield on nominated proof-of-stake networks. Starting with Kusama.
 
-## Table of contents
-- [Currently supported networks](#supported_networks)
-- [Description](#description)
-  - [Dashboard](#dashboard)
-  - [Validator Specific View](#validator_specific_view)
-  - [Nominator Specific View](#nominator_specific_view)
-- [⛏️ Built Using](#built_using)
-- [✍️ Authors](#author)
-
 ## Currently supported networks <a name = "supported_networks"></a>
 - [Kusama Network](https://kusama.network/)
 
