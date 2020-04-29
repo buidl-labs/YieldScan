@@ -1,0 +1,66 @@
+table {
+	width: 100%;
+	width: stretch;
+}
+
+th {
+	// text-align: left;
+	padding: 1rem;
+}
+
+td {
+	padding: 0.5rem 1rem;
+}
+
+.py-0 {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.nav-link.active {
+	font-weight: 700;
+	color: #e50b7b;
+}
+
+.card {
+	border: 2px solid transparent;
+	border-radius: 1rem;
+	transition: all ease-in-out 0.2s;
+	cursor: pointer;
+	&:hover {
+		border-color: #319795;
+		box-shadow: 0px 5px 5px rgba(68, 68, 68, 0.6);
+		transition: all ease-in-out 0.2s;
+		transform: translate(0, -8px);
+	}
+}
+
+.ant-table-column-sorters {
+	display: flex;
+	justify-content: space-between;
+	cursor: pointer;
+}
+
+.anticon.on {
+	color: #319795;
+}
+
+.ant-table-row {
+	cursor: pointer;
+	transition: all ease-in-out 0.2s;
+	&:hover {
+		background-color: rgba(49, 151, 149, 0.2);
+		transition: all ease-in-out 0.2s;
+	}
+}
+
+.table-light {
+	.ant-table-thead {
+		background-color: #e2e8f0;
+	}
+}
+.table-dark {
+	.ant-table-thead {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+}

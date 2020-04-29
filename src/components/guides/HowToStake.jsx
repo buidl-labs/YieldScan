@@ -1,15 +1,23 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Heading, Text, Link, Icon } from "@chakra-ui/core";
+import { Heading, Text, Link, Icon, Box } from "@chakra-ui/core";
 import {
 	VerticalTimeline,
 	VerticalTimelineElement
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
+import LogEvent from '../LogEvent';
+import Helmet from "react-helmet";
 
 export default function HowToStake() {
 	return (
-		<React.Fragment>
+		<Box mb={8}>
+			<Helmet>
+				<title>How to stake - Guide - Help Center - Polka Analytics</title>
+				
+				<meta name="description" content="Validator key stats" />
+			</Helmet>
+			<LogEvent eventType="Staking guide view" />
 			<Heading as="h2" size="xl" textAlign="center" mt={16}>
 				How to stake?
 			</Heading>
@@ -240,10 +248,10 @@ export default function HowToStake() {
 						Ready to stake?
 					</Heading>
 					<Link as={RouterLink} to="/dashboard" color="teal.500">
-						See how much you could earn
+						Return to dashboard
 					</Link>
 				</VerticalTimelineElement>
 			</VerticalTimeline>
-		</React.Fragment>
+		</Box>
 	);
 }
