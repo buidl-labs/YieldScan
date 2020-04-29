@@ -1,0 +1,38 @@
+.bottomCart {
+  position: fixed;
+  bottom: 5px;
+  padding: 0px 40px;
+  width: 1000px;
+}
+
+.bottomCart-inner {
+  height: 51px;
+  background: 0% 0% no-repeat padding-box padding-box rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.16) -3px -7px 6px;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.selectView-outer {
+  display: flex;
+  flex-direction: row;
+}
+
+.selectView-inner {
+  border: 1px solid rgb(64, 181, 175);
+  border-radius: 20px;
+  margin: 0px 5px;
+}
+
+.selectView-content {
+  padding: 5px 10px;
+}
+
+.proceed {
+  border-radius: 18px;
+  background: 0% 0% no-repeat padding-box padding-box rgb(64, 181, 175);
+  color: rgb(255, 255, 255);
+}
