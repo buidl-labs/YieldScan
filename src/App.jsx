@@ -149,12 +149,13 @@ function App() {
 		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
 		socket.on(
 			"initial",
-			({ filteredValidatorsList, electedInfoDB, intentionsData }) => {
+			// eslint-disable-next-line no-shadow
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
 					setSuggPromptsData(filteredValidatorsList);
-					setElectedInfo(electedInfoDB[0]);
+					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
@@ -167,12 +168,13 @@ function App() {
 
 		socket.on(
 			"onDataChange",
-			({ filteredValidatorsList, electedInfoDB, intentionsData }) => {
+			// eslint-disable-next-line no-shadow
+			({ filteredValidatorsList, electedInfo, intentionsData }) => {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
 					setSuggPromptsData(filteredValidatorsList);
-					setElectedInfo(electedInfoDB[0]);
+					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
