@@ -28,6 +28,7 @@ import socketIOClient from "socket.io-client";
 import AlertDialogContainer from "./components/LoginFlow/AlertDialogContainer";
 import ValidatorTable from "./components/ValidatorTable.jsx";
 import HelpCenter from "./components/HelpCenter.jsx";
+import ReturnsCalculator from "./components/ReturnsCalculator.jsx";
 import ScrollToTop from "./ScrollToTop.jsx";
 import ValidatorApp from "./components/validator_components/ValidatorApp.jsx";
 import NominatorApp from "./components/nominator_components/NominatorApp.jsx";
@@ -334,6 +335,10 @@ function App() {
 						)}
 					</Route>
 
+					{/* Help Center */}
+					<Route path='/returns-calculator'>
+						<ReturnsCalculator />
+					</Route>
 					{/* Help Center */}
 					<Route path='/help-center'>
 						<HelpCenter />
