@@ -23,10 +23,11 @@ import Helmet from 'react-helmet'
 import { useDebounce } from 'use-debounce'
 import ErrorMessage from "./ErrorMessage";
 
-export default function ReturnsCalculator() {
+export default function ReturnsCalculator(props) {
+	const { colorMode, toggleColorMode }        = useColorMode();
 	const [stakeInput, setStakeInput]           = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.00);
-	const suggPromptsAmount                     = stakeInput / 16;
+	const [suggPromptsAmount]                   = useDebounce(stakeInput/16, 0);
 	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
 	const [validatorData, setValidatorData]     = React.useState([]);
 	const [errorState, setErrorState]           = React.useState(false);
@@ -34,6 +35,7 @@ export default function ReturnsCalculator() {
 	const [apiConnected, setApiConnected]       = React.useState(false);
 	const [isLoaded, setIsLoaded]               = React.useState(false);
 	const ERA_PER_DAY = 4;
+	//console.log('props - ', props.validatorData);
 
 	function suggPrompts() {
 		const data = suggPromptsData.map(validator => {
@@ -76,33 +78,8 @@ export default function ReturnsCalculator() {
 	}
 	
 	React.useEffect(() => {
-		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
-		socket.on(
-			"initial",
-			// eslint-disable-next-line no-shadow
-			({ filteredValidatorsList, intentionsData }) => {
-				if (intentionsData[0]) {
-					setApiConnected(true);
-					setSuggPromptsData(filteredValidatorsList);
-				} else {
-					setErrorState(true);
-				}
-			}
-		);
-
-		socket.on(
-			"onDataChange",
-			// eslint-disable-next-line no-shadow
-			({ filteredValidatorsList, intentionsData }) => {
-				if (intentionsData[0]) {
-					setApiConnected(true);
-					setSuggPromptsData(filteredValidatorsList);
-				} else {
-					setErrorState(true);
-				}
-			}
-		);
-	}, []);
+		setSuggPromptsData(props.validatorData);
+	}, [props]);
 
 	if (errorState) {
 		return <ErrorMessage />;
@@ -114,7 +91,7 @@ export default function ReturnsCalculator() {
 	return (
 		<React.Fragment>
 			<Helmet>
-				<title>Polka Analytics - Reutrn Calculator</title>
+				<title>Yield Scan - Reutrn Calculator</title>
 				<meta name="description" content="Validator key stats" />
 			</Helmet>
 			<LogEvent eventType="Returns calculator  view" />
@@ -135,20 +112,18 @@ export default function ReturnsCalculator() {
 							</Box>
 							<InputGroup>
 								<Input
-									placeholder="Enter your Budget"
-									variant="filled"
-									type="number"
-									min="0"
-									step="0.000000000001"
-									max="999999999999999"
+									placeholder='Enter your Budget'
+									variant='filled'
+									type='number'
+									min='0'
+									step='0.000000000001'
+									max='999999999999999'
 									value={stakeInput}
-									textAlign="center"
-									rounded="40px"
-									mr="8px"
+									textAlign='center'
+									rounded='40px'
+									mr='8px'
 									onChange={e => {
-									setStakeInput(
-									parseFloat(e.target.value)
-									)
+									setStakeInput(parseFloat(e.target.value));
 									}}
 								/>
 								<InputRightAddon

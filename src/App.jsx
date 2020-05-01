@@ -153,7 +153,7 @@ function App() {
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>Polka Analytics - Analytics for Polkadot Network</title>
+				<title>Yield Scan - Analytics for Polkadot Network</title>
 				<meta
 					name='description'
 					content='An analytics platform for the Polkadot Network'
@@ -293,7 +293,7 @@ function App() {
 
 					{/* Help Center */}
 					<Route path='/returns-calculator'>
-						<ReturnsCalculator />
+						<ReturnsCalculator validatorData={validatorData}/>
 					</Route>
 					{/* Help Center */}
 					<Route path='/help-center'>

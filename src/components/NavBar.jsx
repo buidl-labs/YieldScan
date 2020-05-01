@@ -82,12 +82,15 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 				{/* Polka Analytics Logo - Left hand part of navbar */}
 				<Flex justify="flex-start" alignItems="center">
 					<NavLink to="/">
-						<Box
-							as="span"
-							display="inline-flex"
-							alignItems="center"
-						>
-							<Image src="/logo_yieldscan.svg" height="3rem" />
+						<Box as="span" display="inline-flex" alignItems="center">
+							<Image src="/logo192.svg" height="3rem" mr={4} />
+							<Heading
+								as="h3"
+								size="lg"
+								display={{ base: "none", sm: "block" }}
+							>
+								Yield Scan
+							</Heading>
 						</Box>
 					</NavLink>
 				</Flex>
