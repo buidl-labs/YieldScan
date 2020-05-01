@@ -97,54 +97,12 @@ function App() {
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
 
-	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 500.0);
-	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
-	const suggPrompts = React.useCallback(() => {
-		const data = suggPromptsData.map(validator => {
-			const {
-				stashId,
-				stashIdTruncated,
-				name,
-				commission,
-				totalStake,
-				poolReward,
-				noOfNominators
-			} = validator;
-			const userStakeFraction =
-				suggPromptsAmount / (suggPromptsAmount + totalStake);
-			const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
-			return {
-				noOfNominators,
-				stashId,
-				stashIdTruncated,
-				name,
-				commission: `${parseFloat(commission)}%`,
-				dailyEarning: isNaN(dailyEarning)
-					? "Not enough data"
-					: `${dailyEarning.toPrecision(10)} KSM`,
-				dailyEarningPrecise: isNaN(dailyEarning) ? 0 : dailyEarning
-			};
-		});
-		// const earnings = data.map(validator => validator.dailyEarningPrecise);
-		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
-		const top16data = [...data.slice(0, 16)];
-		// console.log("table data of top 16 val - ", top16data);
-		if (top16data.length > 0) {
-			// eslint-disable-next-line no-unused-vars
-			const expectedEarning = top16data.reduce((a, b) => ({
-				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
-			}));
-			// console.log("expected earning of top 16 val - ", expectedEarning);
-		}
-		if (apiConnected) setIsLoaded(true);
-	}, [suggPromptsAmount, suggPromptsData, apiConnected]);
 
 	React.useEffect(() => {
 		if (apiConnected) {
 			calcReward();
-			suggPrompts();
 		}
-	}, [calcReward, suggPrompts, apiConnected]);
+	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
 		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
@@ -155,7 +113,6 @@ function App() {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
-					setSuggPromptsData(filteredValidatorsList);
 					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
@@ -174,7 +131,6 @@ function App() {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
-					setSuggPromptsData(filteredValidatorsList);
 					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);

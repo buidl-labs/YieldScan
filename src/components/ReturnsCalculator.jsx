@@ -26,7 +26,7 @@ import ErrorMessage from "./ErrorMessage";
 export default function ReturnsCalculator() {
 	const [stakeInput, setStakeInput]           = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.00);
-	const [suggPromptsAmount]                   = useDebounce(stakeInput / 16, 500.0);
+	const suggPromptsAmount                     = stakeInput / 16;
 	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
 	const [validatorData, setValidatorData]     = React.useState([]);
 	const [errorState, setErrorState]           = React.useState(false);
@@ -184,7 +184,7 @@ export default function ReturnsCalculator() {
 								Expected Returns
 							</Text>
 							<Text fontSize="30px" fontWeight="600" lineHeight="36px" mt="2%">
-								{ expectedReturns + ' KSM' }
+								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
 							</Text>
 							<Button
 								marginTop="25px"
