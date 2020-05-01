@@ -26,16 +26,15 @@ import ErrorMessage from "./ErrorMessage";
 export default function ReturnsCalculator() {
 	const [stakeInput, setStakeInput]           = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.00);
-	const { colorMode, toggleColorMode } = useColorMode();
-	const [validatorData, setValidatorData] = React.useState([]);
-	const [errorState, setErrorState] = React.useState(false);
-	const [intentionData, setIntentionData] = React.useState([]);
-	const [apiConnected, setApiConnected] = React.useState(false);
-	const [isLoaded, setIsLoaded] = React.useState(false);
+	const [suggPromptsAmount]                   = useDebounce(stakeInput / 16, 500.0);
+	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
+	const [validatorData, setValidatorData]     = React.useState([]);
+	const [errorState, setErrorState]           = React.useState(false);
+	const [intentionData, setIntentionData]     = React.useState([]);
+	const [apiConnected, setApiConnected]       = React.useState(false);
+	const [isLoaded, setIsLoaded]               = React.useState(false);
 	const ERA_PER_DAY = 4;
 
-	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 500.0);
-	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
 	function suggPrompts() {
 		const data = suggPromptsData.map(validator => {
 			const {
@@ -120,42 +119,32 @@ export default function ReturnsCalculator() {
 			</Helmet>
 			<LogEvent eventType="Returns calculator  view" />
 			<Route exact path="/returns-calculator">
-				<Box
-					borderWidth="0px"
-					rounded="1g"
-					overflow="hidden"
-					margin="5%"
-				>
-				<Heading mt="8%">
-					Calculate your returns
-				</Heading>
-					<SimpleGrid columns={2}>
-						<Box p="6">
-							<Box d="flex" alignItems="baseline">
-								<Box
-									color="gray.500"
-									fontWeight="semibold"
-									letterSpacing="wide"
-									fontSize="md"
-									ml="2"
-									margin="1%"
-									textAlign="left"
-								>
-									I want to spent:
-								</Box>
+					<Heading mt="10%" mb="4%">
+						Calculate your returns
+					</Heading>
+					<SimpleGrid columns={2} spacing="10%">
+						<Box>
+							<Box
+								color="gray.500"
+								fontWeight="semibold"
+								letterSpacing="wide"
+								fontSize="md"
+								mb="8px"
+							>
+								I want to spent:
 							</Box>
 							<InputGroup>
 								<Input
 									placeholder="Enter your Budget"
 									variant="filled"
 									type="number"
-									marginBottom="15px"
 									min="0"
 									step="0.000000000001"
 									max="999999999999999"
 									value={stakeInput}
 									textAlign="center"
-									roundedLeft="2rem"
+									rounded="40px"
+									mr="8px"
 									onChange={e => {
 									setStakeInput(
 									parseFloat(e.target.value)
@@ -166,13 +155,15 @@ export default function ReturnsCalculator() {
 									children="KSM"
 									backgroundColor="#4A5567"
 									color="white"
-									roundedRight="2rem"
+									roundedRight="40px"
+									roundedLeft="40px"
 								/>
 							</InputGroup>
 							<Button
+								marginTop="25px"
 								background="#19CC95"
 								color="white"	
-								rounded="2rem"
+								rounded="40px"
 								onClick={calculate}
 							>
 								Calculate
@@ -186,18 +177,25 @@ export default function ReturnsCalculator() {
 							background="#19CC95"
 							color="white"
 						>
-							<Heading as="h2">
+							<Text fontSize="30px" fontWeight="600" lineHeight="36px" mt="2%">
 								Expected Results
-							</Heading>
-							<Text fontSize="6x1" mt="2%">
+							</Text>
+							<Text fontSize="21px" lineHeight="25px" mt="6%">
 								Expected Returns
 							</Text>
-							<Heading as="h2">
+							<Text fontSize="30px" fontWeight="600" lineHeight="36px" mt="2%">
 								{ expectedReturns + ' KSM' }
-							</Heading>
+							</Text>
+							<Button
+								marginTop="25px"
+								background="white"
+								color="#19CC95"	
+								rounded="40px"
+							>
+								Start Investing
+							</Button>
 						</Box>
 					</SimpleGrid>
-				</Box>
 			</Route>
 		</React.Fragment>
 		)

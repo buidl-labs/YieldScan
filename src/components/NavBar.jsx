@@ -77,7 +77,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 				direction="row"
 				justifyContent="space-between"
 				zIndex={999}
-				p={2}
+				p={4}
 			>
 				{/* Polka Analytics Logo - Left hand part of navbar */}
 				<Flex justify="flex-start" alignItems="center">
@@ -87,14 +87,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 							display="inline-flex"
 							alignItems="center"
 						>
-							<Image src="/logo192.png" height="2rem" mr={4} />
-							<Heading
-								as="h3"
-								size="lg"
-								display={{ base: 'none', sm: 'block' }}
-							>
-								Polka Analytics
-							</Heading>
+							<Image src="/logo_yieldscan.svg" height="3rem" />
 						</Box>
 					</NavLink>
 				</Flex>
@@ -104,6 +97,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 						alignItems="center"
 						display={{ base: 'none', sm: 'flex' }}
 					>
+						{/*	
 						{isUserLoggedIn ? (
 						<Box mr={8}>
 							<Menu>
@@ -177,6 +171,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 							</Button>
 						</Box>
 						)}
+						*/}
 						<Box mr={8}>
 							<Link
 								as={NavLink}
