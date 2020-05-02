@@ -1,5 +1,5 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import React from "react";
+import { Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -8,38 +8,32 @@ import {
 	InputGroup,
 	Input,
 	InputRightAddon,
-	Icon,
 	Button,
-	Link as ChakraLink,
-	SimpleGrid,
 	useColorMode,
-	useDisclosure,
 	Slider,
 	SliderTrack,
 	SliderFilledTrack,
 	SliderThumb
-} from '@chakra-ui/core'
-import socketIOClient from "socket.io-client";
-import FAQs from './FAQs'
-import HowToStake from './guides/HowToStake'
-import LogEvent from './LogEvent'
-import Helmet from 'react-helmet'
-import { useDebounce } from 'use-debounce'
+} from "@chakra-ui/core";
+import CountUp from "react-countup";
+import Helmet from "react-helmet";
+import { useDebounce } from "use-debounce";
+import LogEvent from "./LogEvent";
 import ErrorMessage from "./ErrorMessage";
 
 export default function ReturnsCalculator(props) {
-	const { colorMode, toggleColorMode }        = useColorMode();
-	const [stakeInput, setStakeInput]           = React.useState();
-	const [expectedReturns, setExpectedReturns] = React.useState(0.00);
-	const [suggPromptsAmount]                   = useDebounce(stakeInput/16, 0);
+	const { colorMode, toggleColorMode } = useColorMode();
+	const [stakeInput, setStakeInput] = React.useState();
+	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
+	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 0);
 	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
-	const [validatorData, setValidatorData]     = React.useState([]);
-	const [errorState, setErrorState]           = React.useState(false);
-	const [intentionData, setIntentionData]     = React.useState([]);
-	const [apiConnected, setApiConnected]       = React.useState(false);
-	const [isLoaded, setIsLoaded]               = React.useState(false);
+	const [validatorData, setValidatorData] = React.useState([]);
+	const [errorState, setErrorState] = React.useState(false);
+	const [intentionData, setIntentionData] = React.useState([]);
+	const [apiConnected, setApiConnected] = React.useState(false);
+	const [isLoaded, setIsLoaded] = React.useState(false);
 	const ERA_PER_DAY = 4;
-	//console.log('props - ', props.validatorData);
+	// console.log('props - ', props.validatorData);
 
 	function suggPrompts() {
 		const data = suggPromptsData.map(validator => {
@@ -76,11 +70,11 @@ export default function ReturnsCalculator(props) {
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));
 			console.log("expected earning of top 16 val - ", expectedEarning);
-			setExpectedReturns (expectedEarning.dailyEarningPrecise);
+			setExpectedReturns(expectedEarning.dailyEarningPrecise);
 		}
 		if (apiConnected) setIsLoaded(true);
 	}
-	
+
 	React.useEffect(() => {
 		setSuggPromptsData(props.validatorData);
 	}, [props]);
@@ -103,7 +97,7 @@ export default function ReturnsCalculator(props) {
 				<Heading mt={12} mb={8}>
 					Calculate your returns
 				</Heading>
-				<Flex alignItems='start' flexWrap='wrap' justifyContent="space-between">
+				<Flex alignItems='start' flexWrap='wrap' justifyContent='space-between'>
 					<Box minWidth='288px' mr={8}>
 						<Box
 							color='gray.500'
@@ -112,7 +106,7 @@ export default function ReturnsCalculator(props) {
 							fontSize='md'
 							mb={8}
 						>
-							<Flex flexWrap="wrap">
+							<Flex flexWrap='wrap'>
 								<Flex direction='column' mr={8} mb={4}>
 									<Text mb={2}>I want to spend</Text>
 									<Input
@@ -199,21 +193,15 @@ export default function ReturnsCalculator(props) {
 						color='white'
 						minWidth='288px'
 					>
-						<Heading>
-							Expected Results
-						</Heading>
+						<Heading>Expected Results</Heading>
 						<Text fontSize='md' mt={6} mb={2}>
 							Expected Daily Returns
 						</Text>
 						<Heading>
-							{`${Number(expectedReturns.toFixed(5))} KSM`}
+							<CountUp end={Number(expectedReturns.toFixed(5))} decimals={3} />{" "}
+							KSM
 						</Heading>
-						<Button
-							mt={8}
-							background='white'
-							color='#19CC95'
-							rounded='40px'
-						>
+						<Button mt={8} background='white' color='#19CC95' rounded='40px'>
 							Start Investing
 						</Button>
 					</Box>
@@ -222,4 +210,3 @@ export default function ReturnsCalculator(props) {
 		</React.Fragment>
 	);
 }
-
