@@ -137,7 +137,7 @@ export default function ReturnsCalculator(props) {
 									max='999999999999999'
 									value={stakeInput}
 									textAlign='center'
-									rounded='40px'
+									rounded='2rem'
 									mr='4%'
 									onChange={e => {
 									setStakeInput(parseFloat(e.target.value));
@@ -149,8 +149,8 @@ export default function ReturnsCalculator(props) {
 									children="KSM"
 									backgroundColor="#4A5567"
 									color="white"
-									roundedRight="40px"
-									roundedLeft="40px"
+									roundedRight="2rem"
+									roundedLeft="2rem"
 								/>
 							</InputGroup>
 							<Box
@@ -191,7 +191,7 @@ export default function ReturnsCalculator(props) {
 								fontSize="lg"
 								background="#19CC95"
 								color="white"	
-								rounded="40px"
+								rounded="2rem"
 								onClick={calculate}
 							>
 								Calculate
@@ -205,20 +205,20 @@ export default function ReturnsCalculator(props) {
 							background="#19CC95"
 							color="white"
 						>
-							<Text fontSize="180%" fontWeight="600" lineHeight="36px" mt="2%">
+							<Text fontSize="180%" fontWeight="semibold" mt="2%">
 								Expected Results
 							</Text>
-							<Text fontSize="130%" lineHeight="25px" mt="6%">
+							<Text fontSize="130%" mt="6%">
 								Expected Returns
 							</Text>
-							<Text fontSize="190%" fontWeight="600" lineHeight="36px" mt="2%">
+							<Text fontSize="190%" fontWeight="semibold" mt="2%">
 								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
 							</Text>
 							<Button
 								marginTop="6%"
 								background="white"
 								color="#19CC95"	
-								rounded="40px"
+								rounded="2rem"
 							>
 								Start Investing
 							</Button>
