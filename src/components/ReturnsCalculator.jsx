@@ -13,7 +13,11 @@ import {
 	Link as ChakraLink,
 	SimpleGrid,
 	useColorMode,
-	useDisclosure
+	useDisclosure,
+	Slider,
+	SliderTrack,
+	SliderFilledTrack,
+	SliderThumb
 } from '@chakra-ui/core'
 import socketIOClient from "socket.io-client";
 import FAQs from './FAQs'
@@ -101,14 +105,27 @@ export default function ReturnsCalculator(props) {
 					</Heading>
 					<SimpleGrid columns={2} spacing="10%">
 						<Box>
-							<Box
-								color="gray.500"
-								fontWeight="semibold"
-								letterSpacing="wide"
-								fontSize="md"
-								mb="8px"
-							>
-								I want to spent:
+							<Box>
+								<Box
+									color="gray.500"
+									fontWeight="semibold"
+									letterSpacing="wide"
+									fontSize="lg"
+									mb="4%"
+								>
+									<Flex>
+										<Flex size="90%">
+											<Text>
+												I want to spent
+											</Text>
+										</Flex>
+										<Flex>
+											<Text>
+												Currency
+											</Text>
+										</Flex>
+									</Flex>
+								</Box>
 							</Box>
 							<InputGroup>
 								<Input
@@ -121,12 +138,14 @@ export default function ReturnsCalculator(props) {
 									value={stakeInput}
 									textAlign='center'
 									rounded='40px'
-									mr='8px'
+									mr='4%'
 									onChange={e => {
 									setStakeInput(parseFloat(e.target.value));
 									}}
 								/>
 								<InputRightAddon
+									align="center"
+									width="20%"
 									children="KSM"
 									backgroundColor="#4A5567"
 									color="white"
@@ -134,8 +153,42 @@ export default function ReturnsCalculator(props) {
 									roundedLeft="40px"
 								/>
 							</InputGroup>
+							<Box
+								color="gray.500"
+								fontWeight="semibold"
+								letterSpacing="wide"
+								fontSize="lg"
+								mt="8%"
+								mb="4%"
+							>
+								With Risk Level
+							</Box>
+							<Slider defaultValue={50}>
+								<SliderTrack />
+								<SliderFilledTrack />
+								<SliderThumb />
+							</Slider>
+							<Box
+								color="gray.500"
+								letterSpacing="wide"
+								fontSize="sm"
+								mb="4%"
+							>
+								<Flex>
+									<Flex size="46%">
+										<Text>Low</Text>
+									</Flex>
+									<Flex size="55%">
+										<Text>Medium</Text>
+									</Flex>
+									<Flex>
+										<Text>High</Text>
+									</Flex>
+								</Flex>
+							</Box>
 							<Button
-								marginTop="25px"
+								marginTop="10%"
+								fontSize="lg"
 								background="#19CC95"
 								color="white"	
 								rounded="40px"
@@ -145,24 +198,24 @@ export default function ReturnsCalculator(props) {
 							</Button>
 						</Box>
 						<Box
-							padding="30px"
+							padding="8%"
 							borderWidth="1px"
 							rounded="4mm"
 							overflow="hidden"
 							background="#19CC95"
 							color="white"
 						>
-							<Text fontSize="30px" fontWeight="600" lineHeight="36px" mt="2%">
+							<Text fontSize="180%" fontWeight="600" lineHeight="36px" mt="2%">
 								Expected Results
 							</Text>
-							<Text fontSize="21px" lineHeight="25px" mt="6%">
+							<Text fontSize="130%" lineHeight="25px" mt="6%">
 								Expected Returns
 							</Text>
-							<Text fontSize="30px" fontWeight="600" lineHeight="36px" mt="2%">
+							<Text fontSize="190%" fontWeight="600" lineHeight="36px" mt="2%">
 								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
 							</Text>
 							<Button
-								marginTop="25px"
+								marginTop="6%"
 								background="white"
 								color="#19CC95"	
 								rounded="40px"
