@@ -32,6 +32,8 @@ export default function ReturnsCalculator(props) {
 	const [intentionData, setIntentionData] = React.useState([]);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
+	const [riskLevel, setRiskLevel] = React.useState(50);
+	const [sliderBG, setSliderBG] = React.useState("yellow.300");
 	const ERA_PER_DAY = 4;
 	// console.log('props - ', props.validatorData);
 
@@ -86,6 +88,18 @@ export default function ReturnsCalculator(props) {
 	function calculate() {
 		suggPrompts();
 	}
+
+	const onRiskChange = value => {
+		console.log(value);
+		if (value <= 30) {
+			setSliderBG("green.300");
+		} else if (value > 70) {
+			setSliderBG("red.400");
+		} else {
+			setSliderBG("yellow.300");
+		}
+	};
+
 	return (
 		<React.Fragment>
 			<Helmet>
@@ -153,9 +167,16 @@ export default function ReturnsCalculator(props) {
 							>
 								With Risk Level
 							</Text>
-							<Slider defaultValue={50}>
+							<Slider
+								defaultValue={50}
+								value={riskLevel}
+								onChange={value => {
+									setRiskLevel(value);
+									onRiskChange(value);
+								}}
+							>
 								<SliderTrack />
-								<SliderFilledTrack />
+								<SliderFilledTrack bg={sliderBG} />
 								<SliderThumb />
 							</Slider>
 							<Flex
@@ -198,8 +219,11 @@ export default function ReturnsCalculator(props) {
 							Expected Daily Returns
 						</Text>
 						<Heading>
-							<CountUp end={Number(expectedReturns.toFixed(5))} decimals={3} />{" "}
-							KSM
+							<CountUp
+								end={Number(expectedReturns.toFixed(5))}
+								decimals={3}
+								suffix=' KSM'
+							/>
 						</Heading>
 						<Button mt={8} background='white' color='#19CC95' rounded='40px'>
 							Start Investing
