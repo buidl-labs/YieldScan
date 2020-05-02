@@ -143,63 +143,6 @@ export default function ReturnsCalculator(props) {
 						</Box>
 
 						<Box>
-<<<<<<< HEAD
-							<Box>
-								<Box
-									color="gray.500"
-									fontWeight="semibold"
-									letterSpacing="wide"
-									fontSize="lg"
-									mb="4%"
-								>
-									<Flex>
-										<Flex size="90%">
-											<Text>
-												I want to spent
-											</Text>
-										</Flex>
-										<Flex>
-											<Text>
-												Currency
-											</Text>
-										</Flex>
-									</Flex>
-								</Box>
-							</Box>
-							<InputGroup>
-								<Input
-									placeholder='Enter your Budget'
-									variant='filled'
-									type='number'
-									min='0'
-									step='0.000000000001'
-									max='999999999999999'
-									value={stakeInput}
-									textAlign='center'
-									rounded='2rem'
-									mr='4%'
-									onChange={e => {
-									setStakeInput(parseFloat(e.target.value));
-									}}
-								/>
-								<InputRightAddon
-									align="center"
-									width="20%"
-									children="KSM"
-									backgroundColor="#4A5567"
-									color="white"
-									roundedRight="2rem"
-									roundedLeft="2rem"
-								/>
-							</InputGroup>
-							<Box
-								color="gray.500"
-								fontWeight="semibold"
-								letterSpacing="wide"
-								fontSize="lg"
-								mt="8%"
-								mb="4%"
-=======
 							<Text
 								color='gray.500'
 								fontWeight='semibold'
@@ -207,7 +150,6 @@ export default function ReturnsCalculator(props) {
 								fontSize='md'
 								mt={8}
 								mb={4}
->>>>>>> 87c662fff8f9b1e6612474085069842f5abb3deb
 							>
 								With Risk Level
 							</Text>
@@ -224,35 +166,10 @@ export default function ReturnsCalculator(props) {
 								fontSize='sm'
 								mb={8}
 							>
-<<<<<<< HEAD
-								<Flex>
-									<Flex size="46%">
-										<Text>Low</Text>
-									</Flex>
-									<Flex size="55%">
-										<Text>Medium</Text>
-									</Flex>
-									<Flex>
-										<Text>High</Text>
-									</Flex>
-								</Flex>
-							</Box>
-							<Button
-								marginTop="10%"
-								fontSize="lg"
-								background="#19CC95"
-								color="white"	
-								rounded="2rem"
-								onClick={calculate}
-							>
-								Calculate
-							</Button>
-=======
 								<Text>Low</Text>
 								<Text>Medium</Text>
 								<Text>High</Text>
 							</Flex>
->>>>>>> 87c662fff8f9b1e6612474085069842f5abb3deb
 						</Box>
 						<Button
 							marginTop='10%'
@@ -263,27 +180,6 @@ export default function ReturnsCalculator(props) {
 							mb={16}
 							onClick={calculate}
 						>
-<<<<<<< HEAD
-							<Text fontSize="180%" fontWeight="semibold" mt="2%">
-								Expected Results
-							</Text>
-							<Text fontSize="130%" mt="6%">
-								Expected Returns
-							</Text>
-							<Text fontSize="190%" fontWeight="semibold" mt="2%">
-								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
-							</Text>
-							<Button
-								marginTop="6%"
-								background="white"
-								color="#19CC95"	
-								rounded="2rem"
-							>
-								Start Investing
-							</Button>
-						</Box>
-					</SimpleGrid>
-=======
 							Calculate
 						</Button>
 					</Box>
@@ -310,7 +206,6 @@ export default function ReturnsCalculator(props) {
 						</Button>
 					</Box>
 				</Flex>
->>>>>>> 87c662fff8f9b1e6612474085069842f5abb3deb
 			</Route>
 		</React.Fragment>
 	);
