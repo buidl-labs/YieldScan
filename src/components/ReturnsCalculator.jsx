@@ -95,137 +95,131 @@ export default function ReturnsCalculator(props) {
 	return (
 		<React.Fragment>
 			<Helmet>
-				<title>Yield Scan - Reutrn Calculator</title>
-				<meta name="description" content="Validator key stats" />
+				<title>YieldScan - Returns Calculator</title>
+				<meta name='description' content='Validator key stats' />
 			</Helmet>
-			<LogEvent eventType="Returns calculator  view" />
-			<Route exact path="/returns-calculator">
-					<Heading mt="10%" mb="4%">
-						Calculate your returns
-					</Heading>
-					<SimpleGrid columns={2} spacing="10%">
+			<LogEvent eventType='Returns calculator view' />
+			<Route exact path='/returns-calculator'>
+				<Heading mt={12} mb={8}>
+					Calculate your returns
+				</Heading>
+				<Flex alignItems='start' flexWrap='wrap' justifyContent="space-between">
+					<Box minWidth='288px' mr={8}>
+						<Box
+							color='gray.500'
+							fontWeight='semibold'
+							letterSpacing='wide'
+							fontSize='md'
+							mb={8}
+						>
+							<Flex flexWrap="wrap">
+								<Flex direction='column' mr={8} mb={4}>
+									<Text mb={2}>I want to spend</Text>
+									<Input
+										placeholder='Enter your budget'
+										variant='filled'
+										type='number'
+										min='0'
+										step='0.000000000001'
+										max='999999999999999'
+										value={stakeInput}
+										textAlign='center'
+										rounded='40px'
+										minWidth='200px'
+										onChange={e => {
+											setStakeInput(parseFloat(e.target.value));
+										}}
+									/>
+								</Flex>
+								<Flex direction='column'>
+									<Text mb={2}>Currency</Text>
+									<InputGroup>
+										<InputRightAddon
+											align='center'
+											px={8}
+											children='KSM'
+											backgroundColor='#4A5567'
+											color='white'
+											roundedRight='40px'
+											roundedLeft='40px'
+										/>
+									</InputGroup>
+								</Flex>
+							</Flex>
+						</Box>
+
 						<Box>
-							<Box>
-								<Box
-									color="gray.500"
-									fontWeight="semibold"
-									letterSpacing="wide"
-									fontSize="lg"
-									mb="4%"
-								>
-									<Flex>
-										<Flex size="90%">
-											<Text>
-												I want to spent
-											</Text>
-										</Flex>
-										<Flex>
-											<Text>
-												Currency
-											</Text>
-										</Flex>
-									</Flex>
-								</Box>
-							</Box>
-							<InputGroup>
-								<Input
-									placeholder='Enter your Budget'
-									variant='filled'
-									type='number'
-									min='0'
-									step='0.000000000001'
-									max='999999999999999'
-									value={stakeInput}
-									textAlign='center'
-									rounded='40px'
-									mr='4%'
-									onChange={e => {
-									setStakeInput(parseFloat(e.target.value));
-									}}
-								/>
-								<InputRightAddon
-									align="center"
-									width="20%"
-									children="KSM"
-									backgroundColor="#4A5567"
-									color="white"
-									roundedRight="40px"
-									roundedLeft="40px"
-								/>
-							</InputGroup>
-							<Box
-								color="gray.500"
-								fontWeight="semibold"
-								letterSpacing="wide"
-								fontSize="lg"
-								mt="8%"
-								mb="4%"
+							<Text
+								color='gray.500'
+								fontWeight='semibold'
+								letterSpacing='wide'
+								fontSize='md'
+								mt={8}
+								mb={4}
 							>
 								With Risk Level
-							</Box>
+							</Text>
 							<Slider defaultValue={50}>
 								<SliderTrack />
 								<SliderFilledTrack />
 								<SliderThumb />
 							</Slider>
-							<Box
-								color="gray.500"
-								letterSpacing="wide"
-								fontSize="sm"
-								mb="4%"
+							<Flex
+								justifyContent='space-between'
+								width='100%'
+								color='gray.500'
+								letterSpacing='wide'
+								fontSize='sm'
+								mb={8}
 							>
-								<Flex>
-									<Flex size="46%">
-										<Text>Low</Text>
-									</Flex>
-									<Flex size="55%">
-										<Text>Medium</Text>
-									</Flex>
-									<Flex>
-										<Text>High</Text>
-									</Flex>
-								</Flex>
-							</Box>
-							<Button
-								marginTop="10%"
-								fontSize="lg"
-								background="#19CC95"
-								color="white"	
-								rounded="40px"
-								onClick={calculate}
-							>
-								Calculate
-							</Button>
+								<Text>Low</Text>
+								<Text>Medium</Text>
+								<Text>High</Text>
+							</Flex>
 						</Box>
-						<Box
-							padding="8%"
-							borderWidth="1px"
-							rounded="4mm"
-							overflow="hidden"
-							background="#19CC95"
-							color="white"
+						<Button
+							marginTop='10%'
+							fontSize='lg'
+							background='#19CC95'
+							color='white'
+							rounded='40px'
+							mb={16}
+							onClick={calculate}
 						>
-							<Text fontSize="180%" fontWeight="600" lineHeight="36px" mt="2%">
-								Expected Results
-							</Text>
-							<Text fontSize="130%" lineHeight="25px" mt="6%">
-								Expected Returns
-							</Text>
-							<Text fontSize="190%" fontWeight="600" lineHeight="36px" mt="2%">
-								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
-							</Text>
-							<Button
-								marginTop="6%"
-								background="white"
-								color="#19CC95"	
-								rounded="40px"
-							>
-								Start Investing
-							</Button>
-						</Box>
-					</SimpleGrid>
+							Calculate
+						</Button>
+					</Box>
+					<Box
+						p={8}
+						pb={16}
+						borderWidth='1px'
+						rounded={16}
+						overflow='hidden'
+						background='#19CC95'
+						color='white'
+						minWidth='288px'
+					>
+						<Heading>
+							Expected Results
+						</Heading>
+						<Text fontSize='md' mt={6} mb={2}>
+							Expected Daily Returns
+						</Text>
+						<Heading>
+							{`${Number(expectedReturns.toFixed(5))} KSM`}
+						</Heading>
+						<Button
+							mt={8}
+							background='white'
+							color='#19CC95'
+							rounded='40px'
+						>
+							Start Investing
+						</Button>
+					</Box>
+				</Flex>
 			</Route>
 		</React.Fragment>
-		)
+	);
 }
 
