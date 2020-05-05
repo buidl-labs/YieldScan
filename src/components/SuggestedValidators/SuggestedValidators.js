@@ -73,7 +73,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
-						<ExpectedReturns />
+						<ExpectedReturns returns={1.43678534556} />
 					</Box>
 				</Flex>
 				<Flex justify='center' py={2}>

@@ -1,7 +1,12 @@
 import React from "react";
 import { Box, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
 
-const ExpectedReturns = () => {
+type ExpectedReturnsProps = {
+	returns: float
+};
+
+const ExpectedReturns = (props: ExpectedReturnsProps) => {
+	const returns = props.returns.toFixed(5);
 	return (
 		<>
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
@@ -18,7 +23,7 @@ const ExpectedReturns = () => {
 					Expected Returns
 				</Text>
 				<Text fontSize='2xl' fontWeight='medium'>
-					1.234 KSM
+					{returns} KSM
 				</Text>
 			</Box>
 		</>
