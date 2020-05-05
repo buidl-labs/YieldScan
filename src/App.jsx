@@ -35,6 +35,7 @@ import NominatorApp from "./components/nominator_components/NominatorApp.jsx";
 import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
 import NavBar from "./components/NavBar.jsx";
+import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -175,7 +176,7 @@ function App() {
 				/>
 				<Flex
 					className='App'
-					maxW='960px'
+					maxW='90%'
 					justify='center'
 					direction='column'
 					m='auto'
@@ -298,6 +299,59 @@ function App() {
 					{/* Help Center */}
 					<Route path='/help-center'>
 						<HelpCenter />
+					</Route>
+					{/* Suggested Validators */}
+					<Route path='/suggested-validators'>
+						<SuggestedValidators
+							colorMode={colorMode}
+							returns={1.43678534556}
+							budget={3000}
+							currency='KSM'
+							validatorsList={[
+								{
+									name: "PolyLabs 1",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.24"
+								},
+								{
+									name: "PolyLabs 2",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.3"
+								},
+								{
+									name: "PolyLabs 3",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.64"
+								},
+								{
+									name: "PolyLabs 4",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.34"
+								},
+								{
+									name: "PolyLabs 5",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.64"
+								},
+								{
+									name: "PolyLabs 6",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.44"
+								},
+								{
+									name: "PolyLabs 7",
+									avatar: "default",
+									amount: "1.25",
+									risk: "0.14"
+								}
+							]}
+						/>
 					</Route>
 				</Flex>
 				{/* Validator specific view */}
@@ -432,10 +486,10 @@ function App() {
 				onClose={onCreateAccountDialogClose}
 				title='Create atleast one account from polkadot extension!'
 				body={
-					<>
+					<React.Fragment>
 						Create atleast one account from PolkadotJs extension for making
 						transactions for a specific account.
-					</>
+					</React.Fragment>
 				}
 			/>
 		</AmplitudeProvider>

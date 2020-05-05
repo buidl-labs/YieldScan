@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
 	Flex,
 	useDisclosure,
@@ -31,7 +31,7 @@ import {
 	web3AccountsSubscribe,
 } from '@polkadot/extension-dapp'
 
-import Identicon from '@polkadot/react-identicon'
+import Identicon from "@polkadot/react-identicon";
 
 export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 	const { colorMode, toggleColorMode } = useColorMode()
@@ -73,20 +73,15 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 	return (
 		<React.Fragment>
 			{/* Navbar */}
-			<Flex
-				direction="row"
-				justifyContent="space-between"
-				zIndex={999}
-				p={4}
-			>
+			<Flex direction='row' justifyContent='space-between' zIndex={999} p={2}>
 				{/* Polka Analytics Logo - Left hand part of navbar */}
-				<Flex justify="flex-start" alignItems="center">
-					<NavLink to="/">
-						<Box as="span" display="inline-flex" alignItems="center">
-							<Image src="/logo192.svg" height="3rem" mr={4} />
+				<Flex justify='flex-start' alignItems='center'>
+					<NavLink to='/'>
+						<Box as='span' display='inline-flex' alignItems='center'>
+							<Image src='/LogoYS.svg' height='2rem' mr={4} />
 							<Heading
-								as="h3"
-								size="lg"
+								as='h3'
+								size='lg'
 								display={{ base: "none", sm: "block" }}
 							>
 								Yield Scan
@@ -204,31 +199,29 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 						</Box>
 						<IconButton
 							aria-label={
-							colorMode === 'light'
-							? 'Switch to dark mode'
-							: 'Switch to light mode'
+								colorMode === "light"
+									? "Switch to dark mode"
+									: "Switch to light mode"
 							}
-							icon={colorMode === 'light' ? 'moon' : 'sun'}
-							size="lg"
+							icon={colorMode === "light" ? "moon" : "sun"}
+							size='lg'
 							onClick={toggleColorMode}
-							backgroundColor={
-							colorMode === 'light' ? '#fff' : 'gray.800'
-							}
+							backgroundColor={colorMode === "light" ? "#fff" : "gray.800"}
 						/>
 					</Flex>
 					<IconButton
 						ref={btnRef}
 						icon={AiOutlineMenu}
 						onClick={onOpen}
-						display={{ base: 'block', sm: 'none' }}
-						backgroundColor="transparent"
+						display={{ base: "block", sm: "none" }}
+						backgroundColor='transparent'
 					/>
 					<Drawer
 						isOpen={isOpen}
-						placement="right"
+						placement='right'
 						onClose={onClose}
 						finalFocusRef={btnRef}
-						display={{ base: 'block', sm: 'none' }}
+						display={{ base: "block", sm: "none" }}
 					>
 						<DrawerOverlay />
 						<DrawerContent>
@@ -269,32 +262,25 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 							</DrawerBody>
 
 							<DrawerFooter
-								justifyContent="flex-start"
-								alignItems="center"
+								justifyContent='flex-start'
+								alignItems='center'
 								p={0}
 							>
-								<Button
-									onClick={toggleColorMode}
-									pl={6}
-									width="100%"
-								>
+								<Button onClick={toggleColorMode} pl={6} width='100%'>
 									<Icon
-										size="16px"
+										size='16px'
 										aria-label={
-										colorMode === 'light'
-										? 'Switch to dark mode'
-										: 'Switch to light mode'
+											colorMode === "light"
+												? "Switch to dark mode"
+												: "Switch to light mode"
 										}
-										name={
-										colorMode === 'light'
-										? 'moon'
-										: 'sun'
-										}
+										name={colorMode === "light" ? "moon" : "sun"}
 										mr={4}
-									/>{' '}
-									{colorMode === 'light'
-									? 'Switch to dark mode'
-									: 'Switch to light mode'}
+									/>{" "}
+									{colorMode === "light"
+										? "Switch to dark mode"
+										: "Switch to light mode"}
+>>>>>>> develop
 								</Button>
 							</DrawerFooter>
 						</DrawerContent>
@@ -302,5 +288,5 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 				</Flex>
 			</Flex>
 		</React.Fragment>
-	)
-}
+	);
+};
