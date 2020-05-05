@@ -343,6 +343,7 @@ function App() {
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
+							returns={1.43678534556}
 							validatorsList={[
 								{
 									name: "PolyLabs 1",

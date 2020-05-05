@@ -22,7 +22,8 @@ type SuggestedValidatorsProps = {
 		avatar?: string,
 		amount: float,
 		risk: float
-	}>
+	}>,
+	returns: float
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
@@ -73,7 +74,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
-						<ExpectedReturns returns={1.43678534556} />
+						<ExpectedReturns returns={props.returns} />
 					</Box>
 				</Flex>
 				<Flex justify='center' py={2}>
