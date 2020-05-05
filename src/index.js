@@ -6,11 +6,10 @@ import {
 	CSSReset,
 	theme
 } from "@chakra-ui/core";
+import * as Sentry from "@sentry/browser";
 import App from "./App.jsx";
 import "./stylesheets/scss/index.scss";
 import ErrorBoundary from "./components/ErrorBoundary";
-
-import * as Sentry from "@sentry/browser";
 
 Sentry.init({
 	dsn: "https://f3d041ae0c9845be88aa6f208ac095c3@sentry.io/1882544"
@@ -21,7 +20,7 @@ const customTheme = {
 	colors: {
 		...theme.colors,
 		brand: {
-			900: "#19CC95"
+			900: "#19cc95"
 		}
 	}
 };

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import React from "react";
+import { Link, Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -8,41 +8,39 @@ import {
 	InputGroup,
 	Input,
 	InputRightAddon,
-	Icon,
 	Button,
-	Link as ChakraLink,
-	SimpleGrid,
 	useColorMode,
-	useDisclosure,
 	Slider,
 	SliderTrack,
 	SliderFilledTrack,
 	SliderThumb
-} from '@chakra-ui/core'
-import socketIOClient from "socket.io-client";
-import FAQs from './FAQs'
-import HowToStake from './guides/HowToStake'
-import LogEvent from './LogEvent'
-import Helmet from 'react-helmet'
-import { useDebounce } from 'use-debounce'
+} from "@chakra-ui/core";
+import CountUp from "react-countup";
+import Helmet from "react-helmet";
+import { useDebounce } from "use-debounce";
+import LogEvent from "./LogEvent";
 import ErrorMessage from "./ErrorMessage";
+import SuggestedValidators from "./SuggestedValidators/SuggestedValidators";
 
 export default function ReturnsCalculator(props) {
-	const { colorMode, toggleColorMode }        = useColorMode();
-	const [stakeInput, setStakeInput]           = React.useState();
-	const [expectedReturns, setExpectedReturns] = React.useState(0.00);
-	const [suggPromptsAmount]                   = useDebounce(stakeInput/16, 0);
-	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
-	const [validatorData, setValidatorData]     = React.useState([]);
-	const [errorState, setErrorState]           = React.useState(false);
-	const [intentionData, setIntentionData]     = React.useState([]);
-	const [apiConnected, setApiConnected]       = React.useState(false);
-	const [isLoaded, setIsLoaded]               = React.useState(false);
+	const { colorMode, toggleColorMode } = useColorMode();
+	const [stakeInput, setStakeInput] = React.useState();
+	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
+	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 0);
+	const [validatorsList, setValidatorsList] = React.useState([]);
+	const [validatorData, setValidatorData] = React.useState([]);
+	const [errorState, setErrorState] = React.useState(false);
+	const [intentionData, setIntentionData] = React.useState([]);
+	const [apiConnected, setApiConnected] = React.useState(false);
+	const [isLoaded, setIsLoaded] = React.useState(false);
+	const [riskLevel, setRiskLevel] = React.useState(50);
+	const [sliderBG, setSliderBG] = React.useState("yellow.300");
 	const ERA_PER_DAY = 4;
-	//console.log('props - ', props.validatorData);
+	// console.log('props - ', props.validatorData);
+	const [suggestedValidators, setSuggestedValidators] = React.useState();
 
 	function suggPrompts() {
-		const data = suggPromptsData.map(validator => {
+		const data = validatorsList.map(validator => {
 			const {
 				stashId,
 				stashIdTruncated,
@@ -69,6 +67,7 @@ export default function ReturnsCalculator(props) {
 		});
 		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
 		const top16data = [...data.slice(0, 16)];
+		setSuggestedValidators (top16data);
 		// console.log("table data of top 16 val - ", top16data);
 		if (top16data.length > 0) {
 			// eslint-disable-next-line no-unused-vars
@@ -76,13 +75,13 @@ export default function ReturnsCalculator(props) {
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));
 			console.log("expected earning of top 16 val - ", expectedEarning);
-			setExpectedReturns (expectedEarning.dailyEarningPrecise);
+			setExpectedReturns(expectedEarning.dailyEarningPrecise);
 		}
 		if (apiConnected) setIsLoaded(true);
 	}
-	
+
 	React.useEffect(() => {
-		setSuggPromptsData(props.validatorData);
+		setValidatorsList(props.validatorData);
 	}, [props]);
 
 	if (errorState) {
@@ -92,140 +91,165 @@ export default function ReturnsCalculator(props) {
 	function calculate() {
 		suggPrompts();
 	}
+
+	const onRiskChange = value => {
+		console.log(value);
+		if (value <= 30) {
+			setSliderBG("green.300");
+		} else if (value > 70) {
+			setSliderBG("red.400");
+		} else {
+			setSliderBG("yellow.300");
+		}
+	};
+
+	const handleInvest = () => {
+		const data = {};
+		data.validatorsList = suggestedValidators;
+		data.expectedReturns = expectedReturns;
+		data.budget = stakeInput;
+		props.onEvent(data);
+	}
+
 	return (
 		<React.Fragment>
 			<Helmet>
-				<title>Yield Scan - Reutrn Calculator</title>
-				<meta name="description" content="Validator key stats" />
+				<title>YieldScan - Returns Calculator</title>
+				<meta name='description' content='Validator key stats' />
 			</Helmet>
-			<LogEvent eventType="Returns calculator  view" />
-			<Route exact path="/returns-calculator">
-					<Heading mt="10%" mb="4%">
-						Calculate your returns
-					</Heading>
-					<SimpleGrid columns={2} spacing="10%">
+			<LogEvent eventType='Returns calculator view' />
+			<Route exact path='/returns-calculator'>
+				<Heading mt={12} mb={8}>
+					Calculate your returns
+				</Heading>
+				<Flex alignItems='start' flexWrap='wrap' justifyContent='space-between'>
+					<Box minWidth='288px' mr={8}>
+						<Box
+							color='gray.500'
+							fontWeight='semibold'
+							letterSpacing='wide'
+							fontSize='md'
+							mb={8}
+						>
+							<Flex flexWrap='wrap'>
+								<Flex direction='column' mr={8} mb={4}>
+									<Text mb={2}>I want to spend</Text>
+									<Input
+										placeholder='Enter your budget'
+										variant='filled'
+										type='number'
+										min='0'
+										step='0.000000000001'
+										max='999999999999999'
+										value={stakeInput}
+										textAlign='center'
+										rounded='40px'
+										minWidth='200px'
+										onChange={e => {
+											setStakeInput(parseFloat(e.target.value));
+										}}
+									/>
+								</Flex>
+								<Flex direction='column'>
+									<Text mb={2}>Currency</Text>
+									<InputGroup>
+										<InputRightAddon
+											align='center'
+											px={8}
+											children='KSM'
+											backgroundColor='#4A5567'
+											color='white'
+											roundedRight='40px'
+											roundedLeft='40px'
+										/>
+									</InputGroup>
+								</Flex>
+							</Flex>
+						</Box>
+
 						<Box>
-							<Box>
-								<Box
-									color="gray.500"
-									fontWeight="semibold"
-									letterSpacing="wide"
-									fontSize="lg"
-									mb="4%"
-								>
-									<Flex>
-										<Flex size="90%">
-											<Text>
-												I want to spent
-											</Text>
-										</Flex>
-										<Flex>
-											<Text>
-												Currency
-											</Text>
-										</Flex>
-									</Flex>
-								</Box>
-							</Box>
-							<InputGroup>
-								<Input
-									placeholder='Enter your Budget'
-									variant='filled'
-									type='number'
-									min='0'
-									step='0.000000000001'
-									max='999999999999999'
-									value={stakeInput}
-									textAlign='center'
-									rounded='40px'
-									mr='4%'
-									onChange={e => {
-									setStakeInput(parseFloat(e.target.value));
-									}}
-								/>
-								<InputRightAddon
-									align="center"
-									width="20%"
-									children="KSM"
-									backgroundColor="#4A5567"
-									color="white"
-									roundedRight="40px"
-									roundedLeft="40px"
-								/>
-							</InputGroup>
-							<Box
-								color="gray.500"
-								fontWeight="semibold"
-								letterSpacing="wide"
-								fontSize="lg"
-								mt="8%"
-								mb="4%"
+							<Text
+								color='gray.500'
+								fontWeight='semibold'
+								letterSpacing='wide'
+								fontSize='md'
+								mt={8}
+								mb={4}
 							>
 								With Risk Level
-							</Box>
-							<Slider defaultValue={50}>
+							</Text>
+							<Slider
+								defaultValue={50}
+								value={riskLevel}
+								onChange={value => {
+									setRiskLevel(value);
+									onRiskChange(value);
+								}}
+							>
 								<SliderTrack />
-								<SliderFilledTrack />
+								<SliderFilledTrack bg={sliderBG} />
 								<SliderThumb />
 							</Slider>
-							<Box
-								color="gray.500"
-								letterSpacing="wide"
-								fontSize="sm"
-								mb="4%"
+							<Flex
+								justifyContent='space-between'
+								width='100%'
+								color='gray.500'
+								letterSpacing='wide'
+								fontSize='sm'
+								mb={8}
 							>
-								<Flex>
-									<Flex size="46%">
-										<Text>Low</Text>
-									</Flex>
-									<Flex size="55%">
-										<Text>Medium</Text>
-									</Flex>
-									<Flex>
-										<Text>High</Text>
-									</Flex>
-								</Flex>
-							</Box>
-							<Button
-								marginTop="10%"
-								fontSize="lg"
-								background="#19CC95"
-								color="white"	
-								rounded="40px"
-								onClick={calculate}
-							>
-								Calculate
-							</Button>
+								<Text>Low</Text>
+								<Text>Medium</Text>
+								<Text>High</Text>
+							</Flex>
 						</Box>
-						<Box
-							padding="8%"
-							borderWidth="1px"
-							rounded="4mm"
-							overflow="hidden"
-							background="#19CC95"
-							color="white"
+						<Button
+							marginTop='10%'
+							fontSize='lg'
+							background='#19CC95'
+							color='white'
+							rounded='40px'
+							mb={16}
+							onClick={calculate}
 						>
-							<Text fontSize="180%" fontWeight="600" lineHeight="36px" mt="2%">
-								Expected Results
-							</Text>
-							<Text fontSize="130%" lineHeight="25px" mt="6%">
-								Expected Returns
-							</Text>
-							<Text fontSize="190%" fontWeight="600" lineHeight="36px" mt="2%">
-								{ Number((expectedReturns).toFixed(5)) + ' KSM' }
-							</Text>
-							<Button
-								marginTop="6%"
-								background="white"
-								color="#19CC95"	
-								rounded="40px"
+							Calculate
+						</Button>
+					</Box>
+					<Box
+						p={8}
+						pb={16}
+						borderWidth='1px'
+						rounded={16}
+						overflow='hidden'
+						background='#19CC95'
+						color='white'
+						minWidth='288px'
+					>
+						<Heading>Expected Results</Heading>
+						<Text fontSize='md' mt={6} mb={2}>
+							Expected Daily Returns
+						</Text>
+						<Heading>
+							<CountUp
+								end={Number(expectedReturns.toFixed(5))}
+								decimals={3}
+								suffix=' KSM'
+							/>
+						</Heading>
+						<Link
+							to='/suggested-validators'>
+							<Button mt={8} 
+								background='white' 
+								color='#19CC95' 
+								rounded='40px'
+								onClick={handleInvest}
 							>
 								Start Investing
 							</Button>
-						</Box>
-					</SimpleGrid>
+						</Link>
+					</Box>
+				</Flex>
 			</Route>
 		</React.Fragment>
-		)
+	);
 }
-

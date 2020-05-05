@@ -55,6 +55,12 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
+	let [validators, setValidators] = React.useState([{name: 'None', amount: 0, avatar: 'default', risk: 0.00}]);
+	const [data, setData] = React.useState({
+		'budget' : '0',
+		'returns': '0'
+	});
+
 	const {
 		isOpen: isExtensionDialogOpen,
 		onOpen: onExtensionDialogOpen,
@@ -65,6 +71,7 @@ function App() {
 		onOpen: onCreateAccountDialogOpen,
 		onClose: onCreateAccountDialogClose
 	} = useDisclosure();
+	
 	const ERA_PER_DAY = 4;
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
@@ -147,7 +154,17 @@ function App() {
 	if (errorState) {
 		return <ErrorMessage />;
 	}
-
+	function handleChildTabEvent(data) {
+		setData ({...data});
+		validators = data.validatorsList.reduce((acc, cur) => {
+			acc.push({name: cur.name, amount: cur.dailyEarningPrecise, avatar: 'default', risk: '0.22'});
+			return acc;
+		},[]);	
+		setValidators (validators);
+		console.log('validators - ', validators);
+	}
+	console.log('data - ', data);
+	
 	return (
 		<AmplitudeProvider
 			amplitudeInstance={amplitude.getInstance()}
@@ -294,63 +311,23 @@ function App() {
 
 					{/* Help Center */}
 					<Route path='/returns-calculator'>
-						<ReturnsCalculator validatorData={validatorData}/>
+						<ReturnsCalculator 
+							validatorData={validatorData}
+							onEvent={handleChildTabEvent}
+						/>
 					</Route>
 					{/* Help Center */}
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
-					{/* Suggested Validators */}
+					{/* Suggested Validators*/} 
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
-							returns={1.43678534556}
-							budget={3000}
+							returns={data.expectedReturns}
+							budget={data.budget}
 							currency='KSM'
-							validatorsList={[
-								{
-									name: "PolyLabs 1",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.24"
-								},
-								{
-									name: "PolyLabs 2",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.3"
-								},
-								{
-									name: "PolyLabs 3",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.64"
-								},
-								{
-									name: "PolyLabs 4",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.34"
-								},
-								{
-									name: "PolyLabs 5",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.64"
-								},
-								{
-									name: "PolyLabs 6",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.44"
-								},
-								{
-									name: "PolyLabs 7",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.14"
-								}
-							]}
+							validatorsList={validators}
 						/>
 					</Route>
 				</Flex>

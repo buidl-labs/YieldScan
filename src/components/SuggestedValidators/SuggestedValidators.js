@@ -29,6 +29,9 @@ type SuggestedValidatorsProps = {
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
+	
+	console.log('props - ', props);
+
 	return (
 		<React.Fragment>
 			<Helmet>
@@ -36,7 +39,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link m={4}>
+					<Link to='/returns-calculator' m={4}>
 						<Icon name='arrow-back' mr={1} /> Returns Calculator
 					</Link>
 				</Box>
