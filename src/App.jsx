@@ -344,6 +344,8 @@ function App() {
 						<SuggestedValidators
 							colorMode={colorMode}
 							returns={1.43678534556}
+							budget={3000}
+							currency='KSM'
 							validatorsList={[
 								{
 									name: "PolyLabs 1",

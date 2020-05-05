@@ -2,7 +2,8 @@ import React from "react";
 import { Box, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
 
 type ExpectedReturnsProps = {
-	returns: float
+	returns: float,
+	currency: string
 };
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
@@ -23,7 +24,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					Expected Returns
 				</Text>
 				<Text fontSize='2xl' fontWeight='medium'>
-					{returns} KSM
+					{returns} {props.currency}
 				</Text>
 			</Box>
 		</>

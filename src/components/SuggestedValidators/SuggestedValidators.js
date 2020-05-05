@@ -16,14 +16,16 @@ import ExpectedReturns from "./ExpectedReturns";
 import CustomButton from "../CustomButton";
 
 type SuggestedValidatorsProps = {
-	colorMode: string,
+	colorMode: "light" | "dark",
 	validatorsList: Array<{
 		name: string,
 		avatar?: string,
 		amount: float,
 		risk: float
 	}>,
-	returns: float
+	returns: float,
+	budget: float,
+	currency: string
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
@@ -50,7 +52,12 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 						]}
 					>
 						<Heading>Suggested Validators</Heading>
-						<Text>Staking a budget of x KSM to 16 recommended validators</Text>
+						{
+							<Text>
+								Staking a budget of {props.budget} {props.currency} to 16
+								recommended validators
+							</Text>
+						}{" "}
 						<Box w='100%' p={2} mt={6} h='60vh' overflow='auto'>
 							{props.validatorsList.map((validator, index) => {
 								return (
@@ -58,6 +65,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 										name={validator.name}
 										amount={validator.amount}
 										risk={validator.risk}
+										currency={props.currency}
 										avatar={validator.avatar}
 										colorMode={props.colorMode}
 									/>
@@ -74,7 +82,10 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
-						<ExpectedReturns returns={props.returns} />
+						<ExpectedReturns
+							returns={props.returns}
+							currency={props.currency}
+						/>
 					</Box>
 				</Flex>
 				<Flex justify='center' py={2}>

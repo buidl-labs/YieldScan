@@ -10,7 +10,8 @@ type ValidatorTileProps = {
 	name: string,
 	avatar?: string,
 	amount: float,
-	risk: float
+	risk: float,
+	currency: string
 };
 
 const ValidatorTile = (props: ValidatorTileProps) => {
@@ -26,18 +27,18 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 				borderColor={borderColor[props.colorMode]}
 			>
 				<Flex alignItems='center'>
-					<Icon name='check' fontSize='xl' color='#19CC95' />
+					{/* <Icon name='check' fontSize='xl' color='#19CC95' /> */}
 					<Avatar
 						size='md'
 						src={props.avatar ? props.avatar : "default_path"}
-						mx={4}
+						mr={4}
 					/>
 					<Box>
 						<Heading as='h6' size='sm'>
 							{props.name}
 						</Heading>
 						<Text color={textColor[props.colorMode]} fontSize='sm'>
-							Staking Amount: {props.amount} KSM
+							Staking Amount: {props.amount} {props.currency}
 							<Text as='i' color={textColorLight[props.colorMode]} mx={1}>
 								|
 							</Text>
