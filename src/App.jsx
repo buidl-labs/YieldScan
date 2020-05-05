@@ -522,10 +522,10 @@ function App() {
 				onClose={onCreateAccountDialogClose}
 				title='Create atleast one account from polkadot extension!'
 				body={
-					<>
+					<React.Fragment>
 						Create atleast one account from PolkadotJs extension for making
 						transactions for a specific account.
-					</>
+					</React.Fragment>
 				}
 			/>
 		</AmplitudeProvider>
