@@ -7,7 +7,7 @@ import CustomButton from "../CustomButton"
 type ExpectedReturnsProps = {
 	returns: float,
 	currency: string,
-	button: bool
+	button: bool,
 };
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
@@ -39,9 +39,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				<Link
 					href='/#/suggested-validators'
 				>
-					<CustomButton
-						variant="tertiary"
-					>
+					<CustomButton disabled={returns==0} variant="tertiary">
 						Start Investing
 					</CustomButton>
 				</Link>

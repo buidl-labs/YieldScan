@@ -2,15 +2,18 @@ import React from "react";
 import { PseudoBox } from "@chakra-ui/core";
 
 type CustomButtonProps = {
+	disabled: bool,
 	variant?: "primary" | "secondary" | "tertiary"
 };
 
 const CustomButton = (props: CustomButtonProps) => {
 	const variant = props.variant ? props.variant : "primary";
+	const disabled = props.disabled ? props.disabled : false;
 	return (
 		<>
 			<PseudoBox
 				as='button'
+				disabled={props.disabled}
 				onClick={props.onClick}
 				transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
 				px={6}
