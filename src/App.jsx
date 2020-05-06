@@ -35,6 +35,7 @@ import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
 import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
+import WalletConnect from "./components/WalletConnect/WalletConnect";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -391,6 +392,10 @@ function App() {
 								}
 							]}
 						/>
+					</Route>
+					{/* PolkaWallet Connect */}
+					<Route path='/wallet-connect'>
+						<WalletConnect colorMode={colorMode} />
 					</Route>
 				</Flex>
 				{/* Validator specific view */}

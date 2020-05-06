@@ -1,9 +1,19 @@
 import React from "react";
-import { Avatar, Box, Text, Icon, Heading, Flex, Badge } from "@chakra-ui/core";
+import { Avatar, Box, Text, Heading, Flex, Badge } from "@chakra-ui/core";
 
 const borderColor = { light: "gray.100", dark: "#262E3F" };
 const textColor = { light: "gray.600", dark: "#7385A7" };
 const textColorLight = { light: "gray.300", dark: "#4B5871" };
+
+function getBadgeColor(risk) {
+	if (risk < 0.25) {
+		return "green";
+	}
+	if (risk < 0.5) {
+		return "yellow";
+	}
+	return "red";
+}
 
 type ValidatorTileProps = {
 	colorMode: string,
@@ -15,6 +25,8 @@ type ValidatorTileProps = {
 };
 
 const ValidatorTile = (props: ValidatorTileProps) => {
+	const riskBadge = getBadgeColor(props.risk);
+
 	return (
 		<>
 			<Box
@@ -43,17 +55,7 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 								|
 							</Text>
 							Risk Score:
-							<Badge
-								mx={2}
-								fontSize='sm'
-								variantColor={
-									props.risk > 0.25
-										? props.risk > 0.5
-											? "red"
-											: "yellow"
-										: "green"
-								}
-							>
+							<Badge mx={2} fontSize='sm' variantColor={riskBadge}>
 								{props.risk}
 							</Badge>
 						</Text>
