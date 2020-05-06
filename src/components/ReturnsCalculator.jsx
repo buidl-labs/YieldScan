@@ -120,10 +120,12 @@ export default function ReturnsCalculator(props) {
 			</Helmet>
 			<LogEvent eventType='Returns calculator view' />
 			<Route exact path='/returns-calculator'>
-				<Heading mt={12} mb={8}>
+				<Heading mt={16} mb={12} 
+					ml={"calc(15% - 2rem)" // 992px upwards
+					}>
 					Calculate your returns
 				</Heading>
-				<Flex alignItems='start' flexWrap='wrap' justifyContent='space-between'>
+				<Flex alignItems='center' flexWrap='wrap' justify="center">
 					<Box minWidth='288px' mr={8}>
 						<Box
 							color='gray.500'
@@ -215,8 +217,8 @@ export default function ReturnsCalculator(props) {
 						w={[
 							"100%", // base
 							"100%", // 480px upwards
-							"calc(40% - 2rem)", // 768px upwards
-							"calc(30% - 2rem)" // 992px upwards
+							"calc(50% - 2rem)", // 768px upwards
+							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
 						<ExpectedReturns
