@@ -58,7 +58,7 @@ function App() {
 	let [validators, setValidators] = React.useState([{name: 'None', amount: 0, avatar: 'default', risk: 0.00}]);
 	const [data, setData] = React.useState({
 		'budget' : '0',
-		'returns': '0'
+		'expectedReturns': '0'
 	});
 
 	const {
@@ -156,14 +156,13 @@ function App() {
 	}
 	function handleChildTabEvent(data) {
 		setData ({...data});
+		let individualStake = parseFloat(data.budget)/16;
 		validators = data.validatorsList.reduce((acc, cur) => {
-			acc.push({name: cur.name, amount: cur.dailyEarningPrecise, avatar: 'default', risk: '0.22'});
+			acc.push({name: cur.name, amount: individualStake, avatar: 'default', risk: '0.22'});
 			return acc;
 		},[]);	
 		setValidators (validators);
-		console.log('validators - ', validators);
 	}
-	console.log('data - ', data);
 	
 	return (
 		<AmplitudeProvider
@@ -324,8 +323,8 @@ function App() {
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
-							returns={data.expectedReturns}
-							budget={data.budget}
+							returns={parseFloat(data.expectedReturns) || 0}
+							budget={parseFloat(data.budget) || 0}
 							currency='KSM'
 							validatorsList={validators}
 						/>
