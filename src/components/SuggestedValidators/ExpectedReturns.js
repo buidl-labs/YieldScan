@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, Route } from "react-router-dom";
-import { Box, Button, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
+import { Route } from "react-router-dom";
+import { Box, Button, Link, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
 import CountUp from "react-countup";
 import CustomButton from "../CustomButton"
 
@@ -17,7 +17,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 		<>
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
 				<Heading as='h3' size='lg'>
-					Expected Returns{" "}
+					Expected Results{" "}
 					<Tooltip
 						label='Brief text about how we calculate returns'
 						placement='bottom'
@@ -28,7 +28,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				<Text fontSize='md' mt={4}>
 					Expected Returns
 				</Text>
-				<Text fontSize='2xl' fontWeight='medium'>
+				<Text mb={4} fontSize='2xl' fontWeight='medium'>
 					<CountUp
 						end={returns}
 						decimals={3}
@@ -37,8 +37,9 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				</Text>
 				{props.button &&
 				<Link
-					to='/suggested-validators'>
-					<CustomButton 
+					href='/#/suggested-validators'
+				>
+					<CustomButton
 						variant="tertiary"
 					>
 						Start Investing

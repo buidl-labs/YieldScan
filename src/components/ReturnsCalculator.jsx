@@ -215,8 +215,8 @@ export default function ReturnsCalculator(props) {
 						w={[
 							"100%", // base
 							"100%", // 480px upwards
-							"calc(50% - 2rem)", // 768px upwards
-							"calc(40% - 2rem)" // 992px upwards
+							"calc(40% - 2rem)", // 768px upwards
+							"calc(30% - 2rem)" // 992px upwards
 						]}
 					>
 						<ExpectedReturns

@@ -36,7 +36,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link to='/returns-calculator' m={4}>
+					<Link href='/#/returns-calculator' m={4}>
 						<Icon name='arrow-back' mr={1} /> Returns Calculator
 					</Link>
 				</Box>
