@@ -29,9 +29,6 @@ type SuggestedValidatorsProps = {
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
-	
-	console.log('props - ', props);
-
 	return (
 		<React.Fragment>
 			<Helmet>

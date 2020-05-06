@@ -1,13 +1,18 @@
 import React from "react";
-import { Box, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
+import { Link, Route } from "react-router-dom";
+import { Box, Button, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
+import CountUp from "react-countup";
+import CustomButton from "../CustomButton"
 
 type ExpectedReturnsProps = {
 	returns: float,
-	currency: string
+	currency: string,
+	button: bool
 };
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
 	const returns = props.returns.toFixed(5);
+	
 	return (
 		<>
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
@@ -24,8 +29,22 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					Expected Returns
 				</Text>
 				<Text fontSize='2xl' fontWeight='medium'>
-					{returns} {props.currency}
+					<CountUp
+						end={returns}
+						decimals={3}
+						suffix={props.currency}
+					/>
 				</Text>
+				{props.button &&
+				<Link
+					to='/suggested-validators'>
+					<CustomButton 
+						variant="tertiary"
+					>
+						Start Investing
+					</CustomButton>
+				</Link>
+				}
 			</Box>
 		</>
 	);

@@ -1,4 +1,4 @@
-import React from "react";
+import React           from "react";
 import { Link, Route } from "react-router-dom";
 import {
 	Box,
@@ -14,30 +14,30 @@ import {
 	SliderTrack,
 	SliderFilledTrack,
 	SliderThumb
-} from "@chakra-ui/core";
-import CountUp from "react-countup";
-import Helmet from "react-helmet";
+}                      from "@chakra-ui/core";
+import CustomButton    from "./CustomButton";
+import CountUp         from "react-countup";
+import Helmet          from "react-helmet";
 import { useDebounce } from "use-debounce";
-import LogEvent from "./LogEvent";
-import ErrorMessage from "./ErrorMessage";
-import SuggestedValidators from "./SuggestedValidators/SuggestedValidators";
+import LogEvent        from "./LogEvent";
+import ErrorMessage    from "./ErrorMessage";
+import ExpectedReturns from "./SuggestedValidators/ExpectedReturns";
 
 export default function ReturnsCalculator(props) {
-	const { colorMode, toggleColorMode } = useColorMode();
-	const [stakeInput, setStakeInput] = React.useState();
+	const { colorMode, toggleColorMode }        = useColorMode();
+	const [stakeInput, setStakeInput]           = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
-	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 0);
-	const [validatorsList, setValidatorsList] = React.useState([]);
-	const [validatorData, setValidatorData] = React.useState([]);
-	const [errorState, setErrorState] = React.useState(false);
-	const [intentionData, setIntentionData] = React.useState([]);
-	const [apiConnected, setApiConnected] = React.useState(false);
-	const [isLoaded, setIsLoaded] = React.useState(false);
-	const [riskLevel, setRiskLevel] = React.useState(50);
-	const [sliderBG, setSliderBG] = React.useState("yellow.300");
+	const [suggPromptsAmount]                   = useDebounce(stakeInput / 16, 0);
+	const [validatorsList, setValidatorsList]   = React.useState([]);
+	const [validatorData, setValidatorData]     = React.useState([]);
+	const [errorState, setErrorState]           = React.useState(false);
+	const [intentionData, setIntentionData]     = React.useState([]);
+	const [apiConnected, setApiConnected]       = React.useState(false);
+	const [isLoaded, setIsLoaded]               = React.useState(false);
+	const [riskLevel, setRiskLevel]             = React.useState(50);
+	const [sliderBG, setSliderBG]               = React.useState("yellow.300");
 	const ERA_PER_DAY = 4;
 	// console.log('props - ', props.validatorData);
-	const [suggestedValidators, setSuggestedValidators] = React.useState();
 
 	function suggPrompts() {
 		const data = validatorsList.map(validator => {
@@ -65,18 +65,27 @@ export default function ReturnsCalculator(props) {
 				dailyEarningPrecise: isNaN(dailyEarning) ? 0 : dailyEarning
 			};
 		});
+
+		//handle top 16 suggested validaors
 		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
 		const top16data = [...data.slice(0, 16)];
-		setSuggestedValidators (top16data);
-		// console.log("table data of top 16 val - ", top16data);
+		//console.log("table data of top 16 val - ", top16data);
+		
+		//pass props to parent App.jsx
+		const propsData = {};
 		if (top16data.length > 0) {
 			// eslint-disable-next-line no-unused-vars
 			const expectedEarning = top16data.reduce((a, b) => ({
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));
-			console.log("expected earning of top 16 val - ", expectedEarning);
+			//console.log("expected earning of top 16 val - ", expectedEarning);
+			propsData.expectedReturns = expectedEarning.dailyEarningPrecise;
 			setExpectedReturns(expectedEarning.dailyEarningPrecise);
 		}
+		propsData.validatorsList = top16data;
+		propsData.budget = stakeInput;
+		props.onEvent(propsData);
+		
 		if (apiConnected) setIsLoaded(true);
 	}
 
@@ -102,14 +111,6 @@ export default function ReturnsCalculator(props) {
 			setSliderBG("yellow.300");
 		}
 	};
-
-	const handleInvest = () => {
-		const data = {};
-		data.validatorsList = suggestedValidators;
-		data.expectedReturns = expectedReturns;
-		data.budget = stakeInput;
-		props.onEvent(data);
-	}
 
 	return (
 		<React.Fragment>
@@ -144,7 +145,7 @@ export default function ReturnsCalculator(props) {
 										value={stakeInput}
 										textAlign='center'
 										rounded='40px'
-										minWidth='200px'
+										minWidth='299px'
 										onChange={e => {
 											setStakeInput(parseFloat(e.target.value));
 										}}
@@ -203,50 +204,26 @@ export default function ReturnsCalculator(props) {
 								<Text>High</Text>
 							</Flex>
 						</Box>
-						<Button
-							marginTop='10%'
-							fontSize='lg'
-							background='#19CC95'
-							color='white'
-							rounded='40px'
-							mb={16}
+						<CustomButton
 							onClick={calculate}
 						>
 							Calculate
-						</Button>
+						</CustomButton>
 					</Box>
 					<Box
-						p={8}
-						pb={16}
-						borderWidth='1px'
-						rounded={16}
-						overflow='hidden'
-						background='#19CC95'
-						color='white'
-						minWidth='288px'
+						m={4}
+						w={[
+							"100%", // base
+							"100%", // 480px upwards
+							"calc(50% - 2rem)", // 768px upwards
+							"calc(40% - 2rem)" // 992px upwards
+						]}
 					>
-						<Heading>Expected Results</Heading>
-						<Text fontSize='md' mt={6} mb={2}>
-							Expected Daily Returns
-						</Text>
-						<Heading>
-							<CountUp
-								end={Number(expectedReturns.toFixed(5))}
-								decimals={3}
-								suffix=' KSM'
-							/>
-						</Heading>
-						<Link
-							to='/suggested-validators'>
-							<Button mt={8} 
-								background='white' 
-								color='#19CC95' 
-								rounded='40px'
-								onClick={handleInvest}
-							>
-								Start Investing
-							</Button>
-						</Link>
+						<ExpectedReturns
+							returns={expectedReturns}
+							currency={'KSM'}
+							button={true}
+						/>
 					</Box>
 				</Flex>
 			</Route>
