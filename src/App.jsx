@@ -310,7 +310,8 @@ function App() {
 
 					{/* Help Center */}
 					<Route path='/returns-calculator'>
-						<ReturnsCalculator 
+						<ReturnsCalculator
+							colorMode={colorMode}
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
 						/>

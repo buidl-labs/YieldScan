@@ -23,7 +23,14 @@ import LogEvent        from "./LogEvent";
 import ErrorMessage    from "./ErrorMessage";
 import ExpectedReturns from "./SuggestedValidators/ExpectedReturns";
 
-export default function ReturnsCalculator(props) {
+const textColor = { light: "gray.600", dark: "#FFF" };
+
+type ReturnsCalculatorProps = {
+	colorMode: "light" | "dark",
+	validatorData: Array<{}>,
+};
+
+const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 	const { colorMode, toggleColorMode }        = useColorMode();
 	const [stakeInput, setStakeInput]           = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
@@ -140,6 +147,7 @@ export default function ReturnsCalculator(props) {
 									<Input
 										placeholder='Enter your budget'
 										variant='filled'
+										color={textColor[props.colorMode]}
 										type='number'
 										min='0'
 										step='0.000000000001'
@@ -232,3 +240,5 @@ export default function ReturnsCalculator(props) {
 		</React.Fragment>
 	);
 }
+
+export default ReturnsCalculator;
