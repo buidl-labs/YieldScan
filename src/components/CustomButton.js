@@ -21,7 +21,7 @@ const CustomButton = (props: CustomButtonProps) => {
 				outline='none'
 				fontWeight='semibold'
 				bg={ variant === "primary" ? "#19CC95" : variant === "secondary" ? "#4A5567" : "#FFFFFF" }
-				color={ variant === "primary" ? '#FFF' : variant === "secondary" ? "#19CC95" : "#19CC95"}
+				color={ variant === "primary" ? '#FFF' : variant === "secondary" ? "#FFF" : "#19CC95"}
 				_hover={{ bg: variant === "primary" ? "#14AC7D" : "#2F3745" }}
 				_active={{
 					bg: variant === "primary" ? "#14AC7D" : "#2F3745",
