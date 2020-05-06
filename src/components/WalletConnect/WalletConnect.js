@@ -14,10 +14,7 @@ import {
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
 import Footer from "../Footer.jsx";
-
-const textColor = { light: "2D3748", dark: "#FFF" };
-const textColorLight = { light: "#677793", dark: "#9DAECF" };
-const border = { light: "#C2CDDC", dark: "#262E3E" };
+import { textColor, textColorLight, border } from "../../constants";
 
 type WalletConnectProps = {
 	colorMode?: "light" | "dark"
@@ -70,7 +67,7 @@ const WalletConnect = (props: WalletConnectProps) => {
 							placement='bottom'
 							hasArrow
 						>
-							<Link href='./help-desk' isExternal>
+							<Link href='' isExternal>
 								<Icon
 									name='question'
 									color={textColorLight[mode]}
