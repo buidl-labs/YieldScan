@@ -22,6 +22,9 @@ import { useDebounce } from "use-debounce";
 import LogEvent        from "./LogEvent";
 import ErrorMessage    from "./ErrorMessage";
 import ExpectedReturns from "./SuggestedValidators/ExpectedReturns";
+import {
+	getRiskSliderColor,
+} from "./../constants";
 
 const textColor = { light: "gray.600", dark: "#FFF" };
 
@@ -105,14 +108,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 	}
 
 	const onRiskChange = value => {
-		console.log(value);
-		if (value <= 30) {
-			setSliderBG("green.300");
-		} else if (value > 70) {
-			setSliderBG("red.400");
-		} else {
-			setSliderBG("yellow.300");
-		}
+		setSliderBG(getRiskSliderColor(value/100));
 	};
 
 	return (
