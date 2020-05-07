@@ -75,7 +75,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		});
 
 		//handle top 16 suggested validaors
-		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
+		data.sort((num1, num2) => num2.dailyEarningPrecise - num1.dailyEarningPrecise);
 		const top16data = [...data.slice(0, 16)];
 		//	console.log("table data of top 16 val - ", top16data);
 		

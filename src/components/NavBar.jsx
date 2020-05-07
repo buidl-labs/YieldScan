@@ -95,88 +95,13 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 						alignItems="center"
 						display={{ base: 'none', sm: 'flex' }}
 					>
-						{/*	
-						{isUserLoggedIn ? (
-						<Box mr={8}>
-							<Menu>
-								<MenuButton
-									as={Button}
-									rightIcon="chevron-down"
-								>
-									Accounts
-								</MenuButton>
-								<MenuList
-									style={{
-									zIndex: 1000,
-									overflowY: 'auto',
-									}}
-								>
-									{listOfUsers.length > 0 &&
-									listOfUsers.map(user => {
-									return (
-									<MenuItem
-										key={user.address}
-										minH="48px"
-									>
-										<Identicon
-											value={user.address}
-											size={36}
-											theme="polkadot"
-										/>
-										<strong
-											style={{
-											marginLeft: 10,
-											}}
-										>
-											{user.meta.name}
-										</strong>
-									</MenuItem>
-									)
-									})}
-								</MenuList>
-							</Menu>
-						</Box>
-						) : (
-						<Box mr={8}>
-							<Button
-								style={{
-								border: '1px solid #E50B7B',
-								borderRadius: '18px',
-								opacity: 1,
-								color: '#E50B7B',
-								height: '35px',
-								}}
-								onClick={() => {
-								//if yes continue
-								//Check if extension is available
-								if (!isWeb3Injected) {
-								//if not: show a dialog box with link to add extension
-								//link to extension: https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd?hl=en
-								//return and not continue with the code execution
-								onExtensionDialogOpen()
-								console.log(
-								'add polkadot extensions'
-								)
-								return
-								}
-
-								if (listOfUsers.length <= 0) {
-								onCreateAccountDialogOpen()
-								}
-								}}
-							>
-								Sign in / Sign up
-							</Button>
-						</Box>
-						)}
-						*/}
 						<Box mr={8}>
 							<Link
 								as={NavLink}
 								className="nav-link"
 								to="/dashboard"
 							>
-								Dashboard
+								Network Details
 							</Link>
 						</Box>
 						<Box mr={8}>
@@ -236,7 +161,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 										to="/dashboard"
 										py={4}
 									>
-										Dashboard
+										Network Details
 									</Link>
 								</Box>
 								<Box mr={8}>
