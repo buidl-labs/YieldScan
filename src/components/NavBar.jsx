@@ -99,7 +99,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 							<Link
 								as={NavLink}
 								className="nav-link"
-								to="/dashboard"
+								to="/network-details"
 							>
 								Network Details
 							</Link>
@@ -158,7 +158,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 									<Link
 										as={NavLink}
 										className="nav-link"
-										to="/dashboard"
+										to="/network-details"
 										py={4}
 									>
 										Network Details

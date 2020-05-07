@@ -178,15 +178,15 @@ function App() {
 					content='An analytics platform for the Polkadot Network'
 				/>
 			</Helmet>
-			<LogEvent eventType='Home dashboard view' />
+			<LogEvent eventType='Home network-details view' />
 			<LogOnChange
-				eventType='Expected daily earning from stake (Input Change) : (dashboard view)'
+				eventType='Expected daily earning from stake (Input Change) : (network-details view)'
 				value={stakeInput}
 			/>
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
-					<Redirect to='/dashboard' />
+					<Redirect to='/network-details' />
 				</Route>
 				<NavBar
 					onExtensionDialogOpen={onExtensionDialogOpen}
@@ -202,7 +202,7 @@ function App() {
 					px={{ base: 4, md: 0 }}
 				>
 					{/* Homepage - Dashboard */}
-					<Route exact path='/(|dashboard)'>
+					<Route exact path='/(|network-details)'>
 						{isLoaded && apiConnected ? (
 							<>
 								<Heading as='h2' size='xl' textAlign='center' mt={16}>
