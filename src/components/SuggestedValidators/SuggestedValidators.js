@@ -1,12 +1,11 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Flex,
 	Text,
 	ButtonGroup,
-	Link,
 	Icon
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
@@ -36,7 +35,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link href='/#/returns-calculator' m={4}>
+					<Link to='/returns-calculator' m={4}>
 						<Icon name='arrow-back' mr={1} /> Returns Calculator
 					</Link>
 				</Box>
