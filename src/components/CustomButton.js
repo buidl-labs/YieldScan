@@ -2,7 +2,7 @@ import React from "react";
 import { PseudoBox } from "@chakra-ui/core";
 
 type CustomButtonProps = {
-	disabled: bool,
+	disabled: boolean,
 	variant?: "primary" | "secondary" | "tertiary"
 };
 
