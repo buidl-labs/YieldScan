@@ -36,6 +36,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
 import WalletConnect from "./components/WalletConnect/WalletConnect";
+import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -192,6 +193,53 @@ function App() {
 		return <ErrorMessage />;
 	}
 
+	/* Beginning of Sample Validator List for UI Demonstration to be removed */
+	const sampleValidatorList = [
+		{
+			name: "PolyLabs 1",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.24"
+		},
+		{
+			name: "PolyLabs 2",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.3"
+		},
+		{
+			name: "PolyLabs 3",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.64"
+		},
+		{
+			name: "PolyLabs 4",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.34"
+		},
+		{
+			name: "PolyLabs 5",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.64"
+		},
+		{
+			name: "PolyLabs 6",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.44"
+		},
+		{
+			name: "PolyLabs 7",
+			avatar: "default",
+			amount: "1.25",
+			risk: "0.14"
+		}
+	];
+	/* End of Sample Validator List for UI Demonstration */
+
 	return (
 		<AmplitudeProvider
 			amplitudeInstance={amplitude.getInstance()}
@@ -347,55 +395,28 @@ function App() {
 							returns={1.43678534556}
 							budget={3000}
 							currency='KSM'
-							validatorsList={[
-								{
-									name: "PolyLabs 1",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.24"
-								},
-								{
-									name: "PolyLabs 2",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.3"
-								},
-								{
-									name: "PolyLabs 3",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.64"
-								},
-								{
-									name: "PolyLabs 4",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.34"
-								},
-								{
-									name: "PolyLabs 5",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.64"
-								},
-								{
-									name: "PolyLabs 6",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.44"
-								},
-								{
-									name: "PolyLabs 7",
-									avatar: "default",
-									amount: "1.25",
-									risk: "0.14"
-								}
-							]}
+							validatorsList={sampleValidatorList}
 						/>
 					</Route>
 					{/* PolkaWallet Connect */}
 					<Route path='/wallet-connect'>
 						<WalletConnect colorMode={colorMode} />
+					</Route>
+					{/* Confirmation */}
+					<Route path='/confirmation'>
+						<ConfirmationPage
+							colorMode={colorMode}
+							stashOptions={[{ option: "Account Name", value: "AccountID" }]}
+							controllerOptions={[
+								{ option: "Account Name", value: "AccountID" }
+							]}
+							riskPreference={0.5}
+							fees='10.0 milli'
+							eras={4}
+							amount={3500}
+							currency='KSM'
+							validatorsList={sampleValidatorList}
+						/>
 					</Route>
 				</Flex>
 				{/* Validator specific view */}

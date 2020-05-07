@@ -5,23 +5,38 @@ const HIGH_RISK = 1;
 const getRiskLevelColor = risk => {
 	if (risk < LOW_RISK) {
 		return "green";
-	} else if (risk < MED_RISK) {
-		return "yellow";
-	} else if (risk < HIGH_RISK) {
-		return "red";
-	} else {
-		return "gray";
 	}
+	if (risk < MED_RISK) {
+		return "yellow";
+	}
+	if (risk < HIGH_RISK) {
+		return "red";
+	}
+	return "gray";
+};
+
+const getRiskLevel = risk => {
+	if (risk < LOW_RISK) {
+		return "LOW";
+	}
+	if (risk < MED_RISK) {
+		return "MEDIUM";
+	}
+	if (risk < HIGH_RISK) {
+		return "HIGH";
+	}
+	return "UNKNOWN";
 };
 
 const textColor = { light: "2D3748", dark: "#FFF" };
-const textColorLight = { light: "#677793", dark: "#9DAECF" };
+const textColorLight = { light: "#677793", dark: "#ADB8CD" };
 const border = { light: "#EEF2F9", dark: "#262E3E" };
 
 export {
 	LOW_RISK,
 	HIGH_RISK,
 	getRiskLevelColor,
+	getRiskLevel,
 	textColor,
 	textColorLight,
 	border
