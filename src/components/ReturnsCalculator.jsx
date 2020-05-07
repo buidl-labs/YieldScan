@@ -45,7 +45,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 	const [riskLevel, setRiskLevel]             = React.useState(50);
 	const [sliderBG, setSliderBG]               = React.useState("yellow.300");
 	const ERA_PER_DAY = 4;
-	// console.log('props - ', props.validatorData);
 
 	function suggPrompts() {
 		const data = validatorsList.map(validator => {
@@ -74,23 +73,20 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			};
 		});
 
-		//handle top 16 suggested validaors
+		//handle suggested validaors
 		data.sort((num1, num2) => num2.dailyEarningPrecise - num1.dailyEarningPrecise);
-		const top16data = [...data.slice(0, 16)];
-		//	console.log("table data of top 16 val - ", top16data);
+		const suggestedValidators = [...data.slice(0, 16)];
 		
-		//pass props to parent App.jsx
 		const propsData = {};
-		if (top16data.length > 0) {
+		if (suggestedValidators.length > 0) {
 			// eslint-disable-next-line no-unused-vars
-			const expectedEarning = top16data.reduce((a, b) => ({
+			const expectedEarning = suggestedValidators.reduce((a, b) => ({
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));
-			//console.log("expected earning of top 16 val - ", expectedEarning);
 			propsData.expectedReturns = expectedEarning.dailyEarningPrecise;
 			setExpectedReturns(expectedEarning.dailyEarningPrecise);
 		}
-		propsData.validatorsList = top16data;
+		propsData.validatorsList = suggestedValidators;
 		propsData.budget = stakeInput;
 		props.onEvent(propsData);
 		
