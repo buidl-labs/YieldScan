@@ -411,6 +411,7 @@ function App() {
 								{ option: "Account Name", value: "AccountID" }
 							]}
 							riskPreference={0.5}
+							fees='10.0 milli'
 							eras={4}
 							amount={3500}
 							currency='KSM'

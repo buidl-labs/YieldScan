@@ -35,6 +35,7 @@ type ConfirmationPageProps = {
 		amount: float,
 		risk?: float
 	}>,
+	fees: string,
 	eras: Number,
 	amount: float,
 	currency: string
@@ -87,8 +88,9 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							height='auto'
 							mb={8}
 						>
-							You are about to stake your KSM on the following validators.
-							Please make sure you understand the risks before proceeding.
+							You are about to stake your {props.currency} on the following
+							validators. Please make sure you understand the risks before
+							proceeding.
 						</Text>
 						<Flex align='center' wrap='wrap' my={2}>
 							<Text
@@ -205,8 +207,8 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								color={messageBoxColors[mode].text}
 								textAlign='center'
 							>
-								Fees of 10.000 milli KSM will be applied to the submission and
-								funds will be locked for {props.eras} eras
+								Fees of {props.fees} {props.currency} will be applied to the
+								submission and funds will be locked for {props.eras} eras
 							</Text>
 						</Box>
 						<Flex align='flex-start'>
