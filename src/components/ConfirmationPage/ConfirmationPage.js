@@ -222,7 +222,10 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									setTermsCheck(!termsCheck);
 								}}
 							></Checkbox>
-							<Text fontSize='sm' color={textColorLight[mode]}>
+							<Text
+								fontSize={["xs", "xs", "sm", "sm"]}
+								color={textColorLight[mode]}
+							>
 								I understand that the funds will be bonded, meaning the tokens
 								would be locked for a period of time and can only be redeemed
 								after that period ends, and could be slashed if the validators I
