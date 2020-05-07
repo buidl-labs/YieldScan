@@ -1,6 +1,6 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import { Box, Button, Link, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
+import { Route, Link } from "react-router-dom";
+import { Box, Button, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
 import CountUp from "react-countup";
 import CustomButton from "../CustomButton"
 
@@ -37,7 +37,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				</Text>
 				{props.button &&
 				<Link
-					href='/#/suggested-validators'
+					to='/suggested-validators'
 				>
 					<CustomButton disabled={returns==0} variant="tertiary">
 						Start Investing
