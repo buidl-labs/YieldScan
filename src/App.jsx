@@ -56,7 +56,7 @@ function App() {
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	let [validators, setValidators] = React.useState([{name: 'None', amount: 0, avatar: 'default', risk: 0.00}]);
-	const [data, setData] = React.useState({
+	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
 		'budget' : '0',
 		'expectedReturns': '0'
 	});
@@ -155,8 +155,8 @@ function App() {
 		return <ErrorMessage />;
 	}
 	function handleChildTabEvent(data) {
-		setData ({...data});
-		let individualStake = parseFloat(data.budget)/16;
+		setSuggValidatorsData ({...data});
+		let individualStake = parseFloat(suggValidatorsData.budget)/16;
 		validators = data.validatorsList.reduce((acc, cur) => {
 			acc.push({name: cur.name, amount: individualStake, avatar: 'default', risk: '0.22'});
 			return acc;
@@ -324,8 +324,8 @@ function App() {
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
-							returns={parseFloat(data.expectedReturns) || 0}
-							budget={parseFloat(data.budget) || 0}
+							returns={parseFloat(suggValidatorsData.expectedReturns) || 0}
+							budget={parseFloat(suggValidatorsData.budget) || 0}
 							currency='KSM'
 							validatorsList={validators}
 						/>
