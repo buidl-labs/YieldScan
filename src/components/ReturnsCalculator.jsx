@@ -77,18 +77,18 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		data.sort((num1, num2) => num2.dailyEarningPrecise - num1.dailyEarningPrecise);
 		const suggestedValidators = [...data.slice(0, 16)];
 		
-		const propsData = {};
+		const validatorInfo = {};
 		if (suggestedValidators.length > 0) {
 			// eslint-disable-next-line no-unused-vars
 			const expectedEarning = suggestedValidators.reduce((a, b) => ({
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));
-			propsData.expectedReturns = expectedEarning.dailyEarningPrecise;
+			validatorInfo.expectedReturns = expectedEarning.dailyEarningPrecise;
 			setExpectedReturns(expectedEarning.dailyEarningPrecise);
 		}
-		propsData.validatorsList = suggestedValidators;
-		propsData.budget = stakeInput;
-		props.onEvent(propsData);
+		validatorInfo.validatorsList = suggestedValidators;
+		validatorInfo.budget = stakeInput;
+		props.onEvent(validatorInfo);
 		
 		if (apiConnected) setIsLoaded(true);
 	}
