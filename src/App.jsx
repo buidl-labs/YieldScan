@@ -39,6 +39,8 @@ import SuggestedValidators from "./components/SuggestedValidators/SuggestedValid
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
+const currency = 'KSM';
+
 function App() {
 	// eslint-disable-next-line no-unused-vars
 	const { colorMode, toggleColorMode } = useColorMode();
@@ -252,7 +254,7 @@ function App() {
 											}}
 										/>
 										<InputRightAddon
-											children='KSM'
+											children={currency}
 											backgroundColor='teal.500'
 											roundedRight='2rem'
 										/>
@@ -312,7 +314,7 @@ function App() {
 					<Route path='/returns-calculator'>
 						<ReturnsCalculator
 							colorMode={colorMode}
-							currency='KSM'
+							currency={currency}
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
 						/>
@@ -327,7 +329,7 @@ function App() {
 							colorMode={colorMode}
 							returns={parseFloat(suggValidatorsData.expectedReturns) || 0}
 							budget={parseFloat(suggValidatorsData.budget) || 0}
-							currency='KSM'
+							currency={currency}
 							validatorsList={validators}
 						/>
 					</Route>
