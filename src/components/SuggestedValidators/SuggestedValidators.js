@@ -19,7 +19,7 @@ type SuggestedValidatorsProps = {
 	colorMode: "light" | "dark",
 	validatorsList: Array<{
 		name: string,
-		avatar?: string,
+		stashId: string,
 		amount: float,
 		risk: float
 	}>,
@@ -63,10 +63,10 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 								return (
 									<ValidatorTile
 										name={validator.name}
+										stashId={validator.stashId}
 										amount={validator.amount}
 										risk={validator.risk}
 										currency={props.currency}
-										avatar={validator.avatar}
 										colorMode={props.colorMode}
 									/>
 								);

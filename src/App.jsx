@@ -55,7 +55,7 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
-	let [validators, setValidators] = React.useState([{name: 'None', amount: 0, avatar: 'default', risk: 0.00}]);
+	let [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
 	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
 		'budget' : '0',
 		'expectedReturns': '0'
@@ -158,7 +158,7 @@ function App() {
 		setSuggValidatorsData ({...data});
 		let individualStake = parseFloat(suggValidatorsData.budget)/16;
 		validators = data.validatorsList.reduce((acc, cur) => {
-			acc.push({name: cur.name, amount: individualStake, avatar: 'default', risk: '0.22'});
+			acc.push({name: cur.name, stashId: cur.stashId, amount: individualStake, risk: '0.22'});
 			return acc;
 		},[]);	
 		setValidators (validators);

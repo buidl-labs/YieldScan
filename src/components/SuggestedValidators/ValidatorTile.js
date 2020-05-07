@@ -1,5 +1,6 @@
 import React from "react";
 import { Avatar, Box, Text, Icon, Heading, Flex, Badge } from "@chakra-ui/core";
+import Identicon from '@polkadot/react-identicon'
 
 const borderColor = { light: "gray.100", dark: "#262E3F" };
 const textColor = { light: "gray.600", dark: "#7385A7" };
@@ -8,10 +9,10 @@ const textColorLight = { light: "gray.300", dark: "#4B5871" };
 type ValidatorTileProps = {
 	colorMode: string,
 	name: string,
-	avatar?: string,
 	amount: float,
 	risk: float,
-	currency: string
+	currency: string,
+	stashId: string
 };
 
 const ValidatorTile = (props: ValidatorTileProps) => {
@@ -28,11 +29,19 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 			>
 				<Flex alignItems='center'>
 					{/* <Icon name='check' fontSize='xl' color='#19CC95' /> */}
+					{/*	
 					<Avatar
 						size='md'
 						src={props.avatar ? props.avatar : "default_path"}
 						mr={4}
-					/>
+					/> */}
+					<Flex alignItems="center" mr={4}>
+						<Identicon
+							value={props.stashId}
+							size={36}
+							theme="polkadot"
+						/>
+					</Flex>
 					<Box>
 						<Heading as='h6' size='sm'>
 							{props.name}

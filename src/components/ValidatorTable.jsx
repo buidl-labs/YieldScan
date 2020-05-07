@@ -54,7 +54,7 @@ export default function ValidatorTable(props) {
             setShowBottomCart(true)
         },
         getCheckboxProps: record => {
-            //   console.log('record', record);
+			//console.log('record', record);
             return {
                 name: record.stashId,
             }
