@@ -110,7 +110,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								{props.stashOptions.map((doc, index) => {
 									return (
 										<option
-											style={{ color: "#000" }}
+											style={{ color: "#000", background: "#FFF" }}
 											value={doc.value}
 											key={index}
 										>
@@ -142,7 +142,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 										<option
 											value={doc.value}
 											key={index}
-											style={{ color: "#000" }}
+											style={{ color: "#000", background: "#FFF" }}
 										>
 											{doc.option}
 										</option>
