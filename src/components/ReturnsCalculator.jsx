@@ -130,7 +130,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 					Calculate your returns
 				</Heading>
 				<Flex alignItems='center' flexWrap='wrap' justify="center">
-					<Box minWidth='288px' mr={8}>
+					<Box mr={8}>
 						<Box
 							color='gray.500'
 							fontWeight='semibold'
