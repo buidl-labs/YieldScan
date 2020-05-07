@@ -31,7 +31,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 	return (
 		<React.Fragment>
 			<Helmet>
-				<title>Suggested Validators</title>
+				<title>Yield Scan &middot; Suggested Validators</title>
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
@@ -61,6 +61,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							{ props.validatorsList && props.validatorsList.map((validator, index) => {
 								return (
 									<ValidatorTile
+										key={index}
 										name={validator.name}
 										stashId={validator.stashId}
 										amount={validator.amount}

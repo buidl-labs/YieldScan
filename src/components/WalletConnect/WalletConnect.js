@@ -23,9 +23,9 @@ type WalletConnectProps = {
 const WalletConnect = (props: WalletConnectProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 	return (
-		<React.Fragment>
+		<>
 			<Helmet>
-				<title>Suggested Validators</title>
+				<title>Yield Scan &middot; Wallet Connect</title>
 			</Helmet>
 			<Route exact path='/wallet-connect'>
 				<Box m={4} mt={10}>
@@ -123,7 +123,7 @@ const WalletConnect = (props: WalletConnectProps) => {
 				</Box>
 			</Route>
 			<Footer />
-		</React.Fragment>
+		</>
 	);
 };
 

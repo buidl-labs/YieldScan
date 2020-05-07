@@ -39,7 +39,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				<Link
 					to='/suggested-validators'
 				>
-					<CustomButton disabled={returns==0} variant="tertiary">
+					<CustomButton disabled={returns==0} variant="white">
 						Start Investing
 					</CustomButton>
 				</Link>
