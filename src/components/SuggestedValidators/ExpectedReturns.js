@@ -7,7 +7,7 @@ import CustomButton from "../CustomButton"
 type ExpectedReturnsProps = {
 	returns: float,
 	currency: string,
-	button: bool,
+	button: boolean,
 };
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
