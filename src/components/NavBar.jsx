@@ -205,7 +205,6 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 									{colorMode === "light"
 										? "Switch to dark mode"
 										: "Switch to light mode"}
->>>>>>> develop
 								</Button>
 							</DrawerFooter>
 						</DrawerContent>

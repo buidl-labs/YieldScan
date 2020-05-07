@@ -79,7 +79,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		
 		const validatorInfo = {};
 		if (suggestedValidators.length > 0) {
-			// eslint-disable-next-line no-unused-vars
 			const expectedEarning = suggestedValidators.reduce((a, b) => ({
 				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
 			}));

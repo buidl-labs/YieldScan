@@ -58,7 +58,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							</Text>
 						}{" "}
 						<Box w='100%' p={2} mt={6} h='60vh' overflow='auto'>
-							{props.validatorsList.map((validator, index) => {
+							{ props.validatorsList && props.validatorsList.map((validator, index) => {
 								return (
 									<ValidatorTile
 										name={validator.name}

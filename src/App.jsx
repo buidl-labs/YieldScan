@@ -57,7 +57,7 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
-	let [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
+	const [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
 	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
 		'budget' : '0',
 		'expectedReturns': '0'
@@ -115,6 +115,14 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
+		let validatorsInfo = suggValidatorsData && suggValidatorsData.validatorsList && suggValidatorsData.validatorsList.reduce((acc, cur) => {
+			acc.push({name: cur.name, stashId: cur.stashId, amount: parseFloat(suggValidatorsData.budget)/16, risk: '0.22'});
+			return acc;
+		},[]);	
+		setValidators (validatorsInfo);
+	}, [suggValidatorsData]);
+
+	React.useEffect(() => {
 		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
 		socket.on(
 			"initial",
@@ -156,14 +164,9 @@ function App() {
 	if (errorState) {
 		return <ErrorMessage />;
 	}
+
 	function handleChildTabEvent(data) {
 		setSuggValidatorsData ({...data});
-		let individualStake = parseFloat(suggValidatorsData.budget)/16;
-		validators = data.validatorsList.reduce((acc, cur) => {
-			acc.push({name: cur.name, stashId: cur.stashId, amount: individualStake, risk: '0.22'});
-			return acc;
-		},[]);	
-		setValidators (validators);
 	}
 	
 	return (
@@ -327,8 +330,8 @@ function App() {
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
-							returns={parseFloat(suggValidatorsData.expectedReturns) || 0}
-							budget={parseFloat(suggValidatorsData.budget) || 0}
+							returns={parseFloat(suggValidatorsData.expectedReturns)}
+							budget={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
 						/>
