@@ -155,7 +155,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 										value={stakeInput}
 										textAlign='center'
 										rounded='40px'
-										minWidth='299px'
 										onChange={e => {
 											setStakeInput(parseFloat(e.target.value));
 										}}
