@@ -109,7 +109,11 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							>
 								{props.stashOptions.map((doc, index) => {
 									return (
-										<option value={doc.value} key={index}>
+										<option
+											style={{ color: "#000" }}
+											value={doc.value}
+											key={index}
+										>
 											{doc.option}
 										</option>
 									);
@@ -135,7 +139,11 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							>
 								{props.controllerOptions.map((doc, index) => {
 									return (
-										<option value={doc.value} key={index}>
+										<option
+											value={doc.value}
+											key={index}
+											style={{ color: "#000" }}
+										>
 											{doc.option}
 										</option>
 									);
