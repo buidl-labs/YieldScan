@@ -27,6 +27,7 @@ const textColor = { light: "gray.600", dark: "#FFF" };
 
 type ReturnsCalculatorProps = {
 	colorMode: "light" | "dark",
+	currency: string,
 	validatorData: Array<{}>,
 };
 
@@ -68,7 +69,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 				commission: `${parseFloat(commission)}%`,
 				dailyEarning: isNaN(dailyEarning)
 					? "Not enough data"
-					: `${dailyEarning.toPrecision(10)} KSM`,
+					: `${dailyEarning.toPrecision(10)} ${props.currency}`,
 				dailyEarningPrecise: isNaN(dailyEarning) ? 0 : dailyEarning
 			};
 		});
@@ -76,7 +77,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		//handle top 16 suggested validaors
 		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
 		const top16data = [...data.slice(0, 16)];
-		//console.log("table data of top 16 val - ", top16data);
+		//	console.log("table data of top 16 val - ", top16data);
 		
 		//pass props to parent App.jsx
 		const propsData = {};
@@ -166,7 +167,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 										<InputRightAddon
 											align='center'
 											px={8}
-											children='KSM'
+											children={props.currency}
 											backgroundColor='#4A5567'
 											color='white'
 											roundedRight='40px'
@@ -230,7 +231,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 					>
 						<ExpectedReturns
 							returns={expectedReturns}
-							currency={'KSM'}
+							currency={props.currency}
 							button={true}
 						/>
 					</Box>

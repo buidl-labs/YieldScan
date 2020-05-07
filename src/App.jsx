@@ -312,6 +312,7 @@ function App() {
 					<Route path='/returns-calculator'>
 						<ReturnsCalculator
 							colorMode={colorMode}
+							currency='KSM'
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
 						/>
