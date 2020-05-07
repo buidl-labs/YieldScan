@@ -354,7 +354,7 @@ function App() {
 							fees='10.0 milli'
 							eras={4}
 							amount={3500}
-							currency='KSM'
+							currency={currency}
 							validatorsList={validators}
 						/>
 					</Route>
