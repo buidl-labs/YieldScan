@@ -101,7 +101,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		return <ErrorMessage />;
 	}
 
-	function calculate() {
+	function calculateReturns() {
 		suggPrompts();
 	}
 
@@ -120,7 +120,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		<React.Fragment>
 			<Helmet>
 				<title>YieldScan - Returns Calculator</title>
-				<meta name='description' content='Validator key stats' />
+				<meta name='description' content='Staking Returns Calculator' />
 			</Helmet>
 			<LogEvent eventType='Returns calculator view' />
 			<Route exact path='/returns-calculator'>
@@ -211,7 +211,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 							</Flex>
 						</Box>
 						<CustomButton
-							onClick={calculate}
+							onClick={calculateReturns}
 						>
 							Calculate
 						</CustomButton>
