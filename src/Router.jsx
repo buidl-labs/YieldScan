@@ -6,7 +6,7 @@ export default function Router() {
     return (
         <BrowserRouter>
             <Route path="/">
-                <Redirect to="/dashboard" />
+                <Redirect to="/network-details" />
                 <App />
             </Route>
         </BrowserRouter>

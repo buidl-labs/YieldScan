@@ -1,12 +1,11 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Flex,
 	Text,
 	ButtonGroup,
-	Link,
 	Icon
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
@@ -19,7 +18,7 @@ type SuggestedValidatorsProps = {
 	colorMode: "light" | "dark",
 	validatorsList: Array<{
 		name: string,
-		avatar?: string,
+		stashId: string,
 		amount: float,
 		risk: float
 	}>,
@@ -36,7 +35,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link m={4}>
+					<Link to='/returns-calculator' m={4}>
 						<Icon name='arrow-back' mr={1} /> Returns Calculator
 					</Link>
 				</Box>
@@ -59,15 +58,15 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							</Text>
 						}{" "}
 						<Box w='100%' p={2} mt={6} h='60vh' overflow='auto'>
-							{props.validatorsList.map((validator, index) => {
+							{ props.validatorsList && props.validatorsList.map((validator, index) => {
 								return (
 									<ValidatorTile
 										key={index}
 										name={validator.name}
+										stashId={validator.stashId}
 										amount={validator.amount}
 										risk={validator.risk}
 										currency={props.currency}
-										avatar={validator.avatar}
 										colorMode={props.colorMode}
 									/>
 								);

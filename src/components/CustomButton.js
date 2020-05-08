@@ -26,10 +26,13 @@ type CustomButtonProps = {
 
 const CustomButton = (props: CustomButtonProps) => {
 	const variant = props.variant ? props.variant : "primary";
+	const disabled = props.disabled ? props.disabled : false;
 	return (
 		<>
 			<PseudoBox
 				as='button'
+				disabled={props.disabled}
+				onClick={props.onClick}
 				transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
 				px={8}
 				py={3}

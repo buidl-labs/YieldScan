@@ -28,6 +28,7 @@ import socketIOClient from "socket.io-client";
 import AlertDialogContainer from "./components/LoginFlow/AlertDialogContainer";
 import ValidatorTable from "./components/ValidatorTable.jsx";
 import HelpCenter from "./components/HelpCenter.jsx";
+import ReturnsCalculator from "./components/ReturnsCalculator.jsx";
 import ScrollToTop from "./ScrollToTop.jsx";
 import ValidatorApp from "./components/validator_components/ValidatorApp.jsx";
 import NominatorApp from "./components/nominator_components/NominatorApp.jsx";
@@ -39,6 +40,8 @@ import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
+
+const currency = 'KSM';
 
 function App() {
 	// eslint-disable-next-line no-unused-vars
@@ -56,6 +59,12 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
+	const [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
+	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
+		'budget' : '0',
+		'expectedReturns': '0'
+	});
+
 	const {
 		isOpen: isExtensionDialogOpen,
 		onOpen: onExtensionDialogOpen,
@@ -66,6 +75,7 @@ function App() {
 		onOpen: onCreateAccountDialogOpen,
 		onClose: onCreateAccountDialogClose
 	} = useDisclosure();
+	
 	const ERA_PER_DAY = 4;
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
@@ -99,54 +109,21 @@ function App() {
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
 
-	const [suggPromptsAmount] = useDebounce(stakeInput / 16, 500.0);
-	const [suggPromptsData, setSuggPromptsData] = React.useState([]);
-	const suggPrompts = React.useCallback(() => {
-		const data = suggPromptsData.map(validator => {
-			const {
-				stashId,
-				stashIdTruncated,
-				name,
-				commission,
-				totalStake,
-				poolReward,
-				noOfNominators
-			} = validator;
-			const userStakeFraction =
-				suggPromptsAmount / (suggPromptsAmount + totalStake);
-			const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
-			return {
-				noOfNominators,
-				stashId,
-				stashIdTruncated,
-				name,
-				commission: `${parseFloat(commission)}%`,
-				dailyEarning: isNaN(dailyEarning)
-					? "Not enough data"
-					: `${dailyEarning.toPrecision(10)} KSM`,
-				dailyEarningPrecise: isNaN(dailyEarning) ? 0 : dailyEarning
-			};
-		});
-		// const earnings = data.map(validator => validator.dailyEarningPrecise);
-		data.sort((a, b) => b.dailyEarningPrecise - a.dailyEarningPrecise);
-		const top16data = [...data.slice(0, 16)];
-		// console.log("table data of top 16 val - ", top16data);
-		if (top16data.length > 0) {
-			// eslint-disable-next-line no-unused-vars
-			const expectedEarning = top16data.reduce((a, b) => ({
-				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
-			}));
-			// console.log("expected earning of top 16 val - ", expectedEarning);
-		}
-		if (apiConnected) setIsLoaded(true);
-	}, [suggPromptsAmount, suggPromptsData, apiConnected]);
 
 	React.useEffect(() => {
 		if (apiConnected) {
 			calcReward();
-			suggPrompts();
 		}
-	}, [calcReward, suggPrompts, apiConnected]);
+	}, [calcReward, apiConnected]);
+
+	React.useEffect(() => {
+		let validatorsInfo = suggValidatorsData && suggValidatorsData.validatorsList && suggValidatorsData.validatorsList.reduce((acc, cur) => {
+			// TODO: Replace placeholder risk score with actual risk score
+			acc.push({name: cur.name, stashId: cur.stashId, amount: parseFloat(suggValidatorsData.budget)/16, risk: '0.22'});
+			return acc;
+		},[]);	
+		setValidators (validatorsInfo);
+	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
 		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
@@ -157,7 +134,6 @@ function App() {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
-					setSuggPromptsData(filteredValidatorsList);
 					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
@@ -176,7 +152,6 @@ function App() {
 				if (intentionsData[0]) {
 					setApiConnected(true);
 					setValidatorData(filteredValidatorsList);
-					setSuggPromptsData(filteredValidatorsList);
 					setElectedInfo(electedInfo[0]);
 					setIntentionData(intentionsData[0].intentions);
 					setValidatorsAndIntentions(intentionsData[0].validatorsAndIntentions);
@@ -193,74 +168,31 @@ function App() {
 		return <ErrorMessage />;
 	}
 
-	/* Beginning of Sample Validator List for UI Demonstration to be removed */
-	const sampleValidatorList = [
-		{
-			name: "PolyLabs 1",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.24"
-		},
-		{
-			name: "PolyLabs 2",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.3"
-		},
-		{
-			name: "PolyLabs 3",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.64"
-		},
-		{
-			name: "PolyLabs 4",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.34"
-		},
-		{
-			name: "PolyLabs 5",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.64"
-		},
-		{
-			name: "PolyLabs 6",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.44"
-		},
-		{
-			name: "PolyLabs 7",
-			avatar: "default",
-			amount: "1.25",
-			risk: "0.14"
-		}
-	];
-	/* End of Sample Validator List for UI Demonstration */
-
+	function handleChildTabEvent(data) {
+		setSuggValidatorsData ({...data});
+	}
+	
 	return (
 		<AmplitudeProvider
 			amplitudeInstance={amplitude.getInstance()}
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>Polka Analytics - Analytics for Polkadot Network</title>
+				<title>Yield Scan - Analytics for Polkadot Network</title>
 				<meta
 					name='description'
 					content='An analytics platform for the Polkadot Network'
 				/>
 			</Helmet>
-			<LogEvent eventType='Home dashboard view' />
+			<LogEvent eventType='Home network-details view' />
 			<LogOnChange
-				eventType='Expected daily earning from stake (Input Change) : (dashboard view)'
+				eventType='Expected daily earning from stake (Input Change) : (network-details view)'
 				value={stakeInput}
 			/>
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
-					<Redirect to='/dashboard' />
+					<Redirect to='/network-details' />
 				</Route>
 				<NavBar
 					onExtensionDialogOpen={onExtensionDialogOpen}
@@ -276,7 +208,7 @@ function App() {
 					px={{ base: 4, md: 0 }}
 				>
 					{/* Homepage - Dashboard */}
-					<Route exact path='/(|dashboard)'>
+					<Route exact path='/(|network-details)'>
 						{isLoaded && apiConnected ? (
 							<>
 								<Heading as='h2' size='xl' textAlign='center' mt={16}>
@@ -328,7 +260,7 @@ function App() {
 											}}
 										/>
 										<InputRightAddon
-											children='KSM'
+											children={currency}
 											backgroundColor='teal.500'
 											roundedRight='2rem'
 										/>
@@ -385,17 +317,26 @@ function App() {
 					</Route>
 
 					{/* Help Center */}
+					<Route path='/returns-calculator'>
+						<ReturnsCalculator
+							colorMode={colorMode}
+							currency={currency}
+							validatorData={validatorData}
+							onEvent={handleChildTabEvent}
+						/>
+					</Route>
+					{/* Help Center */}
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
-					{/* Suggested Validators */}
+					{/* Suggested Validators */} 
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
-							returns={1.43678534556}
-							budget={3000}
-							currency='KSM'
-							validatorsList={sampleValidatorList}
+							returns={parseFloat(suggValidatorsData.expectedReturns)}
+							budget={parseFloat(suggValidatorsData.budget)}
+							currency={currency}
+							validatorsList={validators}
 						/>
 					</Route>
 					{/* PolkaWallet Connect */}
@@ -414,8 +355,8 @@ function App() {
 							fees='10.0 milli'
 							eras={4}
 							amount={3500}
-							currency='KSM'
-							validatorsList={sampleValidatorList}
+							currency={currency}
+							validatorsList={validators}
 						/>
 					</Route>
 				</Flex>

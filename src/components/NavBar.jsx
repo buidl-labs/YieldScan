@@ -21,25 +21,25 @@ import {
 	MenuItem,
 	MenuButton,
 	Menu,
-	MenuList
-} from "@chakra-ui/core";
-import { NavLink } from "react-router-dom";
-import { AiOutlineMenu } from "react-icons/ai";
+	MenuList,
+} from '@chakra-ui/core'
+import { NavLink } from 'react-router-dom'
+import { AiOutlineMenu } from 'react-icons/ai'
 import {
 	web3Enable,
 	isWeb3Injected,
-	web3AccountsSubscribe
-} from "@polkadot/extension-dapp";
+	web3AccountsSubscribe,
+} from '@polkadot/extension-dapp'
 
 import Identicon from "@polkadot/react-identicon";
 
 export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
-	const { colorMode, toggleColorMode } = useColorMode();
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [isUserLoggedIn, setIsLoggedIn] = useState(false);
-	const [listOfUsers, updateListOfUsers] = useState([]);
+	const { colorMode, toggleColorMode } = useColorMode()
+	const { isOpen, onOpen, onClose } = useDisclosure()
+	const [isUserLoggedIn, setIsLoggedIn] = useState(false)
+	const [listOfUsers, updateListOfUsers] = useState([])
 
-	const btnRef = React.useRef();
+	const btnRef = React.useRef()
 
 	//check if user has at least one account with polkadot extension enabled
 	useEffect(() => {
@@ -47,28 +47,28 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 		// connected to polkadot extension
 		if (isWeb3Injected) {
 			//connect to extension
-			web3Enable("Polkanalytics");
+			web3Enable('Polkanalytics')
 
 			//subscriber to listen to change in extension accounts
 			web3AccountsSubscribe(users => {
-				console.log("values", users);
+				console.log('values', users)
 				if (users.length > 0) {
 					/*
-            Means user has at least setup on account,
-            and store account info in localstorage for global reference
-          */
-					setIsLoggedIn(true);
-					updateListOfUsers(users);
-					localStorage.setItem("users", JSON.stringify(users));
+			Means user has at least setup on account,
+			and store account info in localstorage for global reference
+			*/
+					setIsLoggedIn(true)
+					updateListOfUsers(users)
+					localStorage.setItem('users', JSON.stringify(users))
 				} else {
 					//user has no accounts setup/created
-					updateListOfUsers(users);
-					setIsLoggedIn(false);
-					localStorage.setItem("users", JSON.stringify(users));
+					updateListOfUsers(users)
+					setIsLoggedIn(false)
+					localStorage.setItem('users', JSON.stringify(users))
 				}
-			});
+			})
 		}
-	}, []);
+	}, [])
 
 	return (
 		<React.Fragment>
@@ -90,81 +90,36 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 					</NavLink>
 				</Flex>
 				{/* Navigation Menu & color mode toggle - Right hand part of navbar */}
-				<Flex justify='flex-end'>
-					<Flex alignItems='center' display={{ base: "none", sm: "flex" }}>
-						{/* {isUserLoggedIn ? (
-							<Box mr={8}>
-								<Menu>
-									<MenuButton as={Button} rightIcon='chevron-down'>
-										Accounts
-									</MenuButton>
-									<MenuList
-										style={{
-											zIndex: 1000,
-											overflowY: "auto"
-										}}
-									>
-										{listOfUsers.length > 0 &&
-											listOfUsers.map(user => {
-												return (
-													<MenuItem key={user.address} minH='48px'>
-														<Identicon
-															value={user.address}
-															size={36}
-															theme='polkadot'
-														/>
-														<strong
-															style={{
-																marginLeft: 10
-															}}
-														>
-															{user.meta.name}
-														</strong>
-													</MenuItem>
-												);
-											})}
-									</MenuList>
-								</Menu>
-							</Box>
-						) : (
-							<Box mr={8}>
-								<Button
-									style={{
-										border: "1px solid #19CC95",
-										borderRadius: "18px",
-										opacity: 1,
-										color: "#19CC95",
-										height: "35px"
-									}}
-									onClick={() => {
-										//if yes continue
-										//Check if extension is available
-										if (!isWeb3Injected) {
-											//if not: show a dialog box with link to add extension
-											//link to extension: https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd?hl=en
-											//return and not continue with the code execution
-											onExtensionDialogOpen();
-											console.log("add polkadot extensions");
-											return;
-										}
-
-										if (listOfUsers.length <= 0) {
-											onCreateAccountDialogOpen();
-										}
-									}}
-								>
-									Sign in / Sign up
-								</Button>
-							</Box>
-                                )}  */}
+				<Flex justify="flex-end">
+					<Flex
+						alignItems="center"
+						display={{ base: 'none', sm: 'flex' }}
+					>
 						<Box mr={8}>
-							<Link as={NavLink} className='nav-link' to='/dashboard'>
-								Rewards Calculator
+							<Link
+								as={NavLink}
+								className="nav-link"
+								to="/network-details"
+							>
+								Network Details
 							</Link>
 						</Box>
 						<Box mr={8}>
-							<Link as={NavLink} className='nav-link' to='/help-center'>
-								Network Details
+							<Link
+								as={NavLink}
+								className="nav-link"
+								to="/returns-calculator"
+							>
+								Returns Calculator
+							</Link>
+						</Box>
+						<Box mr={8}>
+							<Link
+								as={NavLink}
+								className="nav-link"
+								to="/help-center"
+							>
+								Help Center
 							</Link>
 						</Box>
 						<IconButton
@@ -202,18 +157,28 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 								<Box mr={8}>
 									<Link
 										as={NavLink}
-										className='nav-link'
-										to='/dashboard'
+										className="nav-link"
+										to="/network-details"
 										py={4}
 									>
-										Dashboard
+										Network Details
 									</Link>
 								</Box>
 								<Box mr={8}>
 									<Link
 										as={NavLink}
-										className='nav-link'
-										to='/help-center'
+										className="nav-link"
+										to="/returns-calculator"
+										py={4}
+									>
+										Returns Calculator
+									</Link>
+								</Box>
+								<Box mr={8}>
+									<Link
+										as={NavLink}
+										className="nav-link"
+										to="/help-center"
 										py={4}
 									>
 										Help Center
