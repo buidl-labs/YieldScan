@@ -38,13 +38,11 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					/>
 				</Text>
 				{props.button &&
-				<Link
-					to='/suggested-validators'
-				>
-					<CustomButton disable={!props.budget || props.budget==0} variant="white">
+				<CustomButton disable={!props.budget || props.budget==0} variant="white">
+					<Link to='/suggested-validators'>
 						Start Investing
-					</CustomButton>
-				</Link>
+					</Link>
+				</CustomButton>
 				}
 			</Box>
 		</>
