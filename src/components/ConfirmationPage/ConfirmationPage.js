@@ -171,7 +171,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Badge>
 						</Flex>
 						<Box w='100%' p={2} mt={6} h='50vh' overflow='auto'>
-							{props.validatorsList.map((validator, index) => {
+							{props.validatorsList && props.validatorsList.map((validator, index) => {
 								return (
 									<ValidatorTile
 										key={index}
