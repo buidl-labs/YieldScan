@@ -48,9 +48,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					variant="white"
 					onClick={handleInvestClick}
 				>
-					<Link to="/suggested-validators">
 						Start Investing
-					</Link>
 				</CustomButton>
 				}
 			</Box>

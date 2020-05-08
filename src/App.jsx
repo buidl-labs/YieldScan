@@ -173,11 +173,9 @@ function App() {
 	}
 
 	function handleButtonClick(data) {
-		console.log('App- button  - ', data);
 		setClick (data);
 	}
 
-	console.log('App- button  - ', click);
 	return (
 		<AmplitudeProvider
 			amplitudeInstance={amplitude.getInstance()}
