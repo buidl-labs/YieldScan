@@ -164,8 +164,6 @@ function App() {
 		);
 	}, []);
 	
-	const [check, setCheck] = React.useState(false);
-
 	if (errorState) {
 		return <ErrorMessage />;
 	}
@@ -173,11 +171,6 @@ function App() {
 	function handleChildTabEvent(data) {
 		setSuggValidatorsData ({...data});
 	}
-	
-	function onInvest() {
-		setCheck (true);
-		console.log('state - ', check);
-	}	
 	
 	return (
 		<AmplitudeProvider
@@ -330,7 +323,6 @@ function App() {
 							currency={currency}
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
-							onInvest={onInvest}
 						/>
 					</Route>
 					{/* Help Center */}
@@ -340,7 +332,6 @@ function App() {
 					{/* Suggested Validators */} 
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
-							check={check}
 							colorMode={colorMode}
 							returns={parseFloat(suggValidatorsData.expectedReturns)}
 							budget={parseFloat(suggValidatorsData.budget)}

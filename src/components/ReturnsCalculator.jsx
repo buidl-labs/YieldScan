@@ -241,7 +241,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 							returns={expectedReturns}
 							currency={props.currency}
 							button={true}
-							onInvest={props.onInvest}
 						/>
 					</Box>
 				</Flex>
