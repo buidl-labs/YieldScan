@@ -64,6 +64,7 @@ function App() {
 		'budget' : '0',
 		'expectedReturns': '0'
 	});
+	const [calculatorStatus, setCalculatorStatus] = React.useState(false);
 
 	const {
 		isOpen: isExtensionDialogOpen,
@@ -337,6 +338,7 @@ function App() {
 							budget={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
+							calculatorStatus={calculatorStatus}
 						/>
 					</Route>
 					{/* PolkaWallet Connect */}
