@@ -25,10 +25,10 @@ type SuggestedValidatorsProps = {
 	returns: float,
 	budget: float,
 	currency: string,
+	click: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
-	
 	return (
 		<React.Fragment>
 			<Helmet>

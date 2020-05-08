@@ -163,7 +163,7 @@ function App() {
 			}
 		);
 	}, []);
-	
+	const [click, setClick] = React.useState(false); 
 	if (errorState) {
 		return <ErrorMessage />;
 	}
@@ -171,7 +171,13 @@ function App() {
 	function handleChildTabEvent(data) {
 		setSuggValidatorsData ({...data});
 	}
-	
+
+	function handleButtonClick(data) {
+		console.log('App- button  - ', data);
+		setClick (data);
+	}
+
+	console.log('App- button  - ', click);
 	return (
 		<AmplitudeProvider
 			amplitudeInstance={amplitude.getInstance()}
@@ -323,13 +329,16 @@ function App() {
 							currency={currency}
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
+							buttonClick={handleButtonClick}
 						/>
 					</Route>
 					{/* Help Center */}
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
-					{/* Suggested Validators */} 
+					{/* Suggested Validators */}
+					{
+					click==true ?
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
@@ -337,8 +346,12 @@ function App() {
 							budget={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
+							click={click}
 						/>
 					</Route>
+					:
+					<Redirect to="/" />
+					}
 					{/* PolkaWallet Connect */}
 					<Route path='/wallet-connect'>
 						<WalletConnect colorMode={colorMode} />
@@ -359,6 +372,7 @@ function App() {
 							validatorsList={validators}
 						/>
 					</Route>
+					<Route  render={() => (<Redirect to="/" />)} />
 				</Flex>
 				{/* Validator specific view */}
 				<Route
