@@ -37,6 +37,7 @@ type ReturnsCalculatorProps = {
 const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 	const { colorMode, toggleColorMode }        = useColorMode();
 	const [stakeInput, setStakeInput]           = React.useState();
+	const [budget, setBudget]                   = React.useState();
 	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
 	const [suggPromptsAmount]                   = useDebounce(stakeInput / 16, 0);
 	const [validatorsList, setValidatorsList]   = React.useState([]);
@@ -79,7 +80,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		//handle suggested validaors
 		data.sort((num1, num2) => num2.dailyEarningPrecise - num1.dailyEarningPrecise);
 		const suggestedValidators = [...data.slice(0, 16)];
-		
+		setBudget (stakeInput);
 		const validatorInfo = {};
 		if (suggestedValidators.length > 0) {
 			const expectedEarning = suggestedValidators.reduce((a, b) => ({
@@ -205,7 +206,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 								<Text>High</Text>
 							</Flex>
 						</Box>
-						<CustomButton
+						<CustomButton disable={!stakeInput || stakeInput==0}
 							onClick={calculateReturns}
 						>
 							Calculate
@@ -221,6 +222,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						]}
 					>
 						<ExpectedReturns
+							budget={budget}
 							returns={expectedReturns}
 							currency={props.currency}
 							button={true}

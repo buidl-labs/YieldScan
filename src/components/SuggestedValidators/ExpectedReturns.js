@@ -5,6 +5,7 @@ import CountUp from "react-countup";
 import CustomButton from "../CustomButton"
 
 type ExpectedReturnsProps = {
+	budget: float,
 	returns: float,
 	currency: string,
 	button: boolean,
@@ -12,7 +13,8 @@ type ExpectedReturnsProps = {
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
 	const returns = props.returns.toFixed(5);
-	
+	console.log ('props - ', props);
+
 	return (
 		<>
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
@@ -39,7 +41,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				<Link
 					to='/suggested-validators'
 				>
-					<CustomButton disabled={returns==0} variant="white">
+					<CustomButton disable={!props.budget || props.budget==0} variant="white">
 						Start Investing
 					</CustomButton>
 				</Link>
