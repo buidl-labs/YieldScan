@@ -13,7 +13,6 @@ type ExpectedReturnsProps = {
 
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
 	const returns = props.returns.toFixed(5);
-	console.log ('props - ', props);
 
 	return (
 		<>

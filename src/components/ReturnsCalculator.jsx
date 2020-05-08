@@ -24,6 +24,7 @@ import ErrorMessage    from "./ErrorMessage";
 import ExpectedReturns from "./SuggestedValidators/ExpectedReturns";
 import {
 	getRiskSliderColor,
+	textColorLight,
 } from "./../constants";
 
 const textColor = { light: "gray.600", dark: "#FFF" };
@@ -206,11 +207,21 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 								<Text>High</Text>
 							</Flex>
 						</Box>
-						<CustomButton disable={!stakeInput || stakeInput==0}
-							onClick={calculateReturns}
-						>
+						<CustomButton disable={!stakeInput || stakeInput==0} onClick={calculateReturns}>
 							Calculate
 						</CustomButton>
+						{!stakeInput && (
+						<Text
+							textAlign='center'
+							w='100%'
+							m={2}
+							fontSize='xs'
+							as='i'
+							color={textColorLight[props.colorMode]}
+						>
+							Please enter valid stake input
+						</Text>
+						)}
 					</Box>
 					<Box
 						m={4}
