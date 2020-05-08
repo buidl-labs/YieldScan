@@ -14,8 +14,8 @@ type ExpectedReturnsProps = {
 const ExpectedReturns = (props: ExpectedReturnsProps) => {
 	const returns = props.returns.toFixed(5);
 
+
 	return (
-		<>
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
 				<Heading as='h3' size='lg'>
 					Expected Results{" "}
@@ -37,14 +37,13 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					/>
 				</Text>
 				{props.button &&
-				<CustomButton disable={!props.budget || props.budget==0} variant="white">
+				<CustomButton disable={!props.budget || props.budget==0} onClick={props.onInvest} variant="white">
 					<Link to='/suggested-validators'>
 						Start Investing
 					</Link>
 				</CustomButton>
 				}
 			</Box>
-		</>
 	);
 };
 

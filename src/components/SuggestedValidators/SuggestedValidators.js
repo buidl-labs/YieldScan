@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Link } from "react-router-dom";
+import { Redirect, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -24,15 +24,19 @@ type SuggestedValidatorsProps = {
 	}>,
 	returns: float,
 	budget: float,
-	currency: string
+	currency: string,
+	check: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
+	const check = props.check || false;
+	
 	return (
 		<React.Fragment>
 			<Helmet>
 				<title>Yield Scan &middot; Suggested Validators</title>
 			</Helmet>
+			{check &&
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
 					<Link to='/returns-calculator' m={4}>
@@ -95,6 +99,11 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 					</ButtonGroup>
 				</Flex>
 			</Route>
+			}
+			{
+			!check && 
+			<Redirect to='/returns-calculator' />
+			}
 			<Footer />
 		</React.Fragment>
 	);
