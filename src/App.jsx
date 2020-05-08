@@ -118,6 +118,7 @@ function App() {
 
 	React.useEffect(() => {
 		let validatorsInfo = suggValidatorsData && suggValidatorsData.validatorsList && suggValidatorsData.validatorsList.reduce((acc, cur) => {
+			// TODO: Replace placeholder risk score with actual risk score
 			acc.push({name: cur.name, stashId: cur.stashId, amount: parseFloat(suggValidatorsData.budget)/16, risk: '0.22'});
 			return acc;
 		},[]);	
