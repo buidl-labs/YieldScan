@@ -329,7 +329,7 @@ function App() {
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
-					{/* Suggested Validators*/} 
+					{/* Suggested Validators */} 
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
