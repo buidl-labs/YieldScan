@@ -53,7 +53,7 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 						<Text color={textColor[props.colorMode]} fontSize='sm'>
 							Staking Amount: {props.amount} {props.currency}
 							{props.risk && (
-								<Text>
+								<>
 									<Text as='i' color={textColorLight[props.colorMode]} mx={1}>
 										|
 									</Text>
@@ -61,7 +61,7 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 									<Badge mx={2} fontSize='sm' variantColor={riskBadge}>
 										{props.risk}
 									</Badge>
-								</Text>
+								</>
 							)}
 						</Text>
 					</Box>
