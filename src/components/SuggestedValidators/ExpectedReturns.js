@@ -32,7 +32,7 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 					<CountUp
 						end={returns}
 						decimals={3}
-						suffix={props.currency}
+						suffix={` ${props.currency}`}
 					/>
 				</Text>
 				{props.button &&
