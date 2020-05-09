@@ -336,7 +336,7 @@ function App() {
 					</Route>
 					{/* Suggested Validators */}
 					{
-					click==true ?
+					click===true ?
 					<Route path='/suggested-validators'>
 						<SuggestedValidators
 							colorMode={colorMode}
