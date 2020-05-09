@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Link } from "react-router-dom";
+import { Redirect, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -24,7 +24,8 @@ type SuggestedValidatorsProps = {
 	}>,
 	returns: float,
 	budget: float,
-	currency: string
+	currency: string,
+	click: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
