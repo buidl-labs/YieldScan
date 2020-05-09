@@ -3,6 +3,7 @@ import { useHistory, Route, Link, Redirect } from "react-router-dom";
 import { Box, Button, Heading, Text, Tooltip, Icon } from "@chakra-ui/core";
 import CountUp from "react-countup";
 import CustomButton from "../CustomButton";
+import Auth from "../Auth";
 
 type ExpectedReturnsProps = {
 	budget: float,
@@ -16,11 +17,6 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 
 	const returns = props.returns.toFixed(5);
 
-	function handleInvestClick() {
-		props.buttonClick();
-		history.push('/suggested-validators');
-	}
-	
 	return (
 			<Box w='100%' bg='#19CC95' py={8} px={10} rounded='lg' color='white'>
 				<Heading as='h3' size='lg'>
@@ -46,7 +42,11 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 				<CustomButton 
 					disable={!props.budget || props.budget==0} 
 					variant="white"
-					onClick={handleInvestClick}
+					onClick={() => {
+						Auth.login(() => {
+						history.push('/suggested-validators');
+						})
+					}}
 				>
 						Start Investing
 				</CustomButton>

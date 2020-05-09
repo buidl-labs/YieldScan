@@ -38,6 +38,8 @@ import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
 import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
+import Auth from "./components/Auth";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -163,17 +165,13 @@ function App() {
 			}
 		);
 	}, []);
-	const [click, setClick] = React.useState(false); 
+	
 	if (errorState) {
 		return <ErrorMessage />;
 	}
 
 	function handleChildTabEvent(data) {
 		setSuggValidatorsData ({...data});
-	}
-
-	function handleButtonClick(data) {
-		setClick (data);
 	}
 
 	return (
@@ -327,7 +325,6 @@ function App() {
 							currency={currency}
 							validatorData={validatorData}
 							onEvent={handleChildTabEvent}
-							buttonClick={handleButtonClick}
 						/>
 					</Route>
 					{/* Help Center */}
@@ -335,21 +332,18 @@ function App() {
 						<HelpCenter />
 					</Route>
 					{/* Suggested Validators */}
-					{
-					click===true ?
-					<Route path='/suggested-validators'>
+					<ProtectedRoute
+						path='/suggested-validators'
+						component={(props)=>
 						<SuggestedValidators
 							colorMode={colorMode}
 							returns={parseFloat(suggValidatorsData.expectedReturns)}
 							budget={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
-							click={click}
 						/>
-					</Route>
-					:
-					<Redirect to="/" />
-					}
+						}
+					/>
 					{/* PolkaWallet Connect */}
 					<Route path='/wallet-connect'>
 						<WalletConnect colorMode={colorMode} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route, Link } from "react-router-dom";
+import { useHistory, Redirect, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -13,6 +13,7 @@ import Footer from "../Footer.jsx";
 import ValidatorTile from "./ValidatorTile";
 import ExpectedReturns from "./ExpectedReturns";
 import CustomButton from "../CustomButton";
+import Auth from "../Auth";
 
 type SuggestedValidatorsProps = {
 	colorMode: "light" | "dark",
@@ -25,10 +26,11 @@ type SuggestedValidatorsProps = {
 	returns: float,
 	budget: float,
 	currency: string,
-	click: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
+	const history = useHistory();
+	
 	return (
 		<React.Fragment>
 			<Helmet>
@@ -36,9 +38,16 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link to='/returns-calculator' m={4}>
-						<Icon name='arrow-back' mr={1} /> Returns Calculator
-					</Link>
+						<Link
+							onClick={() => {
+							Auth.logout(() => {
+							history.push('/returns-calculator');
+							})
+							}}
+						>
+						<Icon name='arrow-back' mr={1} /> 
+							Returns Calculator
+						</Link>
 				</Box>
 				<Flex py={0} wrap='wrap-reverse'>
 					<Box

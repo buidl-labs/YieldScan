@@ -109,9 +109,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 		suggPrompts();
 	}
 
-	function handleClick() {
-		props.buttonClick(true);
-	}
 	const onRiskChange = value => {
 		setSliderBG(getRiskSliderColor(value/100));
 	};
@@ -241,7 +238,6 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 							returns={expectedReturns}
 							currency={props.currency}
 							button={true}
-							buttonClick={handleClick}
 						/>
 					</Box>
 				</Flex>
