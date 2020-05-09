@@ -210,24 +210,21 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 								<Text>High</Text>
 							</Flex>
 						</Box>
-						<Flex flexWrap='wrap'>
-							<Flex direction='column'>
-								<CustomButton disable={!stakeInput || stakeInput==0} onClick={calculateReturns}>
+						<Flex flexWrap='wrap' direction='column' alignItems='flex-start'>
+								<CustomButton disable={!stakeInput || stakeInput===0} onClick={calculateReturns}>
 									Calculate
 								</CustomButton>
-							</Flex>
-							<Flex direction='column'>
 								{!stakeInput && (
 								<Text
-									m={4}
+									my={4}
+									mx={1}
 									fontSize='xs'
 									as='i'
 									color={textColorLight[props.colorMode]}
 								>
-									Please enter valid stake input
+									Please enter a valid budget
 								</Text>
 								)}
-							</Flex>
 						</Flex>
 					</Box>
 					<Box
