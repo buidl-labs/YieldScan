@@ -38,10 +38,11 @@ import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
 import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
+import EditValidators from "./components/EditValidators/EditValidators";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
-const currency = 'KSM';
+const currency = "KSM";
 
 function App() {
 	// eslint-disable-next-line no-unused-vars
@@ -59,10 +60,12 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
-	const [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
+	const [validators, setValidators] = React.useState([
+		{ name: "None", stashId: "", amount: 0, risk: 0.0 }
+	]);
 	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
-		'budget' : '0',
-		'expectedReturns': '0'
+		budget: "0",
+		expectedReturns: "0"
 	});
 
 	const {
@@ -75,7 +78,7 @@ function App() {
 		onOpen: onCreateAccountDialogOpen,
 		onClose: onCreateAccountDialogClose
 	} = useDisclosure();
-	
+
 	const ERA_PER_DAY = 4;
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
@@ -109,7 +112,6 @@ function App() {
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
 
-
 	React.useEffect(() => {
 		if (apiConnected) {
 			calcReward();
@@ -117,12 +119,20 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		let validatorsInfo = suggValidatorsData && suggValidatorsData.validatorsList && suggValidatorsData.validatorsList.reduce((acc, cur) => {
-			// TODO: Replace placeholder risk score with actual risk score
-			acc.push({name: cur.name, stashId: cur.stashId, amount: parseFloat(suggValidatorsData.budget)/16, risk: '0.22'});
-			return acc;
-		},[]);	
-		setValidators (validatorsInfo);
+		let validatorsInfo =
+			suggValidatorsData &&
+			suggValidatorsData.validatorsList &&
+			suggValidatorsData.validatorsList.reduce((acc, cur) => {
+				// TODO: Replace placeholder risk score with actual risk score
+				acc.push({
+					name: cur.name,
+					stashId: cur.stashId,
+					amount: parseFloat(suggValidatorsData.budget) / 16,
+					risk: "0.22"
+				});
+				return acc;
+			}, []);
+		setValidators(validatorsInfo);
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
@@ -163,17 +173,17 @@ function App() {
 			}
 		);
 	}, []);
-	const [click, setClick] = React.useState(false); 
+	const [click, setClick] = React.useState(false);
 	if (errorState) {
 		return <ErrorMessage />;
 	}
 
 	function handleChildTabEvent(data) {
-		setSuggValidatorsData ({...data});
+		setSuggValidatorsData({ ...data });
 	}
 
 	function handleButtonClick(data) {
-		setClick (data);
+		setClick(data);
 	}
 
 	return (
@@ -335,24 +345,32 @@ function App() {
 						<HelpCenter />
 					</Route>
 					{/* Suggested Validators */}
-					{
-					click===true ?
-					<Route path='/suggested-validators'>
-						<SuggestedValidators
-							colorMode={colorMode}
-							returns={parseFloat(suggValidatorsData.expectedReturns)}
-							budget={parseFloat(suggValidatorsData.budget)}
-							currency={currency}
-							validatorsList={validators}
-							click={click}
-						/>
-					</Route>
-					:
-					<Redirect to="/" />
-					}
+					{click === true ? (
+						<Route path='/suggested-validators'>
+							<SuggestedValidators
+								colorMode={colorMode}
+								returns={parseFloat(suggValidatorsData.expectedReturns)}
+								budget={parseFloat(suggValidatorsData.budget)}
+								currency={currency}
+								validatorsList={validators}
+								click={click}
+							/>
+						</Route>
+					) : (
+						<Redirect to='/' />
+					)}
 					{/* PolkaWallet Connect */}
 					<Route path='/wallet-connect'>
 						<WalletConnect colorMode={colorMode} />
+					</Route>
+					{/* Edit Validators */}
+					<Route path='/edit-validators'>
+						<EditValidators
+							colorMode={colorMode}
+							currency={currency}
+							amount={16.5}
+							nValidators={16}
+						/>
 					</Route>
 					{/* Confirmation */}
 					<Route path='/confirmation'>
@@ -370,7 +388,7 @@ function App() {
 							validatorsList={validators}
 						/>
 					</Route>
-					<Route  render={() => (<Redirect to="/" />)} />
+					<Route render={() => <Redirect to='/' />} />
 				</Flex>
 				{/* Validator specific view */}
 				<Route
