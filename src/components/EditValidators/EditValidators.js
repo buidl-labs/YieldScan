@@ -18,8 +18,7 @@ import { textColor, textColorLight, border } from "../../constants";
 type EditValidatorsProps = {
 	colorMode?: "light" | "dark",
 	amount: float,
-	currency: string,
-	nValidators: number
+	currency: string
 };
 
 const EditValidators = (props: EditValidatorsProps) => {
@@ -124,7 +123,13 @@ const EditValidators = (props: EditValidatorsProps) => {
 						<b>
 							{props.amount} {props.currency}
 						</b>{" "}
-						to {props.nValidators} validators
+						to{" "}
+						{
+							validators.filter(doc => {
+								return doc.selected === true;
+							}).length
+						}{" "}
+						validators
 					</Text>
 					<Box w='100%' mt={8} overflow='auto'>
 						<Box w={["300%", "200%", "100%", "100%"]}>

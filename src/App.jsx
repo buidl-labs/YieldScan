@@ -369,7 +369,6 @@ function App() {
 							colorMode={colorMode}
 							currency={currency}
 							amount={16.5}
-							nValidators={16}
 						/>
 					</Route>
 					{/* Confirmation */}
