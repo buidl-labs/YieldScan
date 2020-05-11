@@ -13,7 +13,7 @@ import Helmet from "react-helmet";
 import Footer from "../Footer.jsx";
 import Table from "./Table";
 import CustomButton from "../CustomButton";
-import { textColor, textColorLight, border } from "../../constants";
+import { textColor, textColorLight } from "../../constants";
 
 type EditValidatorsProps = {
 	colorMode?: "light" | "dark",
@@ -25,62 +25,42 @@ const EditValidators = (props: EditValidatorsProps) => {
 	const [validators, setValidators] = React.useState([
 		{
 			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
 			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "3%",
-			Points: "220",
+			"Own Stake": "13 KSM",
+			Commission: "4%",
 			"Risk Score": 0.34,
 			selected: true
 		},
 		{
 			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
 			"Other Stake": "13.4525 KSM",
 			"Own Stake": "12 KSM",
-			Commission: "3%",
-			Points: "220",
-			"Risk Score": 0.1,
+			Commission: "5%",
+			"Risk Score": 0.14,
 			selected: true
 		},
 		{
 			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
+			"Other Stake": "124.4525 KSM",
+			"Own Stake": "15 KSM",
 			Commission: "3%",
-			Points: "220",
-			"Risk Score": 0.7,
+			"Risk Score": 0.22,
 			selected: true
 		},
 		{
 			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
 			"Other Stake": "13.4525 KSM",
 			"Own Stake": "12 KSM",
-			Commission: "3%",
-			Points: "220",
-			"Risk Score": 0.7,
+			Commission: "2%",
+			"Risk Score": 0.15,
 			selected: true
 		},
 		{
 			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
-			"Other Stake": "13.4525 KSM",
+			"Other Stake": "53.4525 KSM",
 			"Own Stake": "12 KSM",
 			Commission: "3%",
-			Points: "220",
-			"Risk Score": 0.7,
-			selected: true
-		},
-		{
-			Validator: "PolyLabs I",
-			"Staking Amt.": "13.4525 KSM",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "3%",
-			Points: "220",
-			"Risk Score": 0.7,
+			"Risk Score": 0.64,
 			selected: true
 		}
 	]);
@@ -88,11 +68,9 @@ const EditValidators = (props: EditValidatorsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 
 	const callBack = i => {
-		console.log(i);
 		let temp = [...validators];
 		temp[i]["selected"] = temp[i]["selected"] ? !temp[i]["selected"] : true;
 		setValidators(temp);
-		console.log(validators);
 	};
 
 	const selectAll = bool => {
@@ -101,6 +79,20 @@ const EditValidators = (props: EditValidatorsProps) => {
 				return { ...doc, selected: bool };
 			})
 		);
+	};
+
+	const sortList = (column, asc) => {
+		let tempValidators = [...validators];
+		if (asc) {
+			tempValidators = tempValidators.sort((a, b) =>
+				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
+			);
+		} else {
+			tempValidators = tempValidators.sort((a, b) =>
+				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
+			);
+		}
+		setValidators(tempValidators);
 	};
 
 	return (
@@ -138,17 +130,21 @@ const EditValidators = (props: EditValidatorsProps) => {
 								allowRowSelect={true}
 								columns={[
 									"Validator",
-									"Staking Amt.",
 									"Other Stake",
 									"Own Stake",
 									"Commission",
-									"Points",
-									"Risk Score",
-									"Last #"
+									"Risk Score"
 								]}
 								rows={validators}
 								selectCallback={callBack}
 								selectAllCallback={selectAll}
+								sortableColumns={[
+									"Other Stake",
+									"Own Stake",
+									"Commission",
+									"Risk Score"
+								]}
+								sortCallback={sortList}
 							></Table>
 						</Box>
 					</Box>

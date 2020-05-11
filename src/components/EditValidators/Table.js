@@ -6,7 +6,9 @@ import {
 	Checkbox,
 	Flex,
 	Badge,
-	Tooltip
+	Tooltip,
+	Stack,
+	IconButton
 } from "@chakra-ui/core";
 import {
 	textColor,
@@ -27,7 +29,9 @@ type TableProps = {
 	allowRowSelect?: Boolean,
 	columnsTemplate?: string,
 	selectCallback?: Number => void,
-	selectAllCallback?: Boolean => void
+	selectAllCallback?: Boolean => void,
+	sortableColumns?: Array<string>,
+	sortCallback?: (string, Boolean) => void
 };
 
 const Table = (props: TableProps) => {
@@ -80,11 +84,51 @@ const Table = (props: TableProps) => {
 					)}
 					{props.columns.map((col, index) => {
 						return (
-							<Box w='calc(100% - 10px)' p='10px' key={index}>
+							<Flex
+								w='calc(100% - 10px)'
+								p='10px'
+								py='15px'
+								key={index}
+								align='center'
+							>
 								<Text as='b' fontSize='sm' color={textColor[mode]}>
 									{col}
 								</Text>
-							</Box>
+								{props.sortableColumns.indexOf(col) > -1 && (
+									<Stack spacing={0}>
+										<IconButton
+											icon='triangle-up'
+											color={textColor[mode]}
+											p={0}
+											m={0}
+											ml={1}
+											variant='ghost'
+											size='xs'
+											height='10px'
+											fontSize='8px'
+											color={textColorLight[mode]}
+											onClick={() => {
+												props.sortCallback(col, true);
+											}}
+										></IconButton>
+										<IconButton
+											icon='triangle-down'
+											color={textColor[mode]}
+											p={0}
+											m={0}
+											ml={1}
+											variant='ghost'
+											size='xs'
+											height='10px'
+											fontSize='8px'
+											color={textColorLight[mode]}
+											onClick={() => {
+												props.sortCallback(col, false);
+											}}
+										></IconButton>
+									</Stack>
+								)}
+							</Flex>
 						);
 					})}
 				</Grid>
