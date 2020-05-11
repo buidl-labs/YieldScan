@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { useHistory, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -7,7 +7,6 @@ import {
 	Text,
 	Image,
 	Tooltip,
-	Link,
 	Icon,
 	Stack,
 	PseudoBox
@@ -21,7 +20,24 @@ type WalletConnectProps = {
 };
 
 const WalletConnect = (props: WalletConnectProps) => {
+	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
+
+	const openExtension = () => {
+		const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+		const isFirefox = typeof InstallTrigger !== 'undefined';
+		
+		if (isChrome) {
+			
+		}
+		else if (isFirefox) {
+		
+		}
+		else {
+			console.log ('Your Browser do not support the extension');
+		}
+	}
+
 	return (
 		<>
 			<Helmet>
@@ -29,7 +45,11 @@ const WalletConnect = (props: WalletConnectProps) => {
 			</Helmet>
 			<Route exact path='/wallet-connect'>
 				<Box m={4} mt={10}>
-					<Link m={4}>
+						<Link
+							onClick={() => {
+							history.push('/suggested-validators');
+							}}
+						>
 						<Icon name='arrow-back' mr={1} /> Back
 					</Link>
 				</Box>
@@ -93,7 +113,11 @@ const WalletConnect = (props: WalletConnectProps) => {
 									boxShadow: "0 0 0 0.25rem #19CC9555"
 								}}
 							>
-								<Heading size='sm' fontWeight='normal' textAlign='center'>
+								<Heading size='sm' fontWeight='normal' textAlign='center'
+									onClick={()=>{
+										history.push('/confirmation');
+									}}
+								>
 									I already have the extension
 								</Heading>
 							</PseudoBox>
@@ -114,7 +138,7 @@ const WalletConnect = (props: WalletConnectProps) => {
 									boxShadow: "0 0 0 0.25rem #19CC9555"
 								}}
 							>
-								<Heading size='sm' fontWeight='normal' textAlign='center'>
+								<Heading size='sm' fontWeight='normal' textAlign='center' onClick={openExtension}>
 									What extension?
 								</Heading>
 							</PseudoBox>

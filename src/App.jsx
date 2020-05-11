@@ -349,7 +349,9 @@ function App() {
 						<WalletConnect colorMode={colorMode} />
 					</Route>
 					{/* Confirmation */}
-					<Route path='/confirmation'>
+					<ProtectedRoute
+						path='/confirmation'
+						component={(props)=>
 						<ConfirmationPage
 							colorMode={colorMode}
 							stashOptions={[{ option: "Account Name", value: "AccountID" }]}
@@ -359,12 +361,12 @@ function App() {
 							riskPreference={0.5}
 							fees='10.0 milli'
 							eras={4}
-							amount={3500}
+							amount={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
 						/>
-					</Route>
-					<Route  render={() => (<Redirect to="/" />)} />
+						}
+					/>
 				</Flex>
 				{/* Validator specific view */}
 				<Route

@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory, Redirect, Route, Link } from "react-router-dom";
+import { useHistory, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -101,7 +101,13 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 				<Flex justify='center' py={2}>
 					<ButtonGroup spacing={4}>
 						<CustomButton variant='secondary'>Edit Validators</CustomButton>
-						<CustomButton>Proceed</CustomButton>
+						<CustomButton
+							onClick={() => {
+							history.push('/wallet-connect');
+							}}
+						>
+							Proceed
+						</CustomButton>
 					</ButtonGroup>
 				</Flex>
 			</Route>

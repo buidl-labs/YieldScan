@@ -13,6 +13,13 @@ import {
 	Tooltip
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
+import {
+    web3Enable,
+    isWeb3Injected,
+    web3AccountsSubscribe,
+ 	web3FromAddress 
+} from '@polkadot/extension-dapp';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import Footer from "../Footer.jsx";
 import ValidatorTile from "../SuggestedValidators/ValidatorTile";
 import {
@@ -23,6 +30,7 @@ import {
 	getRiskLevel
 } from "../../constants";
 import CustomButton from "../CustomButton";
+
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -54,10 +62,133 @@ const messageBoxColors = {
 	}
 };
 
+async function __useEffect (state, setState, listOfUsers, updateListOfUsers, setFreeBalance, amount, stashId, setStashId, controllerId, setControllerId, selectedValidators) {
+
+	const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+	const api = await ApiPromise.create({ provider });
+
+	switch (state) {
+		case 'init':
+			setState ('step-one');
+
+		case 'step-one':
+			if (isWeb3Injected) {
+				web3Enable('YieldScan');
+
+				web3AccountsSubscribe(users => {
+					console.log('[fetch-users] web3injected => users', users);
+					if (users.length > 0) {
+						updateListOfUsers(users);
+						setStashId (users[0].address);
+						setControllerId (users[0].address);
+						setState ('step-two');
+					} else {
+						updateListOfUsers(users)
+						console.log('[fetch-users] web3injected => no users');
+					}
+				})
+			}
+			else {
+				console.log('[fetch-users] web3injected error: Add Extenstion');
+			}
+		case 'step-two':
+			// const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+			// const api = await ApiPromise.create({ provider });
+			const balance = await api.query.balances.freeBalance(stashId);
+			const transferrable =
+				balance.toString() / 10 ** 12;
+
+			const freeBalance = parseFloat(transferrable.toFixed(3));
+
+			setFreeBalance (freeBalance);
+
+			console.log ('[free-balance] free balance', freeBalance);
+			
+			if (freeBalance > amount) {
+				setState ('stake');
+			}
+			else {
+				setState ('insufficient-funds');
+				console.log ('insufficient funds');
+			}
+
+		case 'stake':
+			// provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+			// api = await ApiPromise.create({ provider });
+			const bonded = amount * 10 ** 12
+			const ledger = await api.query.staking.ledger(stashId)
+			if (!ledger) {
+				console.log('api.tx.staking.bond')
+				api.tx.staking
+					.bond(controllerId, bonded, 0)
+					.signAndSend(stashId, status => {
+						console.log(
+							'status',
+							JSON.parse(JSON.stringify(status))
+						)
+					})
+					.catch(error => {
+						console.log('Error', error)
+					})
+			} else {
+				console.log('api.tx.staking.bondExtra')
+				api.tx.staking
+					.bondExtra(bonded)
+					.signAndSend(stashId, status => {
+						console.log(
+							'status',
+							JSON.parse(JSON.stringify(status))
+						)
+					})
+					.catch(error => {
+						console.log('Error', error.toString())
+					})
+			}
+		case 'step-three':
+			// provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+			// api = await ApiPromise.create({ provider });
+			const injector = await web3FromAddress(stashId)
+			api.setSigner(injector.signer)
+			api.tx.staking
+				.nominate(
+					selectedValidators.map(
+						validator => validator.stashId
+					)
+				)
+				.signAndSend(stashId, status => {
+					console.log(
+						'status',
+						JSON.parse(JSON.stringify(status))
+					)
+					setState ('step-four');
+				})
+				.catch(error => {
+					console.log('Error', error)
+				})
+
+		case 'step-four':
+			setState('********staked********');
+	}
+}
+
 const ConfirmationPage = (props: ConfirmationPageProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
-
+	const [state, setState] = React.useState ('init');
+	const [listOfUsers, updateListOfUsers] = React.useState([]);
 	const [termsCheck, setTermsCheck] = React.useState(false);
+	const [freeBalance, setFreeBalance] = React.useState();
+	const [stashId, setStashId] = React.useState();
+	const [controllerId, setControllerId] = React.useState();
+	
+	React.useEffect (() => {
+		__useEffect (state, setState, listOfUsers, updateListOfUsers, setFreeBalance, props.amount, stashId, setStashId, controllerId, setControllerId, props.validatorsList);
+	}, [state, props])
+
+	console.log(state);
+
+	const handleSubmit = async () => {
+		setState ('step-three');
+	}
 
 	return (
 		<>
@@ -109,14 +240,14 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)"
 								]}
 							>
-								{props.stashOptions.map((doc, index) => {
+								{listOfUsers && listOfUsers.map((doc, index) => {
 									return (
 										<option
 											style={{ color: "#000", background: "#FFF" }}
-											value={doc.value}
+											value={doc.address}
 											key={index}
 										>
-											{doc.option}
+											{doc.meta.name} {doc.address}
 										</option>
 									);
 								})}
@@ -139,14 +270,14 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)"
 								]}
 							>
-								{props.controllerOptions.map((doc, index) => {
+								{listOfUsers && listOfUsers.map((doc, index) => {
 									return (
 										<option
-											value={doc.value}
+											value={doc.address}
 											key={index}
 											style={{ color: "#000", background: "#FFF" }}
 										>
-											{doc.option}
+											{doc.meta.name} {doc.address}
 										</option>
 									);
 								})}
@@ -278,7 +409,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton disable={!termsCheck}>Submit</CustomButton>
+							<CustomButton disable={!termsCheck} onClick={handleSubmit}>Submit</CustomButton>
 							{!termsCheck && (
 								<Text
 									textAlign='center'
