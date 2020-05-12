@@ -44,6 +44,8 @@ const getRiskSliderColor = risk => {
 const textColor = { light: "#2D3748", dark: "#FFF" };
 const textColorLight = { light: "#677793", dark: "#ADB8CD" };
 const border = { light: "#EEF2F9", dark: "#262E3E" };
+const primaryColor = "#19CC95";
+const primaryColorHighlight = "#19CC9533";
 
 export {
 	LOW_RISK,
@@ -53,5 +55,7 @@ export {
 	getRiskLevel,
 	textColor,
 	textColorLight,
-	border
+	border,
+	primaryColor,
+	primaryColorHighlight
 };
