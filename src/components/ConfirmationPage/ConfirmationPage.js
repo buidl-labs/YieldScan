@@ -19,7 +19,7 @@ import {
     web3AccountsSubscribe,
  	web3FromAddress 
 } from '@polkadot/extension-dapp';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { WsProvider, ApiPromise } from '@polkadot/api';
 import Footer from "../Footer.jsx";
 import ValidatorTile from "../SuggestedValidators/ValidatorTile";
 import {
@@ -46,7 +46,8 @@ type ConfirmationPageProps = {
 	fees: string,
 	eras: Number,
 	amount: float,
-	currency: string
+	currency: string,
+	users: Array<{}>
 };
 
 const messageBoxColors = {
@@ -62,61 +63,40 @@ const messageBoxColors = {
 	}
 };
 
-async function __useEffect (state, setState, listOfUsers, updateListOfUsers, setFreeBalance, amount, stashId, setStashId, controllerId, setControllerId, selectedValidators) {
-
-	const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-	const api = await ApiPromise.create({ provider });
+async function __useEffect (state, setState, freeBalance, setFreeBalance, amount, stashId, controllerId, selectedValidators) {
 
 	switch (state) {
 		case 'init':
-			setState ('step-one');
+			setState ('step-two');
 
-		case 'step-one':
-			if (isWeb3Injected) {
-				web3Enable('YieldScan');
-
-				web3AccountsSubscribe(users => {
-					console.log('[fetch-users] web3injected => users', users);
-					if (users.length > 0) {
-						updateListOfUsers(users);
-						setStashId (users[0].address);
-						setControllerId (users[0].address);
-						setState ('step-two');
-					} else {
-						updateListOfUsers(users)
-						console.log('[fetch-users] web3injected => no users');
-					}
-				})
-			}
-			else {
-				console.log('[fetch-users] web3injected error: Add Extenstion');
-			}
 		case 'step-two':
-			// const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-			// const api = await ApiPromise.create({ provider });
-			const balance = await api.query.balances.freeBalance(stashId);
-			const transferrable =
-				balance.toString() / 10 ** 12;
+			const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+			const api = await ApiPromise.create({ provider });
+			if (stashId) {
+				const balance = await api.query.balances.freeBalance(stashId);
+				console.log ('[free-balance] balance', balance);
+				const transferrable =
+					balance.toString() / 10 ** 12;
 
-			const freeBalance = parseFloat(transferrable.toFixed(3));
+				const freeBalance = parseFloat(transferrable.toFixed(3));
 
-			setFreeBalance (freeBalance);
+				setFreeBalance (freeBalance);
 
-			console.log ('[free-balance] free balance', freeBalance);
-			
-			if (freeBalance > amount) {
-				setState ('stake');
-			}
-			else {
-				setState ('insufficient-funds');
-				console.log ('insufficient funds');
+				console.log ('[free-balance] free balance', freeBalance);
+
+				if (freeBalance > amount) {
+					setState ('sufficient-funds');
+				}
+				else {
+					setState ('insufficient-funds');
+					console.log ('insufficient funds');
+				}
 			}
 
 		case 'stake':
-			// provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-			// api = await ApiPromise.create({ provider });
 			const bonded = amount * 10 ** 12
 			const ledger = await api.query.staking.ledger(stashId)
+			
 			if (!ledger) {
 				console.log('api.tx.staking.bond')
 				api.tx.staking
@@ -126,6 +106,7 @@ async function __useEffect (state, setState, listOfUsers, updateListOfUsers, set
 							'status',
 							JSON.parse(JSON.stringify(status))
 						)
+						setState ('step-three');
 					})
 					.catch(error => {
 						console.log('Error', error)
@@ -139,14 +120,14 @@ async function __useEffect (state, setState, listOfUsers, updateListOfUsers, set
 							'status',
 							JSON.parse(JSON.stringify(status))
 						)
+						setState ('step-three');
 					})
 					.catch(error => {
 						console.log('Error', error.toString())
 					})
 			}
+
 		case 'step-three':
-			// provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-			// api = await ApiPromise.create({ provider });
 			const injector = await web3FromAddress(stashId)
 			api.setSigner(injector.signer)
 			api.tx.staking
@@ -174,20 +155,24 @@ async function __useEffect (state, setState, listOfUsers, updateListOfUsers, set
 const ConfirmationPage = (props: ConfirmationPageProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 	const [state, setState] = React.useState ('init');
-	const [listOfUsers, updateListOfUsers] = React.useState([]);
 	const [termsCheck, setTermsCheck] = React.useState(false);
 	const [freeBalance, setFreeBalance] = React.useState();
 	const [stashId, setStashId] = React.useState();
 	const [controllerId, setControllerId] = React.useState();
-	
+
 	React.useEffect (() => {
-		__useEffect (state, setState, listOfUsers, updateListOfUsers, setFreeBalance, props.amount, stashId, setStashId, controllerId, setControllerId, props.validatorsList);
-	}, [state, props])
+		__useEffect (state, setState, freeBalance, setFreeBalance, props.amount, stashId, controllerId, props.validatorsList);
+	}, [state, props, stashId, controllerId])
+
+	React.useEffect (()=>{
+		setStashId (stashId);
+		setControllerId (controllerId);
+	}, [stashId, controllerId])
 
 	console.log(state);
 
 	const handleSubmit = async () => {
-		setState ('step-three');
+		if (state == 'sufficient-funds') setState ('stake');
 	}
 
 	return (
@@ -239,15 +224,19 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)",
 									"calc(100% - 200px)"
 								]}
+								name='stashID'
+								onChange={(e)=>{
+								setStashId (e.target.value);
+								}}
 							>
-								{listOfUsers && listOfUsers.map((doc, index) => {
+								{ props.users && Object.keys(props.users).map((keyName, i) => {
 									return (
 										<option
 											style={{ color: "#000", background: "#FFF" }}
-											value={doc.address}
-											key={index}
+											value={props.users[keyName].address}
+											key={i}
 										>
-											{doc.meta.name} {doc.address}
+											{props.users[keyName].meta.name} {props.users[keyName].address}
 										</option>
 									);
 								})}
@@ -268,16 +257,20 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 150px)",
 									"calc(100% - 200px)",
 									"calc(100% - 200px)"
-								]}
+									]}
+								name='controllerID'
+								onChange={(e)=>{
+									setControllerId (e.target.value);
+								}}
 							>
-								{listOfUsers && listOfUsers.map((doc, index) => {
+								{ props.users && Object.keys(props.users).map((keyName, i) => {
 									return (
 										<option
-											value={doc.address}
-											key={index}
+											value={props.users[keyName].address}
+											key={i}
 											style={{ color: "#000", background: "#FFF" }}
 										>
-											{doc.meta.name} {doc.address}
+											{props.users[keyName].meta.name} {props.users[keyName].address}
 										</option>
 									);
 								})}

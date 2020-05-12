@@ -66,6 +66,7 @@ function App() {
 		'budget' : '0',
 		'expectedReturns': '0'
 	});
+	const [users, setUsers] = React.useState();
 
 	const {
 		isOpen: isExtensionDialogOpen,
@@ -172,6 +173,10 @@ function App() {
 
 	function handleChildTabEvent(data) {
 		setSuggValidatorsData ({...data});
+	}
+
+	function handleUsers(data) {
+		setUsers ({...data});
 	}
 
 	return (
@@ -346,7 +351,10 @@ function App() {
 					/>
 					{/* PolkaWallet Connect */}
 					<Route path='/wallet-connect'>
-						<WalletConnect colorMode={colorMode} />
+						<WalletConnect 
+							colorMode={colorMode} 
+							users={handleUsers}
+						/>
 					</Route>
 					{/* Confirmation */}
 					<ProtectedRoute
@@ -364,6 +372,7 @@ function App() {
 							amount={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
+							users={users}
 						/>
 						}
 					/>

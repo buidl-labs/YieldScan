@@ -12,6 +12,11 @@ import {
 	PseudoBox
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
+import {
+    web3Enable,
+    isWeb3Injected,
+    web3AccountsSubscribe,
+} from '@polkadot/extension-dapp';
 import Footer from "../Footer.jsx";
 import { textColor, textColorLight, border } from "../../constants";
 
@@ -115,7 +120,23 @@ const WalletConnect = (props: WalletConnectProps) => {
 							>
 								<Heading size='sm' fontWeight='normal' textAlign='center'
 									onClick={()=>{
+									if (isWeb3Injected) {
+										web3Enable('YieldScan');
+
+										web3AccountsSubscribe(users => {
+											console.log('[fetch-users] web3injected => users', users);
+											if (users.length > 0) {
+											props.users(users);
+											} else {
+												console.log('[fetch-users] web3injected => no users');
+											}
+										})
 										history.push('/confirmation');
+										}
+										else {
+											console.log ('Extension does not exist.');
+										}
+
 									}}
 								>
 									I already have the extension
