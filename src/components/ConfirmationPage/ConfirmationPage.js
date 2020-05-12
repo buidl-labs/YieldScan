@@ -216,8 +216,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 	console.log(state);
 
 	const handleSubmit = () => {
-		// if (state == 'sufficient-funds')	
-		setState ('stake');
+		if (state == 'sufficient-funds')	setState ('stake');
 	}
 
 	return (
@@ -452,7 +451,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton disable={!termsCheck} onClick={handleSubmit}>Submit</CustomButton>
+							<CustomButton disable={!termsCheck || state!='sufficient-funds' || state=='staked'} onClick={handleSubmit}>Submit</CustomButton>
 							{!termsCheck && (
 								<Text
 									textAlign='center'
