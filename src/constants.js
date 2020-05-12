@@ -41,7 +41,7 @@ const getRiskSliderColor = risk => {
 	return "gray.400";
 };
 
-const textColor = { light: "2D3748", dark: "#FFF" };
+const textColor = { light: "#2D3748", dark: "#FFF" };
 const textColorLight = { light: "#677793", dark: "#ADB8CD" };
 const border = { light: "#EEF2F9", dark: "#262E3E" };
 
