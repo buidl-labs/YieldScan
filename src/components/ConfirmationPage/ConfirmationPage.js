@@ -95,58 +95,61 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 
 		case 'stake':
 			const bonded = amount * 10 ** 12
-			const ledger = await api.query.staking.ledger(stashId)
-			
-			if (!ledger) {
-				console.log('api.tx.staking.bond')
+			if (stashId) {
+				const ledger = await api.query.staking.ledger(stashId)
+
+				if (!ledger) {
+					console.log('api.tx.staking.bond')
+					api.tx.staking
+						.bond(controllerId, bonded, 0)
+						.signAndSend(stashId, status => {
+							console.log(
+								'status',
+								JSON.parse(JSON.stringify(status))
+							)
+							setState ('step-three');
+						})
+						.catch(error => {
+							console.log('Error', error)
+						})
+				} else {
+					console.log('api.tx.staking.bondExtra')
+					api.tx.staking
+						.bondExtra(bonded)
+						.signAndSend(stashId, status => {
+							console.log(
+								'status',
+								JSON.parse(JSON.stringify(status))
+							)
+							setState ('step-three');
+						})
+						.catch(error => {
+							console.log('Error', error.toString())
+						})
+				}
+			}
+
+		case 'step-three':
+			if (stashId) {
+				const injector = await web3FromAddress(stashId)
+				api.setSigner(injector.signer)
 				api.tx.staking
-					.bond(controllerId, bonded, 0)
+					.nominate(
+						selectedValidators.map(
+							validator => validator.stashId
+						)
+					)
 					.signAndSend(stashId, status => {
 						console.log(
 							'status',
 							JSON.parse(JSON.stringify(status))
 						)
-						setState ('step-three');
+						setState ('step-four');
 					})
 					.catch(error => {
 						console.log('Error', error)
 					})
-			} else {
-				console.log('api.tx.staking.bondExtra')
-				api.tx.staking
-					.bondExtra(bonded)
-					.signAndSend(stashId, status => {
-						console.log(
-							'status',
-							JSON.parse(JSON.stringify(status))
-						)
-						setState ('step-three');
-					})
-					.catch(error => {
-						console.log('Error', error.toString())
-					})
 			}
-
-		case 'step-three':
-			const injector = await web3FromAddress(stashId)
-			api.setSigner(injector.signer)
-			api.tx.staking
-				.nominate(
-					selectedValidators.map(
-						validator => validator.stashId
-					)
-				)
-				.signAndSend(stashId, status => {
-					console.log(
-						'status',
-						JSON.parse(JSON.stringify(status))
-					)
-					setState ('step-four');
-				})
-				.catch(error => {
-					console.log('Error', error)
-				})
-
 		case 'step-four':
 			setState('********staked********');
 	}
@@ -171,7 +174,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 
 	console.log(state);
 
-	const handleSubmit = async () => {
+	const handleSubmit = () => {
 		if (state == 'sufficient-funds') setState ('stake');
 	}
 
