@@ -70,32 +70,42 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 			setState ('step-two');
 
 		case 'step-two':
-			const provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-			const api = await ApiPromise.create({ provider });
+			let provider;
+			let api;
+			let balance;
 			if (stashId) {
-				const balance = await api.query.balances.freeBalance(stashId);
-				console.log ('[free-balance] balance', balance);
-				const transferrable =
-					balance.toString() / 10 ** 12;
+				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+				api = await ApiPromise.create({ provider });
+				try {
+					balance = await api.query.system.balances.freeBalance(stashId);
+					console.log ('[free-balance] balance', balance);
+					const transferrable =
+						balance.toString() / 10 ** 12;
 
-				const freeBalance = parseFloat(transferrable.toFixed(3));
+					const freeBalance = parseFloat(transferrable.toFixed(3));
 
-				setFreeBalance (freeBalance);
+					setFreeBalance (freeBalance);
 
-				console.log ('[free-balance] free balance', freeBalance);
+					console.log ('[free-balance] free balance', freeBalance);
 
-				if (freeBalance > amount) {
-					setState ('sufficient-funds');
+					if (freeBalance > amount) {
+						setState ('sufficient-funds');
+
+					}
+					else {
+						setState ('insufficient-funds');
+						console.log ('insufficient funds');
+					}
 				}
-				else {
-					setState ('insufficient-funds');
-					console.log ('insufficient funds');
+				catch {
+					console.log('error in connection');
 				}
 			}
+			break;
 
 		case 'stake':
 			const bonded = amount * 10 ** 12
-			if (stashId) {
+			if (controllerId && stashId) {
 				const ledger = await api.query.staking.ledger(stashId)
 
 				if (!ledger) {
@@ -128,6 +138,7 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 						})
 				}
 			}
+			break;
 
 		case 'step-three':
 			if (stashId) {
@@ -150,8 +161,15 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 						console.log('Error', error)
 					})
 			}
+			break
+
 		case 'step-four':
 			setState('********staked********');
+			break;
+
+		default:
+			setState('default');
+			break;
 	}
 }
 
