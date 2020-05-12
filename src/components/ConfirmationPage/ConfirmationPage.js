@@ -65,19 +65,19 @@ const messageBoxColors = {
 
 async function __useEffect (state, setState, freeBalance, setFreeBalance, amount, stashId, controllerId, selectedValidators) {
 
+	let provider;
+	let api;
+	let balance;
 	switch (state) {
 		case 'init':
 			setState ('step-two');
 
 		case 'step-two':
-			let provider;
-			let api;
-			let balance;
 			if (stashId) {
 				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 				api = await ApiPromise.create({ provider });
 				try {
-					balance = await api.query.system.balances.freeBalance(stashId);
+					balance = await api.query.balance.freeBalance(stashId);
 					console.log ('[free-balance] balance', balance);
 					const transferrable =
 						balance.toString() / 10 ** 12;
@@ -98,16 +98,18 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 					}
 				}
 				catch {
-					console.log('error in connection');
+					console.log('error in connection - probably, user is not included in balance');
 				}
 			}
 			break;
 
 		case 'stake':
+			provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+			api = await ApiPromise.create({ provider });
 			const bonded = amount * 10 ** 12
 			if (controllerId && stashId) {
 				const ledger = await api.query.staking.ledger(stashId)
-
+				console.log ('ledger - ', ledger);
 				if (!ledger) {
 					console.log('api.tx.staking.bond')
 					api.tx.staking
@@ -193,7 +195,8 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 	console.log(state);
 
 	const handleSubmit = () => {
-		if (state == 'sufficient-funds') setState ('stake');
+		// if (state == 'sufficient-funds') 
+			setState ('stake');
 	}
 
 	return (
