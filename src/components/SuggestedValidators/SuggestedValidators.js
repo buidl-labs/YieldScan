@@ -100,7 +100,14 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 				</Flex>
 				<Flex justify='center' py={2}>
 					<ButtonGroup spacing={4}>
-						<CustomButton variant='secondary'>Edit Validators</CustomButton>
+						<CustomButton 
+							variant='secondary'
+							onClick={() => {
+							history.push('/edit-validators');
+							}}
+						>
+							Edit Validators
+						</CustomButton>
 						<CustomButton
 							onClick={() => {
 							history.push('/wallet-connect');

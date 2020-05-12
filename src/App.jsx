@@ -38,12 +38,13 @@ import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
 import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
+import EditValidators from "./components/EditValidators/EditValidators";
 import Auth from "./components/Auth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
-const currency = 'KSM';
+const currency = "KSM";
 
 function App() {
 	// eslint-disable-next-line no-unused-vars
@@ -61,10 +62,12 @@ function App() {
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
-	const [validators, setValidators] = React.useState([{name: 'None', stashId: "", amount: 0, risk: 0.00}]);
+	const [validators, setValidators] = React.useState([
+		{ name: "None", stashId: "", amount: 0, risk: 0.0 }
+	]);
 	const [suggValidatorsData, setSuggValidatorsData] = React.useState({
-		'budget' : '0',
-		'expectedReturns': '0'
+		budget: "0",
+		expectedReturns: "0"
 	});
 	const [users, setUsers] = React.useState();
 
@@ -78,7 +81,7 @@ function App() {
 		onOpen: onCreateAccountDialogOpen,
 		onClose: onCreateAccountDialogClose
 	} = useDisclosure();
-	
+
 	const ERA_PER_DAY = 4;
 	const calcReward = React.useCallback(() => {
 		const data = validatorData.map(validator => {
@@ -112,7 +115,6 @@ function App() {
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
 
-
 	React.useEffect(() => {
 		if (apiConnected) {
 			calcReward();
@@ -120,12 +122,22 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		let validatorsInfo = suggValidatorsData && suggValidatorsData.validatorsList && suggValidatorsData.validatorsList.reduce((acc, cur) => {
-			// TODO: Replace placeholder risk score with actual risk score
-			acc.push({name: cur.name, stashId: cur.stashId, amount: parseFloat(suggValidatorsData.budget)/16, risk: '0.22'});
-			return acc;
-		},[]);	
-		setValidators (validatorsInfo);
+		console.log ('sugg val data - ', suggValidatorsData);
+		let validatorsInfo =
+			suggValidatorsData &&
+			suggValidatorsData.validatorsList &&
+			suggValidatorsData.validatorsList.reduce((acc, cur) => {
+				// TODO: Replace placeholder risk score with actual risk score
+				acc.push({
+					name: cur.name,
+					stashId: cur.stashId,
+					amount: parseFloat(suggValidatorsData.budget) / 16,
+					risk: "0.22",
+					commission: cur.commission
+				});
+				return acc;
+			}, []);
+		setValidators(validatorsInfo);
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
@@ -166,13 +178,12 @@ function App() {
 			}
 		);
 	}, []);
-	
 	if (errorState) {
 		return <ErrorMessage />;
 	}
 
 	function handleChildTabEvent(data) {
-		setSuggValidatorsData ({...data});
+		setSuggValidatorsData({ ...data });
 	}
 
 	function handleUsers(data) {
@@ -356,6 +367,18 @@ function App() {
 							users={handleUsers}
 						/>
 					</Route>
+					{/* Edit Validators */}
+					<ProtectedRoute
+						path='/edit-validators'
+						component={(props)=>
+						<EditValidators
+							colorMode={colorMode}
+							currency={currency}
+							amount={parseFloat(suggValidatorsData.budget)}
+							validatorsList={validators}
+						/>
+						}
+					/>
 					{/* Confirmation */}
 					<ProtectedRoute
 						path='/confirmation'
