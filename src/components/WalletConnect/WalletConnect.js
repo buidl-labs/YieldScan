@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory, Route, Link } from "react-router-dom";
+import { useHistory, Redirect, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -24,24 +24,12 @@ type WalletConnectProps = {
 	colorMode?: "light" | "dark"
 };
 
+const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+const isFirefox = typeof InstallTrigger !== 'undefined';
+
 const WalletConnect = (props: WalletConnectProps) => {
 	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
-
-	const openExtension = () => {
-		const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-		const isFirefox = typeof InstallTrigger !== 'undefined';
-		
-		if (isChrome) {
-			
-		}
-		else if (isFirefox) {
-		
-		}
-		else {
-			console.log ('Your Browser do not support the extension');
-		}
-	}
 
 	return (
 		<>
@@ -102,7 +90,27 @@ const WalletConnect = (props: WalletConnectProps) => {
 						</Tooltip>
 					</Text>
 					<Stack m={4} mt={12} spacing={4} align='center'>
-						<Link href='./' minWidth='30%'>
+						<Link 
+							minWidth='30%'
+							onClick={()=>{
+							if (isWeb3Injected) {
+								web3Enable('YieldScan');
+								web3AccountsSubscribe(users => {
+									console.log('[fetch-users] web3injected => users', users);
+									if (users.length > 0) {
+										props.users(users);
+									} else {
+										console.log('[fetch-users] web3injected => no users');
+									}
+								})
+								history.push('/confirmation');
+							}
+							else {
+								console.log ('Extension does not exist.');
+							}
+
+							}}
+						>
 							<PseudoBox
 								px={10}
 								py={5}
@@ -119,31 +127,22 @@ const WalletConnect = (props: WalletConnectProps) => {
 								}}
 							>
 								<Heading size='sm' fontWeight='normal' textAlign='center'
-									onClick={()=>{
-									if (isWeb3Injected) {
-										web3Enable('YieldScan');
-
-										web3AccountsSubscribe(users => {
-											console.log('[fetch-users] web3injected => users', users);
-											if (users.length > 0) {
-											props.users(users);
-											} else {
-												console.log('[fetch-users] web3injected => no users');
-											}
-										})
-										history.push('/confirmation');
-										}
-										else {
-											console.log ('Extension does not exist.');
-										}
-
-									}}
 								>
 									I already have the extension
 								</Heading>
 							</PseudoBox>
 						</Link>
-						<Link href='./' minWidth='30%'>
+						<Link 
+							minWidth='30%'
+							onClick={()=>{
+							if (isChrome) {
+							{/* <Redirect to="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd" /> */}					
+							}		
+							if (isFirefox) {
+							{/* <Redirect to="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/" /> */}		
+							}		
+							}}
+						>
 							<PseudoBox
 								px={10}
 								py={5}
@@ -159,7 +158,7 @@ const WalletConnect = (props: WalletConnectProps) => {
 									boxShadow: "0 0 0 0.25rem #19CC9555"
 								}}
 							>
-								<Heading size='sm' fontWeight='normal' textAlign='center' onClick={openExtension}>
+								<Heading size='sm' fontWeight='normal' textAlign='center'>
 									What extension?
 								</Heading>
 							</PseudoBox>

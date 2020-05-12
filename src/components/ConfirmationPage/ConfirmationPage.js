@@ -1,11 +1,10 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { useHistory, Link, Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Flex,
 	Text,
-	Link,
 	Icon,
 	Select,
 	Badge,
@@ -68,37 +67,47 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 	let provider;
 	let api;
 	let balance;
+	let injector;
 	switch (state) {
 		case 'init':
 			setState ('step-two');
+			break;
 
 		case 'step-two':
 			if (stashId) {
 				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 				api = await ApiPromise.create({ provider });
 				try {
-					balance = await api.query.balance.freeBalance(stashId);
-					console.log ('[free-balance] balance', balance);
-					const transferrable =
-						balance.toString() / 10 ** 12;
 
+					const { data: { free: balance }, nonce } = await api.query.system.account(stashId);
+					const locks = await api.query.balances.locks(stashId);
+					// console.log ('[balance] balance',balance);
+					// console.log ('[balance] locks',locks);
+					let transferrable;
+					if (locks.length > 0) transferrable = (balance - locks[0]) / 10 ** 12;
+					else transferrable = (balance) / 10 ** 12;
+
+					// console.log ('[free-balance] transferrable', transferrable);
 					const freeBalance = parseFloat(transferrable.toFixed(3));
-
 					setFreeBalance (freeBalance);
-
 					console.log ('[free-balance] free balance', freeBalance);
 
-					if (freeBalance > amount) {
-						setState ('sufficient-funds');
 
+					const transactionFee = 1 / 10**3;
+					console.log ('[free-balance] transaction fee', transactionFee);
+
+					if (freeBalance > amount && freeBalance > 4*transactionFee) {
+						setState ('sufficient-funds');
+						break;
 					}
 					else {
 						setState ('insufficient-funds');
-						console.log ('insufficient funds');
+						break;
 					}
 				}
 				catch {
 					console.log('error in connection - probably, user is not included in balance');
+					break;
 				}
 			}
 			break;
@@ -110,20 +119,23 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 			if (controllerId && stashId) {
 				const ledger = await api.query.staking.ledger(stashId)
 				console.log ('ledger - ', ledger);
+				injector = await web3FromAddress(stashId)
+				api.setSigner(injector.signer)
+				try {
 				if (!ledger) {
 					console.log('api.tx.staking.bond')
 					api.tx.staking
 						.bond(controllerId, bonded, 0)
-						.signAndSend(stashId, status => {
+						.signAndSend(controllerId, status => {
 							console.log(
 								'status',
 								JSON.parse(JSON.stringify(status))
 							)
-							setState ('step-three');
 						})
 						.catch(error => {
 							console.log('Error', error)
 						})
+					setState ('step-three');
 				} else {
 					console.log('api.tx.staking.bondExtra')
 					api.tx.staking
@@ -133,19 +145,28 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 								'status',
 								JSON.parse(JSON.stringify(status))
 							)
-							setState ('step-three');
 						})
 						.catch(error => {
 							console.log('Error', error.toString())
 						})
+					setState ('step-three');
 				}
+				}
+				catch {
+					console.log('api.tx.staking error');
+				}
+
 			}
 			break;
 
 		case 'step-three':
 			if (stashId) {
-				const injector = await web3FromAddress(stashId)
-				api.setSigner(injector.signer)
+				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
+				api = await ApiPromise.create({ provider });
+				injector = await web3FromAddress(stashId)
+				console.log ('injector - ', injector);
+
+				// api.setSigner(injector.signer)
 				api.tx.staking
 					.nominate(
 						selectedValidators.map(
@@ -154,7 +175,7 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 					)
 					.signAndSend(stashId, status => {
 						console.log(
-							'status',
+							'step 3 status',
 							JSON.parse(JSON.stringify(status))
 						)
 						setState ('step-four');
@@ -170,12 +191,12 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 			break;
 
 		default:
-			setState('default');
 			break;
 	}
 }
 
 const ConfirmationPage = (props: ConfirmationPageProps) => {
+	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
 	const [state, setState] = React.useState ('init');
 	const [termsCheck, setTermsCheck] = React.useState(false);
@@ -195,8 +216,8 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 	console.log(state);
 
 	const handleSubmit = () => {
-		// if (state == 'sufficient-funds') 
-			setState ('stake');
+		// if (state == 'sufficient-funds')	
+		setState ('stake');
 	}
 
 	return (
@@ -206,7 +227,12 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 			</Helmet>
 			<Route exact path='/confirmation'>
 				<Box m={4} mt={10}>
-					<Link m={4}>
+					<Link 
+						m={4}
+						onClick={()=>{
+							history.push('/wallet-connect');
+						}}
+					>
 						<Icon name='arrow-back' mr={1} /> Back
 					</Link>
 				</Box>

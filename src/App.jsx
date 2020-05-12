@@ -323,7 +323,7 @@ function App() {
 						)}
 					</Route>
 
-					{/* Help Center */}
+					{/* Returns Calculator */}
 					<Route path='/returns-calculator'>
 						<ReturnsCalculator
 							colorMode={colorMode}
