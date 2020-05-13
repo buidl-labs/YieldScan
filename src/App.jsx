@@ -374,7 +374,7 @@ function App() {
 					</Route>
 					{/* Edit Validators */}
 					<Route path='/network-details-demo'>
-						<NetworkDetails colorMode={colorMode} />
+						<NetworkDetails colorMode={colorMode} currency={currency} />
 					</Route>
 					{/* Confirmation */}
 					<Route path='/confirmation'>

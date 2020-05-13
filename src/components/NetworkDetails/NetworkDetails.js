@@ -1,92 +1,84 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import {
-	Box,
-	Heading,
-	Text,
-	Link,
-	Icon,
-	ButtonGroup,
-	Flex,
-	PseudoBox
-} from "@chakra-ui/core";
+import { Box, Heading, Flex, PseudoBox } from "@chakra-ui/core";
 import Helmet from "react-helmet";
 import Footer from "../Footer.jsx";
-import Table from "../EditValidators/Table";
 import {
 	textColor,
-	textColorLight,
 	border,
 	primaryColor,
 	primaryColorHighlight
 } from "../../constants";
 import Filter from "./Filter";
+import ValidatorsTable from "./ValidatorsTable";
+import NominatorsTable from "./NominatorsTable";
 
 type NetworkDetailsProps = {
-	colorMode?: "light" | "dark"
+	colorMode?: "light" | "dark",
+	currency: string
 };
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
-	const [validators, setValidators] = React.useState([
+	const mode = props.colorMode ? props.colorMode : "light";
+
+	const [filters, setFilters] = React.useState([
 		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "13 KSM",
-			Commission: "4%",
-			"Risk Score": 0.34,
-			selected: true
+			label: "No. of Validators",
+			type: "range",
+			values: [100, 900],
+			min: 10,
+			max: 1000
 		},
 		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "5%",
-			"Risk Score": 0.14,
-			selected: true
+			label: "Total Stake",
+			type: "range",
+			values: [10, 40],
+			min: 0,
+			max: 50,
+			unit: props.currency
 		},
 		{
-			Validator: "PolyLabs I",
-			"Other Stake": "124.4525 KSM",
-			"Own Stake": "15 KSM",
-			Commission: "3%",
-			"Risk Score": 0.22,
-			selected: true
+			label: "Self Stake",
+			type: "range",
+			values: [10, 40],
+			min: 0,
+			max: 50,
+			unit: props.currency
 		},
 		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "2%",
-			"Risk Score": 0.15,
-			selected: true
+			label: "Other Stake",
+			type: "range",
+			values: [10, 40],
+			min: 0,
+			max: 50,
+			unit: props.currency
 		},
 		{
-			Validator: "PolyLabs I",
-			"Other Stake": "53.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "3%",
-			"Risk Score": 0.64,
-			selected: true
+			label: "Commission",
+			type: "range",
+			values: [10, 40],
+			min: 0,
+			max: 50,
+			unit: props.currency
+		},
+		{
+			label: "Min. Expected Daily Earning",
+			type: "slider",
+			values: [25],
+			min: 0,
+			max: 50,
+			unit: props.currency
+		},
+		{
+			label: "Max. Risk Level",
+			type: "slider",
+			values: [25],
+			min: 0,
+			max: 100
 		}
 	]);
 
 	const [currentTab, setCurrentTab] = React.useState("Validators");
-
-	const mode = props.colorMode ? props.colorMode : "light";
-
-	const sortList = (column, asc) => {
-		let tempValidators = [...validators];
-		if (asc) {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
-			);
-		} else {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
-			);
-		}
-		setValidators(tempValidators);
-	};
 
 	return (
 		<>
@@ -162,32 +154,51 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 							Nominators
 						</PseudoBox>
 					</Flex>
-					<Flex mt={8}>
-						<Box w='calc(70% - 20px)' m='10px' overflow='auto'>
+					<Flex mt={8} wrap='wrap-reverse'>
+						<Box
+							w={
+								currentTab === "Validators"
+									? [
+											"calc(100% - 20px)",
+											"calc(100% - 20px)",
+											"calc(75% - 20px)",
+											"calc(75% - 20px)"
+									  ]
+									: "calc(100% - 20px)"
+							}
+							maxH='calc(100vh - 20px)'
+							m='10px'
+							overflow='auto'
+						>
 							<Box w={["300%", "200%", "100%", "100%"]}>
-								<Table
-									colorMode={mode}
-									columns={[
-										"Validator",
-										"Other Stake",
-										"Own Stake",
-										"Commission",
-										"Risk Score"
-									]}
-									rows={validators}
-									sortableColumns={[
-										"Other Stake",
-										"Own Stake",
-										"Commission",
-										"Risk Score"
-									]}
-									sortCallback={sortList}
-								></Table>
+								{currentTab === "Validators" ? (
+									<ValidatorsTable
+										colorMode={mode}
+										filters={filters}
+										currency={props.currency}
+									/>
+								) : (
+									<NominatorsTable colorMode={mode} currency={props.currency} />
+								)}
 							</Box>
 						</Box>
-						<Box w='calc(30% - 20px)' m='10px'>
-							<Filter colorMode={mode}></Filter>
-						</Box>
+						{currentTab === "Validators" && (
+							<Box
+								w={[
+									"calc(100% - 20px)",
+									"calc(100% - 20px)",
+									"calc(25% - 20px)",
+									"calc(25% - 20px)"
+								]}
+								m='10px'
+							>
+								<Filter
+									colorMode={mode}
+									filters={filters}
+									callback={setFilters}
+								></Filter>
+							</Box>
+						)}
 					</Flex>
 				</Box>
 			</Route>

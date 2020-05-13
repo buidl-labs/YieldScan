@@ -141,7 +141,9 @@ const Table = (props: TableProps) => {
 							borderWidth='1px'
 							borderColor={border[mode]}
 							borderTop='0'
-							bg={row.selected ? "rgba(255,255,255,0)" : deselect[mode]}
+							bg={
+								row.selected === false ? deselect[mode] : "rgba(255,255,255,0)"
+							}
 						>
 							{props.allowRowSelect && (
 								<Flex
