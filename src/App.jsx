@@ -380,6 +380,7 @@ function App() {
 							currency={currency}
 							amount={parseFloat(suggValidatorsData.budget)}
 							validatorsList={validators}
+							validatorTableData={validatorTableData}
 							onEvent={(data) => {
 								setValidators([...data]);
 								}

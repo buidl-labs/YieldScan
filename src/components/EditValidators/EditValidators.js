@@ -27,15 +27,61 @@ type EditValidatorsProps = {
 		commission: string,
 		stashId: string,
 		amount: float
+	}>,
+	validatorTableData: Array<{
 	}>
 };
+
+function combineTwoArrays (...arrays) {
+	let jointArray = []
+	
+	console.log ('arrays - ', arrays);
+
+	arrays.forEach(array => {
+		jointArray = [...jointArray, ...array]
+	})
+
+	console.log ('joint array - ', jointArray);
+	
+	const newArray = [];
+	const uniqueObject = [];
+	let objStashId;
+
+	for (const i in jointArray) {
+		objStashId = jointArray[i].stashId;
+		uniqueObject[objStashId] = jointArray[i];
+	}
+	
+	for (const i in uniqueObject) {
+		newArray.push(uniqueObject[i]);
+	}
+
+	console.log ('joint array - ', newArray);
+
+	return newArray;
+
+}
 
 const EditValidators = (props: EditValidatorsProps) => {
 	console.log ('props - ', props);
 	const history = useHistory();
 
-	const [validators, setValidators] = React.useState(
-		props.validatorsList && props.validatorsList.reduce((acc, cur) => {
+	const [validators, setValidators] = React.useState();
+		
+	React.useEffect (() => {
+		const validatorTableData = props.validatorTableData && props.validatorTableData.reduce((acc, cur) => {
+			acc.push({
+				Validator: cur.name,
+				Commission: cur.commission,
+				'Risk Score': '0.22',
+				selected: false,
+				stashId: cur.stashId,
+				amount: 0
+			});
+			return acc;
+		}, []);
+		
+		const validatorsList = props.validatorsList && props.validatorsList.reduce((acc, cur) => {
 			acc.push({
 				Validator: cur.name,
 				Commission: cur.commission,
@@ -45,7 +91,13 @@ const EditValidators = (props: EditValidatorsProps) => {
 				amount: cur.amount
 			});
 			return acc;
-		}, [])
+		}, []);
+
+		setValidators(combineTwoArrays([...validatorsList, ...validatorTableData]) )
+	}, []);
+
+		console.log ('validators - ', validators);
+
 		/* {
 			Validator: "PolyLabs I",
 			"Other Stake": "13.4525 KSM",
@@ -54,7 +106,6 @@ const EditValidators = (props: EditValidatorsProps) => {
 			"Risk Score": 0.34,
 			selected: true
 		} */
-	);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -66,7 +117,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 
 	const selectAll = bool => {
 		setValidators(
-			validators.map((doc, i) => {
+			validators && validators.map((doc, i) => {
 				return { ...doc, selected: bool };
 			})
 		);
@@ -136,7 +187,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 						</b>{" "}
 						to{" "}
 						{
-							validators.filter(doc => {
+							validators && validators.filter(doc => {
 								return doc.selected === true;
 							}).length
 						}{" "}

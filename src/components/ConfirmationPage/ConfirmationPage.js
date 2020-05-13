@@ -77,18 +77,18 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 			if (stashId) {
 				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 				api = await ApiPromise.create({ provider });
+				await api.isReady;
 				try {
-
 					const { data: { free: balance }, nonce } = await api.query.system.account(stashId);
 					const locks = await api.query.balances.locks(stashId);
-					// console.log ('[balance] balance',balance);
-					// console.log ('[balance] locks',locks);
+					console.log ('[balance] balance',balance);
+					console.log ('[balance] locks',locks);
 					let transferrable;
 					if (locks.length > 0) transferrable = (balance - locks[0]) / 10 ** 12;
 					else transferrable = (balance) / 10 ** 12;
 
-					// console.log ('[free-balance] transferrable', transferrable);
-					const freeBalance = parseFloat(transferrable.toFixed(3));
+					 console.log ('[free-balance] transferrable', transferrable);
+					const freeBalance = parseFloat(transferrable);
 					setFreeBalance (freeBalance);
 					console.log ('[free-balance] free balance', freeBalance);
 
@@ -135,7 +135,7 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 						.catch(error => {
 							console.log('Error', error)
 						})
-					setState ('step-three');
+					// setState ('step-three');
 				} else {
 					console.log('api.tx.staking.bondExtra')
 					api.tx.staking
@@ -149,7 +149,7 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 						.catch(error => {
 							console.log('Error', error.toString())
 						})
-					setState ('step-three');
+					// setState ('step-three');
 				}
 				}
 				catch {
@@ -163,10 +163,9 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 			if (stashId) {
 				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 				api = await ApiPromise.create({ provider });
-				injector = await web3FromAddress(stashId)
-				console.log ('injector - ', injector);
+				injector = await web3FromAddress(stashId);
+				api.setSigner(injector.signer);
 
-				// api.setSigner(injector.signer)
 				api.tx.staking
 					.nominate(
 						selectedValidators.map(
@@ -175,23 +174,23 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 					)
 					.signAndSend(stashId, status => {
 						console.log(
-							'step 3 status',
+							'status',
 							JSON.parse(JSON.stringify(status))
 						)
-						setState ('step-four');
+						setState ('step-four')
 					})
 					.catch(error => {
 						console.log('Error', error)
 					})
 			}
-			break
+			break;
 
 		case 'step-four':
 			setState('********staked********');
 			break;
 
 		default:
-			break;
+			
 	}
 }
 

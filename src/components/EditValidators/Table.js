@@ -38,7 +38,7 @@ const Table = (props: TableProps) => {
 	const [selectAll, setSelectAll] = React.useState(false);
 
 	const mode = props.colorMode ? props.colorMode : "light";
-	let columnTemplate = props.columnsTemplate
+	const columnTemplate = props.columnsTemplate
 		? props.columnsTemplate
 		: props.allowRowSelect
 		? `50px repeat(${props.columns.length}, 1fr)`
@@ -132,7 +132,7 @@ const Table = (props: TableProps) => {
 						);
 					})}
 				</Grid>
-				{props.rows.map((row, index) => {
+				{props.rows && props.rows.map((row, index) => {
 					return (
 						<Grid
 							key={index}
@@ -153,7 +153,7 @@ const Table = (props: TableProps) => {
 								>
 									<Checkbox
 										size='lg'
-										key={"Check" + index}
+										key={`Check${  index}`}
 										variantColor='teal'
 										isChecked={row.selected}
 										onChange={e => {
