@@ -87,8 +87,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 						}
 						{
 							<Text>
-								Staking a budget of {props.budget} {props.currency} to 16
-								recommended validators
+								Staking a budget of {props.budget} {props.currency} to {props.validatorsList.length} recommended validators
 							</Text>
 						}{" "}
 						<Box w='100%' p={2} mt={6} h='60vh' overflow='auto'>
