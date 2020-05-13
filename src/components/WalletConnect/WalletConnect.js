@@ -1,9 +1,10 @@
 import React from "react";
-import { useHistory, Redirect, Route, Link } from "react-router-dom";
+import { useHistory, Redirect, Route, Link as RouterLink } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Flex,
+	Link,
 	Text,
 	Image,
 	Tooltip,
@@ -38,13 +39,13 @@ const WalletConnect = (props: WalletConnectProps) => {
 			</Helmet>
 			<Route exact path='/wallet-connect'>
 				<Box m={4} mt={10}>
-						<Link
-							onClick={() => {
-							history.push('/suggested-validators');
-							}}
-						>
+					<RouterLink
+						onClick={() => {
+						history.push('/suggested-validators');
+						}}
+					>
 						<Icon name='arrow-back' mr={1} /> Back
-					</Link>
+					</RouterLink>
 				</Box>
 				<Box w='100%' my={10}>
 					<Flex w='100%' justify='center'>
@@ -132,16 +133,11 @@ const WalletConnect = (props: WalletConnectProps) => {
 								</Heading>
 							</PseudoBox>
 						</Link>
+						{isChrome &&
 						<Link 
+							href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd"					
 							minWidth='30%'
-							onClick={()=>{
-							if (isChrome) {
-							{/* <Redirect to="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd" /> */}					
-							}		
-							if (isFirefox) {
-							{/* <Redirect to="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/" /> */}		
-							}		
-							}}
+							target="_blank"
 						>
 							<PseudoBox
 								px={10}
@@ -163,6 +159,59 @@ const WalletConnect = (props: WalletConnectProps) => {
 								</Heading>
 							</PseudoBox>
 						</Link>
+						}
+						{isFirefox &&
+						<Link 
+							href="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/"					
+							minWidth='30%'
+							target="_blank"
+						>
+							<PseudoBox
+								px={10}
+								py={5}
+								shadow='md'
+								borderWidth='1px'
+								borderColor={border[mode]}
+								rounded='md'
+								minWidth='30%'
+								cursor='pointer'
+								transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
+								_hover={{
+									borderColor: "#19CC95",
+									boxShadow: "0 0 0 0.25rem #19CC9555"
+								}}
+							>
+								<Heading size='sm' fontWeight='normal' textAlign='center'>
+									What extension?
+								</Heading>
+							</PseudoBox>
+						</Link>
+						}
+						{!isFirefox && !isChrome &&
+						<Link 
+							minWidth='30%'
+						>
+							<PseudoBox
+								px={10}
+								py={5}
+								shadow='md'
+								borderWidth='1px'
+								borderColor={border[mode]}
+								rounded='md'
+								minWidth='30%'
+								cursor='pointer'
+								transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
+								_hover={{
+									borderColor: "#19CC95",
+									boxShadow: "0 0 0 0.25rem #19CC9555"
+								}}
+							>
+								<Heading size='sm' fontWeight='normal' textAlign='center'>
+									Browser Does not suppport extesion.
+								</Heading>
+							</PseudoBox>
+						</Link>
+						}
 					</Stack>
 				</Box>
 			</Route>

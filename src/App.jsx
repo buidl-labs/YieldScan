@@ -138,6 +138,7 @@ function App() {
 				return acc;
 			}, []);
 		setValidators(validatorsInfo);
+		console.log ('val data - ', validators);
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
@@ -376,6 +377,10 @@ function App() {
 							currency={currency}
 							amount={parseFloat(suggValidatorsData.budget)}
 							validatorsList={validators}
+							onEvent={(data) => {
+								setValidators([...data]);
+								}
+							}
 						/>
 						}
 					/>

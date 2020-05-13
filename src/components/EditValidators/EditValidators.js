@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { useHistory, Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -32,6 +32,7 @@ type EditValidatorsProps = {
 
 const EditValidators = (props: EditValidatorsProps) => {
 	console.log ('props - ', props);
+	const history = useHistory();
 
 	const [validators, setValidators] = React.useState(
 		props.validatorsList && props.validatorsList.reduce((acc, cur) => {
@@ -97,6 +98,9 @@ const EditValidators = (props: EditValidatorsProps) => {
 			return acc;
 		}, [])
 		console.log ('validators - ', validatorsInfo);
+		props.onEvent(validatorsInfo);
+		history.push('/wallet-connect');
+
 	}
 
 	return (

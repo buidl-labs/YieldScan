@@ -196,6 +196,8 @@ async function __useEffect (state, setState, freeBalance, setFreeBalance, amount
 }
 
 const ConfirmationPage = (props: ConfirmationPageProps) => {
+	console.log('confirmation props - ', props);
+	
 	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
 	const [state, setState] = React.useState ('init');
