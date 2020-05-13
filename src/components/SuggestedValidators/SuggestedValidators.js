@@ -21,16 +21,25 @@ type SuggestedValidatorsProps = {
 		name: string,
 		stashId: string,
 		amount: float,
-		risk: float
+		risk: float,
+		dailyEarningPrecise: float
 	}>,
 	returns: float,
 	budget: float,
 	currency: string,
+	selectedValidators: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 	const history = useHistory();
-	
+	const [returns, setReturns] = React.useState(0);	
+	React.useEffect(()=>{
+		const result = props.validatorsList && props.validatorsList.reduce(function(total, cur) {
+			return total + cur.dailyEarningPrecise;
+		}, 0);
+		setReturns(result);
+	}, [props, returns]);
+
 	return (
 		<React.Fragment>
 			<Helmet>
@@ -38,16 +47,27 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-						<Link
-							onClick={() => {
-							Auth.logout(() => {
-							history.push('/returns-calculator');
-							})
-							}}
-						>
+					{!props.selectedValidators ?
+					<Link
+						onClick={() => {
+						Auth.logout(() => {
+						history.push('/returns-calculator');
+						})
+						}}
+					>
 						<Icon name='arrow-back' mr={1} /> 
-							Returns Calculator
-						</Link>
+						Returns Calculator
+					</Link>
+					:
+					<Link
+						onClick={() => {
+						history.push('/edit-validators');
+						}}
+					>
+						<Icon name='arrow-back' mr={1} /> 
+						Edit Validators
+					</Link>
+					}
 				</Box>
 				<Flex py={0} wrap='wrap-reverse'>
 					<Box
@@ -60,7 +80,11 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(60% - 2rem)" // 992px upwards
 						]}
 					>
+						{!props.selectedValidators ?
 						<Heading>Suggested Validators</Heading>
+						:
+						<Heading>Selected Validators</Heading>
+						}
 						{
 							<Text>
 								Staking a budget of {props.budget} {props.currency} to 16
@@ -92,10 +116,17 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
+						{!props.selectedValidators ?
 						<ExpectedReturns
 							returns={props.returns}
 							currency={props.currency}
 						/>
+						:
+						<ExpectedReturns
+							returns={returns}
+							currency={props.currency}
+						/>
+						}
 					</Box>
 				</Flex>
 				<Flex justify='center' py={2}>

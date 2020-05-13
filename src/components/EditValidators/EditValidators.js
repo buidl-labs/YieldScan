@@ -26,7 +26,8 @@ type EditValidatorsProps = {
 		risk: float,
 		commission: string,
 		stashId: string,
-		amount: float
+		amount: float,
+		dailyEarningPrecise: float
 	}>,
 	validatorTableData: Array<{
 	}>
@@ -35,14 +36,10 @@ type EditValidatorsProps = {
 function combineTwoArrays (...arrays) {
 	let jointArray = []
 	
-	console.log ('arrays - ', arrays);
-
 	arrays.forEach(array => {
 		jointArray = [...jointArray, ...array]
 	})
 
-	console.log ('joint array - ', jointArray);
-	
 	const newArray = [];
 	const uniqueObject = [];
 	let objStashId;
@@ -56,14 +53,11 @@ function combineTwoArrays (...arrays) {
 		newArray.push(uniqueObject[i]);
 	}
 
-	console.log ('joint array - ', newArray);
-
 	return newArray;
 
 }
 
 const EditValidators = (props: EditValidatorsProps) => {
-	console.log ('props - ', props);
 	const history = useHistory();
 
 	const [validators, setValidators] = React.useState();
@@ -76,7 +70,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 				'Risk Score': '0.22',
 				selected: false,
 				stashId: cur.stashId,
-				amount: 0
+				amount: 0,
+				dailyEarningPrecise:cur.dailyEarningPrecise
 			});
 			return acc;
 		}, []);
@@ -88,25 +83,17 @@ const EditValidators = (props: EditValidatorsProps) => {
 				'Risk Score': cur.risk,
 				selected: true,
 				stashId: cur.stashId,
-				amount: cur.amount
+				amount: cur.amount,
+				dailyEarningPrecise:cur.dailyEarningPrecise
 			});
 			return acc;
 		}, []);
 
-		setValidators(combineTwoArrays([...validatorsList, ...validatorTableData]) )
+		const jointArray = combineTwoArrays([...validatorTableData, ...validatorsList]);
+		jointArray.sort((a, b) => (a.selected < b.selected) ? 1: -1);
+		setValidators(jointArray);
 	}, []);
-
-		console.log ('validators - ', validators);
-
-		/* {
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "13 KSM",
-			Commission: "4%",
-			"Risk Score": 0.34,
-			selected: true
-		} */
-
+	
 	const mode = props.colorMode ? props.colorMode : "light";
 
 	const callBack = i => {
@@ -144,7 +131,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 				risk: "0.22",
 				commission: cur.Commission,
 				stashId: cur.stashId,
-				amount: cur.amount
+				amount: cur.amount,
+				dailyEarningPrecise:cur.dailyEarningPrecise
 			});
 			return acc;
 		}, [])
@@ -155,13 +143,14 @@ const EditValidators = (props: EditValidatorsProps) => {
 				risk: cur.risk,
 				commission: cur.commission,
 				stashId: cur.stashId,
-				amount: updatedStakingAmount
+				amount: updatedStakingAmount,
+				dailyEarningPrecise:cur.dailyEarningPrecise
 			});
 			return acc;
 		}, [])
-		console.log ('validators - ', validatorsInfo);
+		props.selectedValidators(true);
 		props.onEvent(validatorsInfo);
-		history.push('/wallet-connect');
+		history.push('/suggested-validators');
 
 	}
 

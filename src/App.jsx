@@ -70,6 +70,7 @@ function App() {
 		expectedReturns: "0"
 	});
 	const [users, setUsers] = React.useState();
+	const [selectedValidators, setSelectedValidators] = React.useState(false);
 
 	const {
 		isOpen: isExtensionDialogOpen,
@@ -136,7 +137,8 @@ function App() {
 					stashId: cur.stashId,
 					amount: parseFloat(suggValidatorsData.budget) / 16,
 					risk: "0.22",
-					commission: cur.commission
+					commission: cur.commission,
+					dailyEarningPrecise: cur.dailyEarningPrecise
 				});
 				return acc;
 			}, []);
@@ -361,6 +363,7 @@ function App() {
 							budget={parseFloat(suggValidatorsData.budget)}
 							currency={currency}
 							validatorsList={validators}
+							selectedValidators={selectedValidators}
 						/>
 						}
 					/>
@@ -383,8 +386,10 @@ function App() {
 							validatorTableData={validatorTableData}
 							onEvent={(data) => {
 								setValidators([...data]);
-								}
-							}
+							}}
+							selectedValidators={(state) => {
+								setSelectedValidators(state);
+							}}
 						/>
 						}
 					/>
