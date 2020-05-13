@@ -87,13 +87,24 @@ const EditValidators = (props: EditValidatorsProps) => {
 	};
 
 	const handleValidators = () => {
-		const validatorsInfo = validators && validators.filter(({selected}) => selected ===true).reduce((acc, cur) => {
+		let validatorsInfo = validators && validators.filter(({selected}) => selected ===true).reduce((acc, cur) => {
 			acc.push ({
 				name:cur.Validator,
 				risk: "0.22",
 				commission: cur.Commission,
 				stashId: cur.stashId,
 				amount: cur.amount
+			});
+			return acc;
+		}, [])
+		const updatedStakingAmount = props.amount / validatorsInfo.length;
+		validatorsInfo = validatorsInfo && validatorsInfo.reduce((acc, cur) => {
+			acc.push ({
+				name:cur.name,
+				risk: cur.risk,
+				commission: cur.commission,
+				stashId: cur.stashId,
+				amount: updatedStakingAmount
 			});
 			return acc;
 		}, [])

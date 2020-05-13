@@ -91,6 +91,7 @@ function App() {
 				name,
 				commission,
 				totalStake,
+				parsedStakeInfo,
 				poolReward,
 				noOfNominators
 			} = validator;
@@ -101,6 +102,8 @@ function App() {
 				stashId,
 				stashIdTruncated,
 				name,
+				totalStake,
+				parsedStakeInfo,
 				commission: `${parseFloat(commission)}%`,
 				dailyEarning: isNaN(dailyEarning)
 					? "Not enough data"
@@ -110,7 +113,7 @@ function App() {
 		});
 		const earnings = data.map(validator => validator.dailyEarningPrecise);
 		setMaxDailyEarning(Math.max(...earnings));
-		// console.log("table data", data);
+		console.log("table data", data);
 		setValidatorTableData(data);
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
