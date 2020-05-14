@@ -10918,6 +10918,11 @@ react-media@^1.10.0:
     json2mq "^0.2.0"
     prop-types "^15.5.10"
 
+react-range@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/react-range/-/react-range-1.6.3.tgz#b92aafbd6178db9822d92e05820fd5a3b1ed167d"
+  integrity sha512-uPK13KEwDcs2OTJPptD393O8yq9qutJRi06TgGH3M10v3kSJmk8UDzNlq/CPOJ1mxUurmLgsLv2Cz5/GvyV3gQ==
+
 react-reconciler@^0.22.1:
   version "0.22.2"
   resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.22.2.tgz#e8a10374fec8fee7c5cd0cf3cd05626f1b134d3e"

@@ -2,6 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Box, Heading, Flex, PseudoBox } from "@chakra-ui/core";
 import Helmet from "react-helmet";
+import axios from "axios";
 import Footer from "../Footer.jsx";
 import {
 	textColor,
@@ -20,6 +21,27 @@ type NetworkDetailsProps = {
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
+	const [nominators, setNominators] = React.useState([
+		{ "Nominator": "", "Total Stake": "", "Backers": "" }]);
+
+	React.useEffect ( () => {
+		axios.get('https://polka-analytic-api.herokuapp.com/nominatorsinfo')
+			.then(response => {
+				const nominators = response.data.reduce((acc, cur) => {
+					acc.push({
+						Nominator: `Nominator(...${cur.nominatorId.slice(-5)})`,
+						"Total Stake": cur.totalStaked,
+						Backers: cur.backers
+					});
+					return acc;
+				}, [])
+				setNominators(nominators);
+			})
+			.catch(error => {
+				console.error(error);
+			});
+	}, []);
+
 
 	const [filters, setFilters] = React.useState([
 		{
@@ -178,7 +200,11 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 										currency={props.currency}
 									/>
 								) : (
-									<NominatorsTable colorMode={mode} currency={props.currency} />
+								<NominatorsTable 
+									colorMode={mode} 
+									currency={props.currency} 
+									nominators={nominators}
+								/>
 								)}
 							</Box>
 						</Box>

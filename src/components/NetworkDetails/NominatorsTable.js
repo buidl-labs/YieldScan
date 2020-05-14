@@ -3,17 +3,17 @@ import Table from "../EditValidators/Table";
 
 type NominatorsTableProps = {
 	colorMode?: "light" | "dark",
-	currency: string
+	currency: string,
+	nominators: Array<{
+	}>
 };
 
 const NominatorsTable = (props: NominatorsTableProps) => {
-	const [nominators, setNominators] = React.useState([
-		{
-			"Column 1": "Sample Name Value 1",
-			"Column 2": "Sample Numbers 042",
-			"Column 3": "Sample Text Desc"
-		}
-	]);
+	const [nominators, setNominators] = React.useState(props.nominators);
+
+	React.useEffect ( () => {
+		setNominators(props.nominators);
+	}, [props])
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -35,9 +35,9 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 		<>
 			<Table
 				colorMode={mode}
-				columns={["Column 1", "Column 2", "Column 3"]}
+				columns={["Nominator", "Total Stake", "Backers"]}
 				rows={nominators}
-				sortableColumns={["Column 1", "Column 2", "Column 3"]}
+				sortableColumns={["Nominator", "Total Stake", "Backers"]}
 				sortCallback={sortList}
 			></Table>
 		</>
