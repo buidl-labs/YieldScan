@@ -19,8 +19,8 @@ const Filter = (props: FilterProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 
 	const changeValues = (ind, newVal) => {
-		let temp = [...props.filters];
-		temp[ind]["values"] = newVal;
+		const temp = [...props.filters];
+		temp[ind].values = newVal;
 		props.callback(temp);
 	};
 

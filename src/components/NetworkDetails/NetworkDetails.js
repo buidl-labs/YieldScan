@@ -47,40 +47,40 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 		{
 			label: "No. of Validators",
 			type: "range",
-			values: [100, 900],
-			min: 10,
+			values: [1, 1000],
+			min: 1,
 			max: 1000
 		},
 		{
 			label: "Total Stake",
 			type: "range",
-			values: [10, 40],
+			values: [0, 80],
 			min: 0,
-			max: 50,
+			max: 80,
 			unit: props.currency
 		},
 		{
 			label: "Self Stake",
 			type: "range",
-			values: [10, 40],
+			values: [0, 80],
 			min: 0,
-			max: 50,
+			max: 80,
 			unit: props.currency
 		},
 		{
 			label: "Other Stake",
 			type: "range",
-			values: [10, 40],
+			values: [0, 150],
 			min: 0,
-			max: 50,
+			max: 150,
 			unit: props.currency
 		},
 		{
 			label: "Commission",
 			type: "range",
-			values: [10, 40],
+			values: [0, 20],
 			min: 0,
-			max: 50,
+			max: 20,
 			unit: props.currency
 		},
 		{
@@ -94,7 +94,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 		{
 			label: "Max. Risk Level",
 			type: "slider",
-			values: [25],
+			values: [100],
 			min: 0,
 			max: 100
 		}

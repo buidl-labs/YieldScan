@@ -103,7 +103,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 	]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
-
+	const [filteredValidators, setFilteredValidators] = React.useState(validators);
 	const sortList = (column, asc) => {
 		let tempValidators = [...validators];
 		if (asc) {
@@ -117,6 +117,51 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		}
 		setValidators(tempValidators);
 	};
+	/*
+	const [range, setRange] = React.useState();
+	
+	React.useEffect (() => {
+
+		const filterRange = [];
+		filterRange.push(
+			{
+				label:'Other Stake',
+				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Other Stake']);})),
+				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o['Other Stake']);})) 
+			},
+			{
+				label:'Own Stake',
+				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Own Stake']);})),
+				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o['Own Stake']);})) 
+			},
+			{
+				label:'Commission',
+				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o.Commission);})),
+				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o.Commission);})) 
+			},
+			{
+				label:'Risk Score',
+				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Risk Score']);}))
+			}
+		)
+		
+		props.range(filterRange);
+	}, []);
+	*/
+	React.useEffect(() => {
+
+		const validatorsInfo = validators.filter(val => 
+			parseInt(val['Other Stake']) <= props.filters[3].values[1] && 
+			parseInt(val['Other Stake']) >= props.filters[3].values[0] &&
+			parseInt(val['Own Stake']) <= props.filters[2].values[1] && 
+			parseInt(val['Own Stake']) >= props.filters[2].values[0] &&
+			parseInt(val.Commission) <= props.filters[4].values[1] && 
+			parseInt(val.Commission) >= props.filters[4].values[0] &&
+			val['Risk Score'] <= props.filters[6].values[0]/100 
+		);
+		console.log('val info - ', validatorsInfo)
+		setFilteredValidators(validatorsInfo);
+	}, [props]);
 
 	return (
 		<>
@@ -129,7 +174,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 					"Commission",
 					"Risk Score"
 				]}
-				rows={validators}
+				rows={filteredValidators}
 				sortableColumns={[
 					"Other Stake",
 					"Own Stake",
