@@ -230,7 +230,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 					<Link 
 						m={4}
 						onClick={()=>{
-							history.push('/wallet-connect');
+							history.push('/suggested-validators');
 						}}
 					>
 						<Icon name='arrow-back' mr={1} /> Back

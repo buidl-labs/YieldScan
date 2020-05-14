@@ -140,7 +140,6 @@ const EditValidators = (props: EditValidatorsProps) => {
 		props.selectedValidators(true);
 		props.onEvent(validatorsInfo);
 		history.push('/suggested-validators');
-
 	}
 
 	return (

@@ -9,6 +9,11 @@ import {
 	Icon
 } from "@chakra-ui/core";
 import Helmet from "react-helmet";
+import {
+    web3Enable,
+    isWeb3Injected,
+    web3AccountsSubscribe,
+} from '@polkadot/extension-dapp';
 import Footer from "../Footer.jsx";
 import ValidatorTile from "./ValidatorTile";
 import ExpectedReturns from "./ExpectedReturns";
@@ -140,7 +145,8 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 						</CustomButton>
 						<CustomButton
 							onClick={() => {
-							history.push('/wallet-connect');
+							isWeb3Injected && history.push('/confirmation');
+							!isWeb3Injected && history.push('/wallet-connect');
 							}}
 						>
 							Proceed
