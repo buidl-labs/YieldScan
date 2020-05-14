@@ -117,7 +117,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		}
 		setValidators(tempValidators);
 	};
-	/*
+	/* This will be used when validators will be fetched from API, need to define range in filters.
 	const [range, setRange] = React.useState();
 	
 	React.useEffect (() => {
@@ -159,7 +159,6 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 			parseInt(val.Commission) >= props.filters[4].values[0] &&
 			val['Risk Score'] <= props.filters[6].values[0]/100 
 		);
-		console.log('val info - ', validatorsInfo)
 		setFilteredValidators(validatorsInfo);
 	}, [props]);
 
