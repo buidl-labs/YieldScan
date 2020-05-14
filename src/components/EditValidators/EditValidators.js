@@ -1,10 +1,9 @@
 import React from "react";
-import { useHistory, Route } from "react-router-dom";
+import { useHistory, Route, Link } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Text,
-	Link,
 	Icon,
 	ButtonGroup,
 	Flex
@@ -125,29 +124,19 @@ const EditValidators = (props: EditValidatorsProps) => {
 	};
 
 	const handleValidators = () => {
-		let validatorsInfo = validators && validators.filter(({selected}) => selected ===true).reduce((acc, cur) => {
+		const updatedStakingAmount = props.amount / validators.filter(validator => { return validator.selected; }).length;
+		const validatorsInfo = validators && validators.filter(({selected}) => selected ===true).reduce((acc, cur) => {
 			acc.push ({
 				name:cur.Validator,
 				risk: "0.22",
 				commission: cur.Commission,
-				stashId: cur.stashId,
-				amount: cur.amount,
-				dailyEarningPrecise:cur.dailyEarningPrecise
-			});
-			return acc;
-		}, [])
-		const updatedStakingAmount = props.amount / validatorsInfo.length;
-		validatorsInfo = validatorsInfo && validatorsInfo.reduce((acc, cur) => {
-			acc.push ({
-				name:cur.name,
-				risk: cur.risk,
-				commission: cur.commission,
 				stashId: cur.stashId,
 				amount: updatedStakingAmount,
 				dailyEarningPrecise:cur.dailyEarningPrecise
 			});
 			return acc;
 		}, [])
+		
 		props.selectedValidators(true);
 		props.onEvent(validatorsInfo);
 		history.push('/suggested-validators');
