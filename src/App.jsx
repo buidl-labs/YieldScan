@@ -1,4 +1,3 @@
-/* eslint-disable react/no-children-prop */
 import React from "react";
 import {
 	HashRouter as Router,
@@ -39,8 +38,7 @@ import SuggestedValidators from "./components/SuggestedValidators/SuggestedValid
 import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 import EditValidators from "./components/EditValidators/EditValidators";
-import Auth from "./components/Auth";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -114,7 +112,6 @@ function App() {
 		});
 		const earnings = data.map(validator => validator.dailyEarningPrecise);
 		setMaxDailyEarning(Math.max(...earnings));
-		console.log("table data", data);
 		setValidatorTableData(data);
 		if (apiConnected) setIsLoaded(true);
 	}, [stakeAmount, validatorData, apiConnected]);
@@ -126,8 +123,7 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		console.log ('sugg val data - ', suggValidatorsData);
-		let validatorsInfo =
+		const validatorsInfo =
 			suggValidatorsData &&
 			suggValidatorsData.validatorsList &&
 			suggValidatorsData.validatorsList.reduce((acc, cur) => {
@@ -143,7 +139,6 @@ function App() {
 				return acc;
 			}, []);
 		setValidators(validatorsInfo);
-		console.log ('val data - ', validators);
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {

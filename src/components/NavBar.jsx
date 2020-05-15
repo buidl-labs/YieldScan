@@ -25,50 +25,12 @@ import {
 } from '@chakra-ui/core'
 import { NavLink } from 'react-router-dom'
 import { AiOutlineMenu } from 'react-icons/ai'
-import {
-	web3Enable,
-	isWeb3Injected,
-	web3AccountsSubscribe,
-} from '@polkadot/extension-dapp'
-
-import Identicon from "@polkadot/react-identicon";
 
 export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 	const { colorMode, toggleColorMode } = useColorMode()
 	const { isOpen, onOpen, onClose } = useDisclosure()
-	const [isUserLoggedIn, setIsLoggedIn] = useState(false)
-	const [listOfUsers, updateListOfUsers] = useState([])
 
 	const btnRef = React.useRef()
-
-	//check if user has at least one account with polkadot extension enabled
-	useEffect(() => {
-		// console.log('isWeb3Injected', isWeb3Injected);
-		// connected to polkadot extension
-		if (isWeb3Injected) {
-			//connect to extension
-			web3Enable('Polkanalytics')
-
-			//subscriber to listen to change in extension accounts
-			web3AccountsSubscribe(users => {
-				console.log('values', users)
-				if (users.length > 0) {
-					/*
-			Means user has at least setup on account,
-			and store account info in localstorage for global reference
-			*/
-					setIsLoggedIn(true)
-					updateListOfUsers(users)
-					localStorage.setItem('users', JSON.stringify(users))
-				} else {
-					//user has no accounts setup/created
-					updateListOfUsers(users)
-					setIsLoggedIn(false)
-					localStorage.setItem('users', JSON.stringify(users))
-				}
-			})
-		}
-	}, [])
 
 	return (
 		<React.Fragment>

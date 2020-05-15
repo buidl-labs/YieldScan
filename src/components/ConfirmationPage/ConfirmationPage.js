@@ -9,16 +9,12 @@ import {
 	Select,
 	Badge,
 	Checkbox,
-	Tooltip
+	Alert,
+	AlertIcon,
+	AlertDescription
 } from "@chakra-ui/core";
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import Helmet from "react-helmet";
-import {
-    web3Enable,
-    isWeb3Injected,
-    web3AccountsSubscribe,
- 	web3FromAddress 
-} from '@polkadot/extension-dapp';
-import { WsProvider, ApiPromise } from '@polkadot/api';
 import Footer from "../Footer.jsx";
 import ValidatorTile from "../SuggestedValidators/ValidatorTile";
 import {
@@ -29,7 +25,9 @@ import {
 	getRiskLevel
 } from "../../constants";
 import CustomButton from "../CustomButton";
-
+import useVerifyBalance from "./useVerifyBalance";
+import Authorization from "../Authentication/Authorization";
+import SubmitStakingTransaction from "./SubmitStakingTransaction";
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -62,163 +60,29 @@ const messageBoxColors = {
 	}
 };
 
-async function __useEffect (state, setState, freeBalance, setFreeBalance, amount, stashId, controllerId, selectedValidators) {
-
-	let provider;
-	let api;
-	let balance;
-	let injector;
-	switch (state) {
-		case 'init':
-			setState ('step-two');
-			break;
-
-		case 'step-two':
-			if (stashId) {
-				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-				api = await ApiPromise.create({ provider });
-				await api.isReady;
-				try {
-					const { data: { free: balance }, nonce } = await api.query.system.account(stashId);
-					const locks = await api.query.balances.locks(stashId);
-					console.log ('[balance] balance',balance);
-					console.log ('[balance] locks',locks);
-					let transferrable;
-					if (locks.length > 0) transferrable = (balance - locks[0]) / 10 ** 12;
-					else transferrable = (balance) / 10 ** 12;
-
-					 console.log ('[free-balance] transferrable', transferrable);
-					const freeBalance = parseFloat(transferrable);
-					setFreeBalance (freeBalance);
-					console.log ('[free-balance] free balance', freeBalance);
-
-
-					const transactionFee = 1 / 10**3;
-					console.log ('[free-balance] transaction fee', transactionFee);
-
-					if (freeBalance > amount && freeBalance > 4*transactionFee) {
-						setState ('sufficient-funds');
-						break;
-					}
-					else {
-						setState ('insufficient-funds');
-						break;
-					}
-				}
-				catch {
-					console.log('error in connection - probably, user is not included in balance');
-					break;
-				}
-			}
-			break;
-
-		case 'stake':
-			provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-			api = await ApiPromise.create({ provider });
-			const bonded = amount * 10 ** 12
-			if (controllerId && stashId) {
-				const ledger = await api.query.staking.ledger(stashId)
-				console.log ('ledger - ', ledger);
-				injector = await web3FromAddress(stashId)
-				api.setSigner(injector.signer)
-				try {
-				if (!ledger) {
-					console.log('api.tx.staking.bond')
-					api.tx.staking
-						.bond(controllerId, bonded, 0)
-						.signAndSend(controllerId, status => {
-							console.log(
-								'status',
-								JSON.parse(JSON.stringify(status))
-							)
-						})
-						.catch(error => {
-							console.log('Error', error)
-						})
-					// setState ('step-three');
-				} else {
-					console.log('api.tx.staking.bondExtra')
-					api.tx.staking
-						.bondExtra(bonded)
-						.signAndSend(stashId, status => {
-							console.log(
-								'status',
-								JSON.parse(JSON.stringify(status))
-							)
-						})
-						.catch(error => {
-							console.log('Error', error.toString())
-						})
-					// setState ('step-three');
-				}
-				}
-				catch {
-					console.log('api.tx.staking error');
-				}
-
-			}
-			break;
-
-		case 'step-three':
-			if (stashId) {
-				provider = new WsProvider('wss://kusama-rpc.polkadot.io/');
-				api = await ApiPromise.create({ provider });
-				injector = await web3FromAddress(stashId);
-				api.setSigner(injector.signer);
-
-				api.tx.staking
-					.nominate(
-						selectedValidators.map(
-							validator => validator.stashId
-						)
-					)
-					.signAndSend(stashId, status => {
-						console.log(
-							'status',
-							JSON.parse(JSON.stringify(status))
-						)
-						setState ('step-four')
-					})
-					.catch(error => {
-						console.log('Error', error)
-					})
-			}
-			break;
-
-		case 'step-four':
-			setState('********staked********');
-			break;
-
-		default:
-			
-	}
-}
-
 const ConfirmationPage = (props: ConfirmationPageProps) => {
-	console.log('confirmation props - ', props);
-	
 	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
-	const [state, setState] = React.useState ('init');
-	const [termsCheck, setTermsCheck] = React.useState(false);
-	const [freeBalance, setFreeBalance] = React.useState();
+
 	const [stashId, setStashId] = React.useState();
 	const [controllerId, setControllerId] = React.useState();
+	const [accounts, setAccounts] = React.useState(null);
+	const [termsCheck, setTermsCheck] = React.useState(false);
+	const isEnoughBalance = useVerifyBalance({
+		stashId,
+		controllerId,
+		stakeAmount: props.amount,
+		validatorList: props.validatorsList.map(validator => validator.stashId)
+	});
 
-	React.useEffect (() => {
-		__useEffect (state, setState, freeBalance, setFreeBalance, props.amount, stashId, controllerId, props.validatorsList);
-	}, [state, props, stashId, controllerId])
+	const getAuthInfo = async () => {
+		const authInfo = await Authorization();
+		setAccounts(authInfo.accounts);
+	};
 
-	React.useEffect (()=>{
-		setStashId (stashId);
-		setControllerId (controllerId);
-	}, [stashId, controllerId])
-
-	console.log(state);
-
-	const handleSubmit = () => {
-		if (state == 'sufficient-funds')	setState ('stake');
-	}
+	React.useEffect(() => {
+		getAuthInfo();
+	}, []);
 
 	return (
 		<>
@@ -227,10 +91,10 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 			</Helmet>
 			<Route exact path='/confirmation'>
 				<Box m={4} mt={10}>
-					<Link 
+					<Link
 						m={4}
-						onClick={()=>{
-							history.push('/suggested-validators');
+						onClick={() => {
+							history.push("/suggested-validators");
 						}}
 					>
 						<Icon name='arrow-back' mr={1} /> Back
@@ -275,21 +139,25 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)"
 								]}
 								name='stashID'
-								onChange={(e)=>{
-								setStashId (e.target.value);
+								onChange={e => {
+									setStashId(e.target.value);
 								}}
 							>
-								{ props.users && Object.keys(props.users).map((keyName, i) => {
-									return (
-										<option
-											style={{ color: "#000", background: "#FFF" }}
-											value={props.users[keyName].address}
-											key={i}
-										>
-											{props.users[keyName].meta.name} {props.users[keyName].address}
-										</option>
-									);
-								})}
+								{(() =>
+									accounts &&
+									accounts.map((account, i) => {
+										const decoded = decodeAddress(account.address);
+										const encodedAddress = encodeAddress(decoded, 2);
+										return (
+											<option
+												style={{ color: "#000", background: "#FFF" }}
+												value={account.address}
+												key={i}
+											>
+												{account.meta.name} {encodedAddress}
+											</option>
+										);
+									}))()}
 							</Select>
 						</Flex>
 						<Flex align='center' wrap='wrap' my={2}>
@@ -307,23 +175,27 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 150px)",
 									"calc(100% - 200px)",
 									"calc(100% - 200px)"
-									]}
+								]}
 								name='controllerID'
-								onChange={(e)=>{
-									setControllerId (e.target.value);
+								onChange={e => {
+									setControllerId(e.target.value);
 								}}
 							>
-								{ props.users && Object.keys(props.users).map((keyName, i) => {
-									return (
-										<option
-											value={props.users[keyName].address}
-											key={i}
-											style={{ color: "#000", background: "#FFF" }}
-										>
-											{props.users[keyName].meta.name} {props.users[keyName].address}
-										</option>
-									);
-								})}
+								{(() =>
+									accounts &&
+									accounts.map((account, i) => {
+										const decoded = decodeAddress(account.address);
+										const encodedAddress = encodeAddress(decoded, 2);
+										return (
+											<option
+												style={{ color: "#000", background: "#FFF" }}
+												value={account.address}
+												key={i}
+											>
+												{account.meta.name} {encodedAddress}
+											</option>
+										);
+									}))()}
 							</Select>
 						</Flex>
 						<Flex align='center' wrap='wrap' my={2}>
@@ -344,19 +216,34 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								{getRiskLevel(props.riskPreference)}
 							</Badge>
 						</Flex>
-						<Box w='100%' p={2} mt={6} h='50vh' overflow='auto'>
-							{props.validatorsList && props.validatorsList.map((validator, index) => {
-								return (
-									<ValidatorTile
-										key={index}
-										name={validator.name}
-										amount={validator.amount}
-										currency={props.currency}
-										avatar={validator.avatar}
-										colorMode={props.colorMode}
-									/>
-								);
-							})}
+						{stashId === controllerId ? (
+							<Alert status='warning' mt={4}>
+								<AlertIcon />
+								<AlertDescription mr={2}>
+									Distinct stash and controller accounts are recommended to
+									ensure fund security. You will be allowed to make the
+									transaction, but take care to not tie up all funds, only use a
+									portion of the available funds during this period.
+								</AlertDescription>
+							</Alert>
+						) : (
+							""
+						)}
+						<Box w='100%' p={2} mt={6} maxHeight='50vh' overflow='auto'>
+							{props.validatorsList &&
+								props.validatorsList.map((validator, index) => {
+									return (
+										<ValidatorTile
+											key={index}
+											name={validator.name}
+											stashId={validator.stashId}
+											amount={validator.amount}
+											currency={props.currency}
+											avatar={validator.avatar}
+											colorMode={props.colorMode}
+										/>
+									);
+								})}
 						</Box>
 						<Text
 							textAlign='center'
@@ -452,8 +339,24 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton disable={!termsCheck || state!='sufficient-funds' || state=='staked'} onClick={handleSubmit}>Submit</CustomButton>
-							{!termsCheck && (
+							<CustomButton
+								disable={!termsCheck || !isEnoughBalance}
+								onClick={
+									termsCheck && isEnoughBalance
+										? SubmitStakingTransaction({
+												stashId,
+												controllerId,
+												stakeAmount: props.amount,
+												validatorList: props.validatorsList.map(
+													validator => validator.stashId
+												)
+										  })
+										: undefined
+								}
+							>
+								Submit
+							</CustomButton>
+							{!termsCheck ? (
 								<Text
 									textAlign='center'
 									w='100%'
@@ -464,6 +367,20 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								>
 									Please agree to the terms before submitting
 								</Text>
+							) : (
+								!isEnoughBalance && (
+									<Text
+										textAlign='center'
+										w='100%'
+										m={2}
+										fontSize='xs'
+										as='i'
+										color={textColorLight[mode]}
+									>
+										Please select accounts with enough balance to pay the stake
+										amount and transaction fee
+									</Text>
+								)
 							)}
 						</Flex>
 					</Box>

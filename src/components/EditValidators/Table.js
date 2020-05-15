@@ -46,7 +46,7 @@ const Table = (props: TableProps) => {
 
 	return (
 		<>
-			<Box w='100%' h='100%' overflow='auto'>
+			<Box w='100%' h='100%' maxHeight="550px" overflow='auto'>
 				<Grid
 					w='100%'
 					templateColumns={columnTemplate}
