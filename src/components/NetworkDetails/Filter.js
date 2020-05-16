@@ -92,7 +92,7 @@ const Filter = (props: FilterProps) => {
 									value={filter.values}
 									min={filter.min}
 									max={filter.max}
-									steps={0.1}
+									step={1}
 									callback={val => {
 										changeValues(index, val);
 									}}

@@ -23,7 +23,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 
 	const [filters, setFilters] = React.useState([
 		{
-			label: "No. of Validators",
+			label: "No. of Nominations",
 			type: "range",
 			values: [100, 900],
 			min: 10,
@@ -38,7 +38,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			unit: props.currency
 		},
 		{
-			label: "Self Stake",
+			label: "Own Stake",
 			type: "range",
 			values: [10, 40],
 			min: 0,
@@ -59,7 +59,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			values: [10, 40],
 			min: 0,
 			max: 50,
-			unit: props.currency
+			unit: "%"
 		},
 		{
 			label: "Min. Expected Daily Earning",
@@ -72,7 +72,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 		{
 			label: "Max. Risk Level",
 			type: "slider",
-			values: [25],
+			values: [50],
 			min: 0,
 			max: 100
 		}
