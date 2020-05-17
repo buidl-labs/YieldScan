@@ -42,7 +42,7 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 		<Table
 			colorMode={mode}
 			columns={["Nominator", "Total Staked", "Nominations"]}
-			rows={nominators}
+			rows={parseNominators(nominators)}
 			sortableColumns={["Total Staked", "Nominations"]}
 			sortCallback={sortList}
 		></Table>
