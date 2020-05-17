@@ -23,7 +23,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 
 	const [filters, setFilters] = React.useState([
 		{
-			label: "No. of Nominations",
+			label: "No. of Nominators",
 			type: "range",
 			values: [100, 900],
 			min: 10,
