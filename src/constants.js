@@ -1,3 +1,4 @@
+const currency = "KSM";
 const LOW_RISK = 0.25;
 const MED_RISK = 0.5;
 const HIGH_RISK = 1;
@@ -44,8 +45,51 @@ const getRiskSliderColor = risk => {
 const textColor = { light: "#2D3748", dark: "#FFF" };
 const textColorLight = { light: "#677793", dark: "#ADB8CD" };
 const border = { light: "#EEF2F9", dark: "#262E3E" };
+const primaryColor = "#19CC95";
+const primaryColorHighlight = "#19CC9533";
+const validatorFilters = [
+	{
+		label: "No. of Nominators",
+		type: "range",
+		values: [1, 1000],
+		min: 1,
+		max: 1000
+	},
+	{
+		label: "Own Stake",
+		type: "range",
+		values: [0, 80],
+		min: 0,
+		max: 80,
+		unit: currency
+	},
+	{
+		label: "Other Stake",
+		type: "range",
+		values: [0, 150],
+		min: 0,
+		max: 150,
+		unit: currency
+	},
+	{
+		label: "Commission",
+		type: "range",
+		values: [0, 100],
+		min: 0,
+		max: 100,
+		unit: "%"
+	},
+	{
+		label: "Max. Risk Level",
+		type: "slider",
+		values: [100],
+		min: 0,
+		max: 100
+	}
+];
 
 export {
+	currency,
 	LOW_RISK,
 	HIGH_RISK,
 	getRiskLevelColor,
@@ -53,5 +97,8 @@ export {
 	getRiskLevel,
 	textColor,
 	textColorLight,
-	border
+	border,
+	primaryColor,
+	primaryColorHighlight,
+	validatorFilters
 };

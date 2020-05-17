@@ -23,7 +23,7 @@ const deselect = {
 };
 
 type TableProps = {
-	colorMode?: colorMode,
+	colorMode?: "light" | "dark",
 	columns: Array<string>,
 	rows: Array<Object>,
 	allowRowSelect?: Boolean,
@@ -85,8 +85,8 @@ const Table = (props: TableProps) => {
 					{props.columns.map((col, index) => {
 						return (
 							<Flex
-								w='calc(100% - 10px)'
-								p='10px'
+								w='calc(100%)'
+								p='15px'
 								py='15px'
 								key={index}
 								align='center'
@@ -132,63 +132,76 @@ const Table = (props: TableProps) => {
 						);
 					})}
 				</Grid>
-				{props.rows && props.rows.map((row, index) => {
-					return (
-						<Grid
-							key={index}
-							templateColumns={columnTemplate}
-							gap={0}
-							borderWidth='1px'
-							borderColor={border[mode]}
-							borderTop='0'
-							bg={row.selected ? "rgba(255,255,255,0)" : deselect[mode]}
-						>
-							{props.allowRowSelect && (
-								<Flex
-									w='100% - 10px'
-									px='10px'
-									py={4}
-									align='center'
-									justify='center'
-								>
-									<Checkbox
-										size='lg'
-										key={`Check${  index}`}
-										variantColor='teal'
-										isChecked={row.selected}
-										onChange={e => {
-											if (row.selected) {
-												setSelectAll(false);
-											}
-											props.selectCallback(index);
-										}}
-									></Checkbox>
-								</Flex>
-							)}
-							{props.columns.map((col, i) => {
-								return (
-									<Box w='calc(100% - 10px)' px='10px' py={4} key={i}>
-										{col === "Risk Score" ? (
-											<Text fontSize='sm'>
-												<Badge variantColor={getRiskLevelColor(row[col])}>
+				{props.rows.length > 0 ? (
+					props.rows.map((row, index) => {
+						return (
+							<Grid
+								key={index}
+								templateColumns={columnTemplate}
+								gap={0}
+								borderWidth='1px'
+								borderColor={border[mode]}
+								borderTop='0'
+								bg={
+									row.selected === false
+										? deselect[mode]
+										: "rgba(255,255,255,0)"
+								}
+							>
+								{props.allowRowSelect && (
+									<Flex
+										w='100% - 10px'
+										px='10px'
+										py={4}
+										align='center'
+										justify='center'
+									>
+										<Checkbox
+											size='lg'
+											key={"Check" + index}
+											variantColor='teal'
+											isChecked={row.selected}
+											onChange={e => {
+												if (row.selected) {
+													setSelectAll(false);
+												}
+												props.selectCallback(index);
+											}}
+										></Checkbox>
+									</Flex>
+								)}
+								{props.columns.map((col, i) => {
+									return (
+										<Box w='calc(100% - 10px)' px='10px' py={4} key={i}>
+											{col === "Risk Score" ? (
+												<Text fontSize='sm'>
+													<Badge
+														as='span'
+														variantColor={getRiskLevelColor(row[col])}
+													>
+														{row[col]}
+													</Badge>
+												</Text>
+											) : (
+												<Text
+													fontSize='sm'
+													color={textColorLight[mode]}
+													as={col === "Validator" ? "b" : "p"}
+												>
 													{row[col]}
-												</Badge>
-											</Text>
-										) : (
-											<Text
-												fontSize='sm'
-												color={textColorLight[mode]}
-												as={col === "Validator" ? "b" : "p"}
-											>
-												{row[col]}
-											</Text>
-										)}
-									</Box>
-								);
-							})}
-						</Grid>
-					);
-				})}
+												</Text>
+											)}
+										</Box>
+									);
+								})}
+							</Grid>
+						);
+					})
+				) : (
+					<Text textAlign='center' fontSize='lg' my={4}>
+						No data found
+					</Text>
+				)}
 			</Box>
 		</>
 	);

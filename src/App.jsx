@@ -1,7 +1,6 @@
 import React from "react";
 import {
 	HashRouter as Router,
-	Link as RouterLink,
 	Route,
 	Redirect
 } from "react-router-dom";
@@ -9,11 +8,7 @@ import {
 	Flex,
 	useColorMode,
 	Box,
-	Heading,
 	Text,
-	Input,
-	InputGroup,
-	InputRightAddon,
 	Spinner,
 	Link,
 	CircularProgress,
@@ -22,16 +17,14 @@ import {
 import { Helmet } from "react-helmet";
 import { useDebounce } from "use-debounce";
 import amplitude from "amplitude-js";
-import { AmplitudeProvider, LogOnChange } from "@amplitude/react-amplitude";
+import { AmplitudeProvider } from "@amplitude/react-amplitude";
 import socketIOClient from "socket.io-client";
 import AlertDialogContainer from "./components/LoginFlow/AlertDialogContainer";
-import ValidatorTable from "./components/ValidatorTable.jsx";
 import HelpCenter from "./components/HelpCenter.jsx";
 import ReturnsCalculator from "./components/ReturnsCalculator.jsx";
 import ScrollToTop from "./ScrollToTop.jsx";
 import ValidatorApp from "./components/validator_components/ValidatorApp.jsx";
 import NominatorApp from "./components/nominator_components/NominatorApp.jsx";
-import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
 import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
@@ -39,14 +32,14 @@ import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 import EditValidators from "./components/EditValidators/EditValidators";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NetworkDetails from "./components/NetworkDetails/NetworkDetails";
+import { currency } from "./constants";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
-const currency = "KSM";
-
 function App() {
 	// eslint-disable-next-line no-unused-vars
-	const { colorMode, toggleColorMode } = useColorMode();
+	const { colorMode } = useColorMode();
 	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [errorState, setErrorState] = React.useState(false);
@@ -55,8 +48,8 @@ function App() {
 	const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
 		[]
 	);
-	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
-	const [stakeInput, setStakeInput] = React.useState(1000.0);
+	const [, setMaxDailyEarning] = React.useState(0);
+	const [stakeInput] = React.useState(1000.0);
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
@@ -142,7 +135,10 @@ function App() {
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
+		const socket = socketIOClient(
+			"https://polka-analytics-api-testing-sfgk.onrender.com/",
+			{ transport: ["websocket"] }
+		);
 		socket.on(
 			"initial",
 			// eslint-disable-next-line no-shadow
@@ -197,17 +193,14 @@ function App() {
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>Yield Scan - Analytics for Polkadot Network</title>
+				<title>
+					YieldScan - Scanning yield on nominated proof-of-stake networks
+				</title>
 				<meta
 					name='description'
-					content='An analytics platform for the Polkadot Network'
+					content='A portfolio management platform for Proof of Stake Network'
 				/>
 			</Helmet>
-			<LogEvent eventType='Home network-details view' />
-			<LogOnChange
-				eventType='Expected daily earning from stake (Input Change) : (network-details view)'
-				value={stakeInput}
-			/>
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
@@ -227,86 +220,9 @@ function App() {
 					px={{ base: 4, md: 0 }}
 				>
 					{/* Homepage - Dashboard */}
-					<Route exact path='/(|network-details)'>
+					<Route path='/(|network-details)'>
 						{isLoaded && apiConnected ? (
-							<>
-								<Heading as='h2' size='xl' textAlign='center' mt={16}>
-									Put your KSM tokens to work
-								</Heading>
-								<Text fontSize='2xl' textAlign='center' mb={4}>
-									You could be earning{" "}
-									<Box as='span' color='brand.900'>
-										{maxDailyEarning}
-									</Box>{" "}
-									KSM daily
-								</Text>
-								{/* Stake Amount Input */}
-								<Flex
-									flexDirection='column'
-									alignItems='center'
-									position='sticky'
-									top='0'
-									zIndex='999'
-									backgroundImage={
-										colorMode === "light"
-											? "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))"
-											: "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))"
-									}
-									pt={8}
-									pb={12}
-								>
-									<Text
-										mb={2}
-										textAlign='center'
-										fontSize='md'
-										color='gray.500'
-									>
-										Stake amount (change input to see potential earnings)
-									</Text>
-									<InputGroup>
-										<Input
-											placeholder='Stake Amount'
-											variant='filled'
-											type='number'
-											min='0'
-											step='0.000000000001'
-											max='999999999999999'
-											value={stakeInput}
-											textAlign='center'
-											roundedLeft='2rem'
-											onChange={e => {
-												setStakeInput(parseFloat(e.target.value));
-											}}
-										/>
-										<InputRightAddon
-											children={currency}
-											backgroundColor='teal.500'
-											roundedRight='2rem'
-										/>
-									</InputGroup>
-								</Flex>
-								<Link
-									as={RouterLink}
-									to='/help-center/guides/how-to-stake'
-									color='teal.500'
-									textAlign='center'
-								>
-									How to stake?
-								</Link>
-								{/* Validator Table */}
-								<Text textAlign='center' mt={8} mb={8}>
-									Looking for a list of active validators to stake on? Look no
-									further!
-								</Text>
-								<ValidatorTable
-									onExtensionDialogOpen={onExtensionDialogOpen}
-									onCreateAccountDialogOpen={onCreateAccountDialogOpen}
-									colorMode={colorMode}
-									dataSource={
-										validatorTableData !== undefined ? validatorTableData : []
-									}
-								/>
-							</>
+							<NetworkDetails colorMode={colorMode} currency={currency} />
 						) : (
 							<Box
 								display='flex'
@@ -335,7 +251,6 @@ function App() {
 						)}
 					</Route>
 
-					{/* Returns Calculator */}
 					<Route path='/returns-calculator'>
 						<ReturnsCalculator
 							colorMode={colorMode}
@@ -344,7 +259,7 @@ function App() {
 							onEvent={handleChildTabEvent}
 						/>
 					</Route>
-					{/* Help Center */}
+
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
@@ -409,7 +324,7 @@ function App() {
 						}
 					/>
 				</Flex>
-				{/* Validator specific view */}
+
 				<Route
 					path='/kusama/validator/'
 					render={props => {
