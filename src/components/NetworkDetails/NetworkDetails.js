@@ -58,7 +58,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			type: "range",
 			values: [10, 40],
 			min: 0,
-			max: 50,
+			max: 100,
 			unit: "%"
 		},
 		{
@@ -72,7 +72,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 		{
 			label: "Max. Risk Level",
 			type: "slider",
-			values: [50],
+			values: [100],
 			min: 0,
 			max: 100
 		}
