@@ -4,16 +4,15 @@ import Table from "../EditValidators/Table";
 type NominatorsTableProps = {
 	colorMode?: "light" | "dark",
 	currency: string,
-	nominators: Array<{
-	}>
+	nominators: Array<{}>
 };
 
 const NominatorsTable = (props: NominatorsTableProps) => {
 	const [nominators, setNominators] = React.useState(props.nominators);
 
-	React.useEffect ( () => {
+	React.useEffect(() => {
 		setNominators(props.nominators);
-	}, [props])
+	}, [props]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -35,9 +34,9 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 		<>
 			<Table
 				colorMode={mode}
-				columns={["Nominator", "Total Stake", "Backers"]}
+				columns={["Nominator", "Total Staked", "Nominations"]}
 				rows={nominators}
-				sortableColumns={["Nominator", "Total Stake", "Backers"]}
+				sortableColumns={["Total Staked", "Nominations"]}
 				sortCallback={sortList}
 			></Table>
 		</>

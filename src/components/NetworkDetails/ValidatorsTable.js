@@ -11,7 +11,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 	const [validators, setValidators] = React.useState([
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 300,
+			"No. of Nominators": 300,
 			"Other Stake": 10.4525,
 			"Own Stake": 13,
 			Commission: 4,
@@ -19,7 +19,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 50,
+			"No. of Nominators": 50,
 			"Other Stake": 1.4525,
 			"Own Stake": 33,
 			Commission: 4,
@@ -27,7 +27,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 150,
+			"No. of Nominators": 150,
 			"Other Stake": 13.4525,
 			"Own Stake": 103,
 			Commission: 5,
@@ -35,7 +35,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 2000,
+			"No. of Nominators": 2000,
 			"Other Stake": 3.4525,
 			"Own Stake": 3,
 			Commission: 7,
@@ -43,7 +43,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 4750,
+			"No. of Nominators": 4750,
 			"Other Stake": 22.4525,
 			"Own Stake": 1003,
 			Commission: 18,
@@ -51,7 +51,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 42,
+			"No. of Nominators": 42,
 			"Other Stake": 1345.25,
 			"Own Stake": 4242,
 			Commission: 2,
@@ -59,7 +59,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		},
 		{
 			Validator: "PolyLabs I",
-			"No. of Nominations": 7,
+			"No. of Nominators": 7,
 			"Other Stake": 525,
 			"Own Stake": 1600,
 			Commission: 19,
@@ -72,7 +72,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		valArr.map((doc, i) => {
 			parseArr.push({
 				Validator: doc["Validator"],
-				"No. of Nominations": doc["No. of Nominations"],
+				"No. of Nominators": doc["No. of Nominators"],
 				"Other Stake": `${doc["Other Stake"]} ${props.currency}`,
 				"Own Stake": `${doc["Own Stake"]} ${props.currency}`,
 				Commission: `${doc["Commission"]}%`,
@@ -83,64 +83,96 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 	};
 
 	const mode = props.colorMode ? props.colorMode : "light";
-	const [filteredValidators, setFilteredValidators] = React.useState(validators);
+	const [filteredValidators, setFilteredValidators] = React.useState(
+		validators
+	);
 	const sortList = (column, asc) => {
 		let tempValidators = [...validators];
 		if (asc) {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => {
+				const logger = a[column] - b[column];
+				return logger;
+			});
 		} else {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => {
+				const logger = b[column] - a[column];
+				return logger;
+			});
 		}
 		setValidators(tempValidators);
 	};
-	/* This will be used when validators will be fetched from API, need to define range in filters.
-	const [range, setRange] = React.useState();
-	
-	React.useEffect (() => {
+	const isInRange = ({ num, range, type, belowValue }) => {
+		let inRange = false;
+		if (type === "range") {
+			inRange = num <= Math.max(...range) && num >= Math.min(...range);
+		} else if (type === "slider") {
+			inRange = belowValue ? num <= range[0] : num >= range[0];
+		}
+		return inRange;
+	};
 
-		const filterRange = [];
-		filterRange.push(
-			{
-				label:'Other Stake',
-				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Other Stake']);})),
-				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o['Other Stake']);})) 
-			},
-			{
-				label:'Own Stake',
-				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Own Stake']);})),
-				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o['Own Stake']);})) 
-			},
-			{
-				label:'Commission',
-				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o.Commission);})),
-				min: Math.min.apply(Math, validators.map(function(o) { return parseFloat(o.Commission);})) 
-			},
-			{
-				label:'Risk Score',
-				max: Math.max.apply(Math, validators.map(function(o) { return parseFloat(o['Risk Score']);}))
-			}
-		)
-		
-		props.range(filterRange);
-	}, []);
-	*/
+	const setFilterRange = (index, val) => {
+		const temp = [...props.filters];
+		temp[index].values = [Math.floor(val.min), Math.ceil(val.max)];
+		temp[index].min = Math.floor(val.min);
+		temp[index].max = Math.ceil(val.max);
+		console.log(temp);
+		props.setFilters(temp);
+	};
+
+	const getValidatorDataRange = property => {
+		const min = Math.min(...validators.map(val => val[property]));
+		const max = Math.max(...validators.map(val => val[property]));
+
+		return { min, max };
+	};
+
+	const changeFilterRange = () => {
+		props.filters.forEach((filter, index) => {
+			filter.label === "Commission" || filter.label === "Max. Risk Level"
+				? console.log("commission or risk level skipped")
+				: setFilterRange(index, getValidatorDataRange(filter.label));
+		});
+	};
+
 	React.useEffect(() => {
-
-		const validatorsInfo = validators.filter(val => 
-			parseInt(val['Other Stake']) <= props.filters[3].values[1] && 
-			parseInt(val['Other Stake']) >= props.filters[3].values[0] &&
-			parseInt(val['Own Stake']) <= props.filters[2].values[1] && 
-			parseInt(val['Own Stake']) >= props.filters[2].values[0] &&
-			parseInt(val.Commission) <= props.filters[4].values[1] && 
-			parseInt(val.Commission) >= props.filters[4].values[0] &&
-			val['Risk Score'] <= props.filters[6].values[0]/100 
-		);
+		const validatorsInfo =
+			validators &&
+			validators.filter(
+				val =>
+					isInRange({
+						num: val["No. of Nominators"],
+						range: props.filters[0].values,
+						type: "range"
+					}) 
+					&&
+					isInRange({
+						num: parseFloat(val["Own Stake"]),
+						range: props.filters[1].values,
+						type: "range"
+					}) &&
+					isInRange({
+						num: parseFloat(val["Other Stake"]),
+						range: props.filters[2].values,
+						type: "range"
+					}) &&
+					isInRange({
+						num: parseFloat(val.Commission),
+						range: props.filters[3].values,
+						type: "range"
+					}) &&
+					isInRange({
+						num: parseFloat(val["Risk Score"] * 100),
+						range: props.filters[4].values,
+						type: "slider",
+						belowValue: true
+					})
+			);
 		setFilteredValidators(validatorsInfo);
-	}, [props]);
+	}, [props, validators]);
+	React.useEffect(() => {
+		changeFilterRange();
+	}, []);
 
 	return (
 		<>
@@ -148,15 +180,15 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 				colorMode={mode}
 				columns={[
 					"Validator",
-					"No. of Nominations",
+					"No. of Nominators",
 					"Other Stake",
 					"Own Stake",
 					"Commission",
 					"Risk Score"
 				]}
-				rows={parseValidators(validators)}
+				rows={parseValidators(filteredValidators)}
 				sortableColumns={[
-					"No. of Nominations",
+					"No. of Nominators",
 					"Other Stake",
 					"Own Stake",
 					"Commission",

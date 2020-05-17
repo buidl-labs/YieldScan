@@ -84,7 +84,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 								size='lg'
 								display={{ base: "none", sm: "block" }}
 							>
-								Yield Scan
+								YieldScan
 							</Heading>
 						</Box>
 					</NavLink>
@@ -151,39 +151,39 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 						<DrawerOverlay />
 						<DrawerContent>
 							<DrawerCloseButton />
-							<DrawerHeader>Polka Analytics</DrawerHeader>
+							<DrawerHeader>YieldScan</DrawerHeader>
 
-							<DrawerBody>
-								<Box mr={8}>
+							<DrawerBody display="flex" flexDirection="column">
+								
 									<Link
 										as={NavLink}
 										className="nav-link"
 										to="/network-details"
-										py={4}
+										py={2}
 									>
 										Network Details
 									</Link>
-								</Box>
-								<Box mr={8}>
+								
+								
 									<Link
 										as={NavLink}
 										className="nav-link"
 										to="/returns-calculator"
-										py={4}
+										py={2}
 									>
 										Returns Calculator
 									</Link>
-								</Box>
-								<Box mr={8}>
+								
+								
 									<Link
 										as={NavLink}
 										className="nav-link"
 										to="/help-center"
-										py={4}
+										py={2}
 									>
 										Help Center
 									</Link>
-								</Box>
+								
 							</DrawerBody>
 
 							<DrawerFooter

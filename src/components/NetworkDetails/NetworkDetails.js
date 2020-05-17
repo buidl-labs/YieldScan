@@ -22,26 +22,27 @@ type NetworkDetailsProps = {
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 	const [nominators, setNominators] = React.useState([
-		{ "Nominator": "", "Total Stake": "", "Backers": "" }]);
+		{ Nominator: "", "Total Staked": "", Nominations: "" }
+	]);
 
-	React.useEffect ( () => {
-		axios.get('https://polka-analytic-api.herokuapp.com/nominatorsinfo')
+	React.useEffect(() => {
+		axios
+			.get("https://polka-analytic-api.herokuapp.com/nominatorsinfo")
 			.then(response => {
-				const nominators = response.data.reduce((acc, cur) => {
+				const nominatorsInfo = response.data.reduce((acc, cur) => {
 					acc.push({
 						Nominator: `Nominator(...${cur.nominatorId.slice(-5)})`,
-						"Total Stake": cur.totalStaked,
-						Backers: cur.backers
+						"Total Staked": `${cur.totalStaked} KSM`,
+						Nominations: cur.backers
 					});
 					return acc;
-				}, [])
-				setNominators(nominators);
+				}, []);
+				setNominators(nominatorsInfo);
 			})
 			.catch(error => {
 				console.error(error);
 			});
 	}, []);
-
 
 	const [filters, setFilters] = React.useState([
 		{
@@ -50,14 +51,6 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			values: [1, 1000],
 			min: 1,
 			max: 1000
-		},
-		{
-			label: "Total Stake",
-			type: "range",
-			values: [0, 80],
-			min: 0,
-			max: 80,
-			unit: props.currency
 		},
 		{
 			label: "Own Stake",
@@ -78,18 +71,10 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 		{
 			label: "Commission",
 			type: "range",
-			values: [0, 20],
+			values: [0, 100],
 			min: 0,
 			max: 100,
 			unit: "%"
-		},
-		{
-			label: "Min. Expected Daily Earning",
-			type: "slider",
-			values: [25],
-			min: 0,
-			max: 50,
-			unit: props.currency
 		},
 		{
 			label: "Max. Risk Level",
@@ -105,9 +90,9 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 	return (
 		<>
 			<Helmet>
-				<title>Yield Scan &middot; Network Details</title>
+				<title>YieldScan &middot; Network Details</title>
 			</Helmet>
-			<Route exact path='/network-details-demo'>
+			<Route exact path='/(|network-details)'>
 				<Box w='100%'>
 					<Heading as='h3' size='xl' color={textColor[mode]} my={4} mt={8}>
 						Network Details
@@ -198,13 +183,14 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 										colorMode={mode}
 										filters={filters}
 										currency={props.currency}
+										setFilters={setFilters}
 									/>
 								) : (
-								<NominatorsTable 
-									colorMode={mode} 
-									currency={props.currency} 
-									nominators={nominators}
-								/>
+									<NominatorsTable
+										colorMode={mode}
+										currency={props.currency}
+										nominators={nominators}
+									/>
 								)}
 							</Box>
 						</Box>

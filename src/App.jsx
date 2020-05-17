@@ -137,7 +137,10 @@ function App() {
 	}, [suggValidatorsData]);
 
 	React.useEffect(() => {
-		const socket = socketIOClient("https://polka-analytic-api.herokuapp.com/");
+		const socket = socketIOClient(
+			"https://polka-analytics-api-testing.onrender.com/",
+			{ transport: ["websocket"] }
+		);
 		socket.on(
 			"initial",
 			// eslint-disable-next-line no-shadow
@@ -193,21 +196,18 @@ function App() {
 			apiKey={AMPLITUDE_KEY}
 		>
 			<Helmet>
-				<title>Yield Scan - Analytics for Polkadot Network</title>
+				<title>
+					YieldScan - Scanning yield on nominated proof-of-stake networks
+				</title>
 				<meta
 					name='description'
-					content='An analytics platform for the Polkadot Network'
+					content='A portfolio management platform for Proof of Stake Network'
 				/>
 			</Helmet>
-			<LogEvent eventType='Home network-details view' />
-			<LogOnChange
-				eventType='Expected daily earning from stake (Input Change) : (network-details view)'
-				value={stakeInput}
-			/>
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
-					<Redirect to='/network-details-demo' />
+					<Redirect to='/network-details' />
 				</Route>
 				<NavBar
 					onExtensionDialogOpen={onExtensionDialogOpen}
@@ -223,86 +223,9 @@ function App() {
 					px={{ base: 4, md: 0 }}
 				>
 					{/* Homepage - Dashboard */}
-					<Route exact path='/(|network-details)'>
+					<Route path='/(|network-details)'>
 						{isLoaded && apiConnected ? (
-							<>
-								<Heading as='h2' size='xl' textAlign='center' mt={16}>
-									Put your KSM tokens to work
-								</Heading>
-								<Text fontSize='2xl' textAlign='center' mb={4}>
-									You could be earning{" "}
-									<Box as='span' color='brand.900'>
-										{maxDailyEarning}
-									</Box>{" "}
-									KSM daily
-								</Text>
-								{/* Stake Amount Input */}
-								<Flex
-									flexDirection='column'
-									alignItems='center'
-									position='sticky'
-									top='0'
-									zIndex='999'
-									backgroundImage={
-										colorMode === "light"
-											? "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))"
-											: "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))"
-									}
-									pt={8}
-									pb={12}
-								>
-									<Text
-										mb={2}
-										textAlign='center'
-										fontSize='md'
-										color='gray.500'
-									>
-										Stake amount (change input to see potential earnings)
-									</Text>
-									<InputGroup>
-										<Input
-											placeholder='Stake Amount'
-											variant='filled'
-											type='number'
-											min='0'
-											step='0.000000000001'
-											max='999999999999999'
-											value={stakeInput}
-											textAlign='center'
-											roundedLeft='2rem'
-											onChange={e => {
-												setStakeInput(parseFloat(e.target.value));
-											}}
-										/>
-										<InputRightAddon
-											children={currency}
-											backgroundColor='teal.500'
-											roundedRight='2rem'
-										/>
-									</InputGroup>
-								</Flex>
-								<Link
-									as={RouterLink}
-									to='/help-center/guides/how-to-stake'
-									color='teal.500'
-									textAlign='center'
-								>
-									How to stake?
-								</Link>
-								{/* Validator Table */}
-								<Text textAlign='center' mt={8} mb={8}>
-									Looking for a list of active validators to stake on? Look no
-									further!
-								</Text>
-								<ValidatorTable
-									onExtensionDialogOpen={onExtensionDialogOpen}
-									onCreateAccountDialogOpen={onCreateAccountDialogOpen}
-									colorMode={colorMode}
-									dataSource={
-										validatorTableData !== undefined ? validatorTableData : []
-									}
-								/>
-							</>
+							<NetworkDetails colorMode={colorMode} currency={currency} />
 						) : (
 							<Box
 								display='flex'
@@ -331,7 +254,6 @@ function App() {
 						)}
 					</Route>
 
-					{/* Help Center */}
 					<Route path='/returns-calculator'>
 						<ReturnsCalculator
 							colorMode={colorMode}
@@ -341,11 +263,11 @@ function App() {
 							buttonClick={handleButtonClick}
 						/>
 					</Route>
-					{/* Help Center */}
+
 					<Route path='/help-center'>
 						<HelpCenter />
 					</Route>
-					{/* Suggested Validators */}
+
 					{click === true ? (
 						<Route path='/suggested-validators'>
 							<SuggestedValidators
@@ -360,11 +282,11 @@ function App() {
 					) : (
 						<Redirect to='/' />
 					)}
-					{/* PolkaWallet Connect */}
+
 					<Route path='/wallet-connect'>
 						<WalletConnect colorMode={colorMode} />
 					</Route>
-					{/* Edit Validators */}
+
 					<Route path='/edit-validators'>
 						<EditValidators
 							colorMode={colorMode}
@@ -372,11 +294,7 @@ function App() {
 							amount={16.5}
 						/>
 					</Route>
-					{/* Edit Validators */}
-					<Route path='/network-details-demo'>
-						<NetworkDetails colorMode={colorMode} currency={currency} />
-					</Route>
-					{/* Confirmation */}
+
 					<Route path='/confirmation'>
 						<ConfirmationPage
 							colorMode={colorMode}
@@ -394,7 +312,7 @@ function App() {
 					</Route>
 					<Route render={() => <Redirect to='/' />} />
 				</Flex>
-				{/* Validator specific view */}
+
 				<Route
 					path='/kusama/validator/'
 					render={props => {
