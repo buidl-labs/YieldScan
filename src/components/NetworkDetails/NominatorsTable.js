@@ -19,27 +19,33 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 	const sortList = (column, asc) => {
 		let tempNominators = [...nominators];
 		if (asc) {
-			tempNominators = tempNominators.sort((a, b) =>
-				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
-			);
+			tempNominators = tempNominators.sort((a, b) => a[column] - b[column]);
 		} else {
-			tempNominators = tempNominators.sort((a, b) =>
-				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
-			);
+			tempNominators = tempNominators.sort((a, b) => b[column] - a[column]);
 		}
 		setNominators(tempNominators);
 	};
 
+	const parseNominators = valArr => {
+		const parseArr = [];
+		valArr.map((doc, i) => {
+			parseArr.push({
+				Nominator: doc.Nominator,
+				"Total Staked": `${doc["Total Staked"]} ${props.currency}`,
+				Nominations: doc.Nominations
+			});
+		});
+		return parseArr;
+	};
+
 	return (
-		<>
-			<Table
-				colorMode={mode}
-				columns={["Nominator", "Total Staked", "Nominations"]}
-				rows={nominators}
-				sortableColumns={["Total Staked", "Nominations"]}
-				sortCallback={sortList}
-			></Table>
-		</>
+		<Table
+			colorMode={mode}
+			columns={["Nominator", "Total Staked", "Nominations"]}
+			rows={nominators}
+			sortableColumns={["Total Staked", "Nominations"]}
+			sortCallback={sortList}
+		></Table>
 	);
 };
 

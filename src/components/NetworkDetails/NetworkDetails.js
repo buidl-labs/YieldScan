@@ -2,17 +2,19 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Box, Heading, Flex, PseudoBox } from "@chakra-ui/core";
 import Helmet from "react-helmet";
-import axios from "axios";
 import Footer from "../Footer.jsx";
 import {
 	textColor,
 	border,
 	primaryColor,
-	primaryColorHighlight
+	primaryColorHighlight,
+	validatorFilters
 } from "../../constants";
 import Filter from "./Filter";
 import ValidatorsTable from "./ValidatorsTable";
 import NominatorsTable from "./NominatorsTable";
+import getNominatorInfo from "../../getNominatorInfo";
+import getValidatorInfo from "../../getValidatorInfo";
 
 type NetworkDetailsProps = {
 	colorMode?: "light" | "dark",
@@ -21,71 +23,26 @@ type NetworkDetailsProps = {
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
-	const [nominators, setNominators] = React.useState([
-		{ Nominator: "", "Total Staked": "", Nominations: "" }
-	]);
+	const [validators, setValidators] = React.useState([]);
+	const [nominators, setNominators] = React.useState([]);
 
-	React.useEffect(() => {
-		axios
-			.get("https://polka-analytic-api.herokuapp.com/nominatorsinfo")
-			.then(response => {
-				const nominatorsInfo = response.data.reduce((acc, cur) => {
-					acc.push({
-						Nominator: `Nominator(...${cur.nominatorId.slice(-5)})`,
-						"Total Staked": `${cur.totalStaked} KSM`,
-						Nominations: cur.backers
-					});
-					return acc;
-				}, []);
-				setNominators(nominatorsInfo);
-			})
-			.catch(error => {
-				console.error(error);
-			});
-	}, []);
-
-	const [filters, setFilters] = React.useState([
-		{
-			label: "No. of Nominators",
-			type: "range",
-			values: [1, 1000],
-			min: 1,
-			max: 1000
-		},
-		{
-			label: "Own Stake",
-			type: "range",
-			values: [0, 80],
-			min: 0,
-			max: 80,
-			unit: props.currency
-		},
-		{
-			label: "Other Stake",
-			type: "range",
-			values: [0, 150],
-			min: 0,
-			max: 150,
-			unit: props.currency
-		},
-		{
-			label: "Commission",
-			type: "range",
-			values: [0, 100],
-			min: 0,
-			max: 100,
-			unit: "%"
-		},
-		{
-			label: "Max. Risk Level",
-			type: "slider",
-			values: [100],
-			min: 0,
-			max: 100
-		}
-	]);
+	const [filters, setFilters] = React.useState(validatorFilters);
 
 	const [currentTab, setCurrentTab] = React.useState("Validators");
+	const setValidatorInfo = async () => {
+		const validatorInfo = await getValidatorInfo();
+		setValidators(validatorInfo);
+	};
+	const setNominatorInfo = async () => {
+		const nominatorInfo = await getNominatorInfo();
+		setNominators(nominatorInfo);
+	};
+	React.useEffect(() => {
+		setValidatorInfo();
+	}, []);
+	React.useEffect(() => {
+		setNominatorInfo();
+	}, []);
 
 	return (
 		<>
@@ -183,6 +140,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 										colorMode={mode}
 										filters={filters}
 										currency={props.currency}
+										validators={validators}
 										setFilters={setFilters}
 									/>
 								) : (

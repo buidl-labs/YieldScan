@@ -2,7 +2,6 @@
 import React from "react";
 import {
 	HashRouter as Router,
-	Link as RouterLink,
 	Route,
 	Redirect
 } from "react-router-dom";
@@ -10,11 +9,7 @@ import {
 	Flex,
 	useColorMode,
 	Box,
-	Heading,
 	Text,
-	Input,
-	InputGroup,
-	InputRightAddon,
 	Spinner,
 	Link,
 	CircularProgress,
@@ -23,16 +18,14 @@ import {
 import { Helmet } from "react-helmet";
 import { useDebounce } from "use-debounce";
 import amplitude from "amplitude-js";
-import { AmplitudeProvider, LogOnChange } from "@amplitude/react-amplitude";
+import { AmplitudeProvider } from "@amplitude/react-amplitude";
 import socketIOClient from "socket.io-client";
 import AlertDialogContainer from "./components/LoginFlow/AlertDialogContainer";
-import ValidatorTable from "./components/ValidatorTable.jsx";
 import HelpCenter from "./components/HelpCenter.jsx";
 import ReturnsCalculator from "./components/ReturnsCalculator.jsx";
 import ScrollToTop from "./ScrollToTop.jsx";
 import ValidatorApp from "./components/validator_components/ValidatorApp.jsx";
 import NominatorApp from "./components/nominator_components/NominatorApp.jsx";
-import LogEvent from "./components/LogEvent";
 import ErrorMessage from "./components/ErrorMessage";
 import NavBar from "./components/NavBar.jsx";
 import SuggestedValidators from "./components/SuggestedValidators/SuggestedValidators";
@@ -40,14 +33,13 @@ import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 import EditValidators from "./components/EditValidators/EditValidators";
 import NetworkDetails from "./components/NetworkDetails/NetworkDetails";
+import { currency } from "./constants";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
-const currency = "KSM";
-
 function App() {
 	// eslint-disable-next-line no-unused-vars
-	const { colorMode, toggleColorMode } = useColorMode();
+	const { colorMode } = useColorMode();
 	const [electedInfo, setElectedInfo] = React.useState({});
 	const [validatorData, setValidatorData] = React.useState([]);
 	const [errorState, setErrorState] = React.useState(false);
@@ -56,8 +48,8 @@ function App() {
 	const [validatorsAndIntentions, setValidatorsAndIntentions] = React.useState(
 		[]
 	);
-	const [maxDailyEarning, setMaxDailyEarning] = React.useState(0);
-	const [stakeInput, setStakeInput] = React.useState(1000.0);
+	const [, setMaxDailyEarning] = React.useState(0);
+	const [stakeInput] = React.useState(1000.0);
 	const [stakeAmount] = useDebounce(stakeInput, 500.0);
 	const [apiConnected, setApiConnected] = React.useState(false);
 	const [isLoaded, setIsLoaded] = React.useState(false);
@@ -120,7 +112,7 @@ function App() {
 	}, [calcReward, apiConnected]);
 
 	React.useEffect(() => {
-		let validatorsInfo =
+		const validatorsInfo =
 			suggValidatorsData &&
 			suggValidatorsData.validatorsList &&
 			suggValidatorsData.validatorsList.reduce((acc, cur) => {
@@ -138,7 +130,7 @@ function App() {
 
 	React.useEffect(() => {
 		const socket = socketIOClient(
-			"https://polka-analytics-api-testing.onrender.com/",
+			"https://polka-analytics-api-testing-sfgk.onrender.com/",
 			{ transport: ["websocket"] }
 		);
 		socket.on(

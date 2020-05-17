@@ -48,6 +48,7 @@ const Filter = (props: FilterProps) => {
 				{props.filters.map((filter, index) => {
 					return (
 						<Box
+							key={filter.label}
 							w='calc(100%)'
 							px='15px'
 							py='10px'
