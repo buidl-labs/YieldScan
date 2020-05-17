@@ -39,6 +39,7 @@ import SuggestedValidators from "./components/SuggestedValidators/SuggestedValid
 import WalletConnect from "./components/WalletConnect/WalletConnect";
 import ConfirmationPage from "./components/ConfirmationPage/ConfirmationPage";
 import EditValidators from "./components/EditValidators/EditValidators";
+import NetworkDetails from "./components/NetworkDetails/NetworkDetails";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -206,7 +207,7 @@ function App() {
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
-					<Redirect to='/network-details' />
+					<Redirect to='/network-details-demo' />
 				</Route>
 				<NavBar
 					onExtensionDialogOpen={onExtensionDialogOpen}
@@ -370,6 +371,10 @@ function App() {
 							currency={currency}
 							amount={16.5}
 						/>
+					</Route>
+					{/* Edit Validators */}
+					<Route path='/network-details-demo'>
+						<NetworkDetails colorMode={colorMode} currency={currency} />
 					</Route>
 					{/* Confirmation */}
 					<Route path='/confirmation'>

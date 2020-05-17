@@ -23,7 +23,7 @@ const deselect = {
 };
 
 type TableProps = {
-	colorMode?: colorMode,
+	colorMode?: "light" | "dark",
 	columns: Array<string>,
 	rows: Array<Object>,
 	allowRowSelect?: Boolean,
@@ -85,8 +85,8 @@ const Table = (props: TableProps) => {
 					{props.columns.map((col, index) => {
 						return (
 							<Flex
-								w='calc(100% - 10px)'
-								p='10px'
+								w='calc(100%)'
+								p='15px'
 								py='15px'
 								key={index}
 								align='center'
@@ -141,7 +141,9 @@ const Table = (props: TableProps) => {
 							borderWidth='1px'
 							borderColor={border[mode]}
 							borderTop='0'
-							bg={row.selected ? "rgba(255,255,255,0)" : deselect[mode]}
+							bg={
+								row.selected === false ? deselect[mode] : "rgba(255,255,255,0)"
+							}
 						>
 							{props.allowRowSelect && (
 								<Flex
