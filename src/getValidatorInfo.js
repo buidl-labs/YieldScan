@@ -37,7 +37,7 @@ const getValidatorInfo = async () => {
 	} catch (error) {
 		console.error(error);
 	}
-	return validatorsInfo.slice(0, 40);
+	return validatorsInfo;
 };
 
 export default getValidatorInfo;

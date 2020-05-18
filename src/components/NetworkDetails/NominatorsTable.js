@@ -26,13 +26,14 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 		setNominators(tempNominators);
 	};
 
-	const parseNominators = valArr => {
+	const parseNominators = nomArr => {
 		const parseArr = [];
-		valArr.map((doc, i) => {
+		nomArr.map((doc, i) => {
 			parseArr.push({
 				Nominator: doc.Nominator,
 				"Total Staked": `${doc["Total Staked"]} ${props.currency}`,
-				Nominations: doc.Nominations
+				Nominations: doc.Nominations,
+				"Daily Earnings": `${doc["Daily Earnings"]} ${props.currency}`
 			});
 		});
 		return parseArr;
@@ -41,9 +42,9 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 	return (
 		<Table
 			colorMode={mode}
-			columns={["Nominator", "Total Staked", "Nominations"]}
+			columns={["Nominator", "Daily Earnings", "Total Staked", "Nominations"]}
 			rows={parseNominators(nominators)}
-			sortableColumns={["Total Staked", "Nominations"]}
+			sortableColumns={["Daily Earnings", "Total Staked", "Nominations"]}
 			sortCallback={sortList}
 		></Table>
 	);
