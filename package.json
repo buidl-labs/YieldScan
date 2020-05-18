@@ -1,5 +1,5 @@
 {
-	"name": "polka-analytics-app",
+	"name": "yieldscan",
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
@@ -10,9 +10,12 @@
 		"@chakra-ui/core": "^0.4.1",
 		"@emotion/core": "^10.0.22",
 		"@emotion/styled": "^10.0.23",
-		"@polkadot/api": "^1.0.1",
+		"@polkadot/api": "^1.13.1",
 		"@polkadot/extension-dapp": "^0.24.1",
 		"@polkadot/react-identicon": "^0.48.1",
+		"@polkadot/ui-keyring": "^0.53.1",
+		"@polkadot/util": "^2.10.1",
+		"@polkadot/util-crypto": "^2.10.1",
 		"@sentry/browser": "^5.11.0",
 		"amplitude-js": "^5.7.0",
 		"antd": "^3.26.0",
@@ -43,8 +46,8 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"deploy": "npm run build && cd build && surge --domain https://dev-polka-analytics.surge.sh/",
-		"deploy-public": "npm run build && cd build && surge --domain https://polka-analytics.surge.sh/",
+		"deploy": "yarn build && cd build && surge --domain https://dev-yieldscan.surge.sh/",
+		"deploy-public": "yarn build && cd build && surge --domain https://yieldscan.surge.sh/",
 		"lint": "lint-staged",
 		"pre-commit": "./hooks/pre-commit"
 	},

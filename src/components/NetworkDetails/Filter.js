@@ -19,8 +19,8 @@ const Filter = (props: FilterProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 
 	const changeValues = (ind, newVal) => {
-		let temp = [...props.filters];
-		temp[ind]["values"] = newVal;
+		const temp = [...props.filters];
+		temp[ind].values = newVal;
 		props.callback(temp);
 	};
 
@@ -48,6 +48,7 @@ const Filter = (props: FilterProps) => {
 				{props.filters.map((filter, index) => {
 					return (
 						<Box
+							key={filter.label}
 							w='calc(100%)'
 							px='15px'
 							py='10px'
@@ -97,6 +98,7 @@ const Filter = (props: FilterProps) => {
 										changeValues(index, val);
 									}}
 									type='range'
+									allowOverlap={true}
 									colorMode={mode}
 								></RangeInput>
 							)}
@@ -110,6 +112,7 @@ const Filter = (props: FilterProps) => {
 										changeValues(index, val);
 									}}
 									type='slider'
+									allowOverlap={true}
 									colorMode={mode}
 								></RangeInput>
 							)}

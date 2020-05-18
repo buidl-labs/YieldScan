@@ -1,44 +1,74 @@
 import React from "react";
-import { Redirect, Route, Link } from "react-router-dom";
-import {
-	Box,
-	Heading,
-	Flex,
-	Text,
-	ButtonGroup,
-	Icon
-} from "@chakra-ui/core";
+import { useHistory, Route, Link } from "react-router-dom";
+import { Box, Heading, Flex, Text, ButtonGroup, Icon } from "@chakra-ui/core";
 import Helmet from "react-helmet";
+import { isWeb3Injected } from "@polkadot/extension-dapp";
 import Footer from "../Footer.jsx";
 import ValidatorTile from "./ValidatorTile";
 import ExpectedReturns from "./ExpectedReturns";
 import CustomButton from "../CustomButton";
+import Auth from "../Auth";
+import { calculateRewards } from "./suggestions.js";
 
 type SuggestedValidatorsProps = {
 	colorMode: "light" | "dark",
 	validatorsList: Array<{
-		name: string,
+		Validator: string,
 		stashId: string,
 		amount: float,
-		risk: float
+		"Risk Score": float | string
 	}>,
 	returns: float,
 	budget: float,
 	currency: string,
-	click: boolean
+	selectedValidators: boolean
 };
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
+	const history = useHistory();
+	const [returns, setReturns] = React.useState(0.0);
+	React.useEffect(() => {
+		const result =
+			props.validatorsList &&
+			props.validatorsList.reduce((acc, cur) => {
+				return acc + calculateRewards(1600, cur);
+			}, 0);
+		setReturns(result);
+	}, [props, returns]);
+
 	return (
 		<React.Fragment>
 			<Helmet>
-				<title>Yield Scan &middot; Suggested Validators</title>
+				<title>
+					Yield Scan &middot;{" "}
+					{!props.selectedValidators
+						? "Suggested Validators"
+						: "Selected Validators"}
+				</title>
 			</Helmet>
 			<Route exact path='/suggested-validators'>
 				<Box m={4} mt={10}>
-					<Link to='/returns-calculator' m={4}>
-						<Icon name='arrow-back' mr={1} /> Returns Calculator
-					</Link>
+					{!props.selectedValidators ? (
+						<Link
+							onClick={() => {
+								Auth.logout(() => {
+									history.push("/returns-calculator");
+								});
+							}}
+						>
+							<Icon name='arrow-back' mr={1} />
+							Returns Calculator
+						</Link>
+					) : (
+						<Link
+							onClick={() => {
+								history.push("/edit-validators");
+							}}
+						>
+							<Icon name='arrow-back' mr={1} />
+							Edit Validators
+						</Link>
+					)}
 				</Box>
 				<Flex py={0} wrap='wrap-reverse'>
 					<Box
@@ -51,27 +81,33 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(60% - 2rem)" // 992px upwards
 						]}
 					>
-						<Heading>Suggested Validators</Heading>
+						{!props.selectedValidators ? (
+							<Heading>Suggested Validators</Heading>
+						) : (
+							<Heading>Selected Validators</Heading>
+						)}
 						{
 							<Text>
-								Staking a budget of {props.budget} {props.currency} to 16
+								Staking a budget of {props.budget} {props.currency} to{" "}
+								{props.validatorsList && props.validatorsList.length}{" "}
 								recommended validators
 							</Text>
 						}{" "}
 						<Box w='100%' p={2} mt={6} h='60vh' overflow='auto'>
-							{ props.validatorsList && props.validatorsList.map((validator, index) => {
-								return (
-									<ValidatorTile
-										key={index}
-										name={validator.name}
-										stashId={validator.stashId}
-										amount={validator.amount}
-										risk={validator.risk}
-										currency={props.currency}
-										colorMode={props.colorMode}
-									/>
-								);
-							})}
+							{props.validatorsList &&
+								props.validatorsList.map((validator, index) => {
+									return (
+										<ValidatorTile
+											key={index}
+											name={validator.Validator}
+											stashId={validator.stashId}
+											amount={props.budget / props.validatorsList.length}
+											risk={validator["Risk Score"]}
+											currency={props.currency}
+											colorMode={props.colorMode}
+										/>
+									);
+								})}
 						</Box>
 					</Box>
 					<Box
@@ -83,16 +119,34 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 							"calc(40% - 2rem)" // 992px upwards
 						]}
 					>
-						<ExpectedReturns
-							returns={props.returns}
-							currency={props.currency}
-						/>
+						{!props.selectedValidators ? (
+							<ExpectedReturns
+								returns={props.returns}
+								currency={props.currency}
+							/>
+						) : (
+							<ExpectedReturns returns={returns} currency={props.currency} />
+						)}
 					</Box>
 				</Flex>
 				<Flex justify='center' py={2}>
 					<ButtonGroup spacing={4}>
-						<CustomButton variant='secondary'>Edit Validators</CustomButton>
-						<CustomButton>Proceed</CustomButton>
+						<CustomButton
+							variant='secondary'
+							onClick={() => {
+								history.push("/edit-validators");
+							}}
+						>
+							Edit Validators
+						</CustomButton>
+						<CustomButton
+							onClick={() => {
+								isWeb3Injected && history.push("/confirmation");
+								!isWeb3Injected && history.push("/wallet-connect");
+							}}
+						>
+							Proceed
+						</CustomButton>
 					</ButtonGroup>
 				</Flex>
 			</Route>

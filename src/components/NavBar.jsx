@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import {
 	Flex,
 	useDisclosure,
@@ -16,59 +16,16 @@ import {
 	DrawerHeader,
 	DrawerBody,
 	DrawerFooter,
-	Text,
 	Icon,
-	MenuItem,
-	MenuButton,
-	Menu,
-	MenuList,
 } from '@chakra-ui/core'
 import { NavLink } from 'react-router-dom'
 import { AiOutlineMenu } from 'react-icons/ai'
-import {
-	web3Enable,
-	isWeb3Injected,
-	web3AccountsSubscribe,
-} from '@polkadot/extension-dapp'
 
-import Identicon from "@polkadot/react-identicon";
-
-export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
+export default () => {
 	const { colorMode, toggleColorMode } = useColorMode()
 	const { isOpen, onOpen, onClose } = useDisclosure()
-	const [isUserLoggedIn, setIsLoggedIn] = useState(false)
-	const [listOfUsers, updateListOfUsers] = useState([])
 
 	const btnRef = React.useRef()
-
-	//check if user has at least one account with polkadot extension enabled
-	useEffect(() => {
-		// console.log('isWeb3Injected', isWeb3Injected);
-		// connected to polkadot extension
-		if (isWeb3Injected) {
-			//connect to extension
-			web3Enable('Polkanalytics')
-
-			//subscriber to listen to change in extension accounts
-			web3AccountsSubscribe(users => {
-				console.log('values', users)
-				if (users.length > 0) {
-					/*
-			Means user has at least setup on account,
-			and store account info in localstorage for global reference
-			*/
-					setIsLoggedIn(true)
-					updateListOfUsers(users)
-					localStorage.setItem('users', JSON.stringify(users))
-				} else {
-					//user has no accounts setup/created
-					updateListOfUsers(users)
-					setIsLoggedIn(false)
-					localStorage.setItem('users', JSON.stringify(users))
-				}
-			})
-		}
-	}, [])
 
 	return (
 		<React.Fragment>
@@ -84,7 +41,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 								size='lg'
 								display={{ base: "none", sm: "block" }}
 							>
-								Yield Scan
+								YieldScan
 							</Heading>
 						</Box>
 					</NavLink>
@@ -113,7 +70,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 								Returns Calculator
 							</Link>
 						</Box>
-						<Box mr={8}>
+						{/* <Box mr={8}>
 							<Link
 								as={NavLink}
 								className="nav-link"
@@ -121,7 +78,7 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 							>
 								Help Center
 							</Link>
-						</Box>
+						</Box> */}
 						<IconButton
 							aria-label={
 								colorMode === "light"
@@ -151,39 +108,39 @@ export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
 						<DrawerOverlay />
 						<DrawerContent>
 							<DrawerCloseButton />
-							<DrawerHeader>Polka Analytics</DrawerHeader>
+							<DrawerHeader>YieldScan</DrawerHeader>
 
-							<DrawerBody>
-								<Box mr={8}>
+							<DrawerBody display="flex" flexDirection="column">
+								
 									<Link
 										as={NavLink}
 										className="nav-link"
 										to="/network-details"
-										py={4}
+										py={2}
 									>
 										Network Details
 									</Link>
-								</Box>
-								<Box mr={8}>
+								
+								
 									<Link
 										as={NavLink}
 										className="nav-link"
 										to="/returns-calculator"
-										py={4}
+										py={2}
 									>
 										Returns Calculator
 									</Link>
-								</Box>
-								<Box mr={8}>
-									<Link
+								
+								
+									{/* <Link
 										as={NavLink}
 										className="nav-link"
 										to="/help-center"
-										py={4}
+										py={2}
 									>
 										Help Center
-									</Link>
-								</Box>
+									</Link> */}
+								
 							</DrawerBody>
 
 							<DrawerFooter

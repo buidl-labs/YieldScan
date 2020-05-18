@@ -1,14 +1,6 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import {
-	Box,
-	Heading,
-	Text,
-	Link,
-	Icon,
-	ButtonGroup,
-	Flex
-} from "@chakra-ui/core";
+import { useHistory, Route, Link } from "react-router-dom";
+import { Box, Heading, Text, Icon, ButtonGroup, Flex } from "@chakra-ui/core";
 import Helmet from "react-helmet";
 import Footer from "../Footer.jsx";
 import Table from "./Table";
@@ -18,81 +10,139 @@ import { textColor, textColorLight } from "../../constants";
 type EditValidatorsProps = {
 	colorMode?: "light" | "dark",
 	amount: float,
-	currency: string
+	currency: string,
+	validatorsList: Array<{
+		Validator: string,
+		stashId: string,
+		amount: float,
+		"Risk Score": float,
+		Commission: string,
+		"Own Stake": float,
+		"Other Stake": float
+	}>,
+	validatorTableData: Array<{}>
 };
 
 const EditValidators = (props: EditValidatorsProps) => {
-	const [validators, setValidators] = React.useState([
-		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "13 KSM",
-			Commission: "4%",
-			"Risk Score": 0.34,
-			selected: true
-		},
-		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "5%",
-			"Risk Score": 0.14,
-			selected: true
-		},
-		{
-			Validator: "PolyLabs I",
-			"Other Stake": "124.4525 KSM",
-			"Own Stake": "15 KSM",
-			Commission: "3%",
-			"Risk Score": 0.22,
-			selected: true
-		},
-		{
-			Validator: "PolyLabs I",
-			"Other Stake": "13.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "2%",
-			"Risk Score": 0.15,
-			selected: true
-		},
-		{
-			Validator: "PolyLabs I",
-			"Other Stake": "53.4525 KSM",
-			"Own Stake": "12 KSM",
-			Commission: "3%",
-			"Risk Score": 0.64,
-			selected: true
-		}
-	]);
+	const history = useHistory();
+
+	const [validators, setValidators] = React.useState();
+
+	React.useEffect(() => {
+		const validatorTableData =
+			props.validatorTableData &&
+			props.validatorTableData.reduce((acc, cur) => {
+				acc.push({
+					Validator: cur.Validator,
+					Commission: cur.Commission,
+					"Risk Score": cur["Risk Score"],
+					predictedPoolReward: cur.predictedPoolReward,
+					totalStake: cur.totalStake,
+					stashId: cur.stashId,
+					"Own Stake": cur["Own Stake"],
+					"Other Stake": cur["Other Stake"],
+					selected: false,
+					amount: 0
+				});
+				return acc;
+			}, []);
+		const validatorsList =
+			props.validatorsList &&
+			props.validatorsList.reduce((acc, cur) => {
+				acc.push({
+					Validator: cur.Validator,
+					stashId: cur.stashId,
+					amount: props.amount / props.validatorsList.length,
+					predictedPoolReward: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).predictedPoolReward,
+					totalStake: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).totalStake,
+					"Risk Score": cur["Risk Score"],
+					Commission: cur.Commission,
+					"Own Stake": cur["Own Stake"],
+					"Other Stake": cur["Other Stake"],
+					selected: true
+				});
+				return acc;
+			}, []);
+
+		const jointArray = combineTwoArrays([
+			...validatorTableData,
+			...validatorsList
+		]);
+		jointArray.sort((a, b) => (a.selected < b.selected ? 1 : -1));
+		setValidators(jointArray);
+	}, [props.amount, props.validatorTableData, props.validatorsList]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
 	const callBack = i => {
-		let temp = [...validators];
-		temp[i]["selected"] = temp[i]["selected"] ? !temp[i]["selected"] : true;
+		const temp = [...validators];
+		temp[i].selected = temp[i].selected ? !temp[i].selected : true;
 		setValidators(temp);
 	};
 
 	const selectAll = bool => {
 		setValidators(
-			validators.map((doc, i) => {
-				return { ...doc, selected: bool };
-			})
+			validators &&
+				validators.map((doc, i) => {
+					return { ...doc, selected: bool };
+				})
 		);
 	};
 
 	const sortList = (column, asc) => {
 		let tempValidators = [...validators];
 		if (asc) {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => a[column] - b[column]);
 		} else {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => b[column] - a[column]);
 		}
 		setValidators(tempValidators);
+	};
+
+	const handleValidators = () => {
+		const updatedStakingAmount =
+			props.amount /
+			validators.filter(validator => {
+				return validator.selected;
+			}).length;
+		const validatorsInfo =
+			validators &&
+			validators
+				.filter(({ selected }) => selected === true)
+				.reduce((acc, cur) => {
+					acc.push({
+						Validator: cur.Validator,
+						"Risk Score": cur["Risk Score"],
+						Commission: cur.Commission,
+						stashId: cur.stashId,
+						amount: updatedStakingAmount
+					});
+					return acc;
+				}, []);
+
+		props.selectedValidators(validatorsInfo);
+		props.setValidators(validatorsInfo);
+		history.push("/suggested-validators");
+	};
+
+	const parseValidators = valArr => {
+		const parseArr = [];
+		valArr.map((doc, i) => {
+			parseArr.push({
+				Validator: doc.Validator,
+				"No. of Nominators": doc["No. of Nominators"],
+				"Other Stake": `${doc["Other Stake"]} ${props.currency}`,
+				"Own Stake": `${doc["Own Stake"]} ${props.currency}`,
+				Commission: `${doc.Commission}%`,
+				"Risk Score": doc["Risk Score"],
+				selected: doc.selected
+			});
+		});
+		return parseArr;
 	};
 
 	return (
@@ -102,8 +152,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/edit-validators'>
 				<Box m={0} my={10}>
-					<Link to='/suggested-validators' m={0}>
-						<Icon name='arrow-back' mr={1} /> Suggested Validators
+					<Link to={"/suggested-validators"} m={0}>
+						<Icon name='arrow-back' mr={1} /> {!props.isSelected ? "Suggested Validators" : "Selected Validators"}
 					</Link>
 				</Box>
 				<Box w='100%'>
@@ -116,11 +166,10 @@ const EditValidators = (props: EditValidatorsProps) => {
 							{props.amount} {props.currency}
 						</b>{" "}
 						to{" "}
-						{
+						{validators &&
 							validators.filter(doc => {
 								return doc.selected === true;
-							}).length
-						}{" "}
+							}).length}{" "}
 						validators
 					</Text>
 					<Box w='100%' mt={8} overflow='auto'>
@@ -135,7 +184,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 									"Commission",
 									"Risk Score"
 								]}
-								rows={validators}
+								rows={validators && parseValidators(validators)}
 								selectCallback={callBack}
 								selectAllCallback={selectAll}
 								sortableColumns={[
@@ -150,7 +199,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 					</Box>
 					<Flex justify='center' mt={4} py={4}>
 						<ButtonGroup spacing={4}>
-							<CustomButton>Proceed</CustomButton>
+							<CustomButton onClick={handleValidators}>Proceed</CustomButton>
 						</ButtonGroup>
 					</Flex>
 				</Box>
@@ -161,3 +210,30 @@ const EditValidators = (props: EditValidatorsProps) => {
 };
 
 export default EditValidators;
+
+const combineTwoArrays = (...arrays) => {
+	let jointArray = [];
+
+	arrays.forEach(array => {
+		jointArray = [...jointArray, ...array];
+	});
+
+	const newArray = [];
+	const uniqueObject = [];
+	let objStashId;
+
+	for (const i in jointArray) {
+		if (Object.prototype.hasOwnProperty.call(jointArray, i)) {
+			objStashId = jointArray[i].stashId;
+			uniqueObject[objStashId] = jointArray[i];
+		}
+	}
+
+	for (const i in uniqueObject) {
+		if (Object.prototype.hasOwnProperty.call(uniqueObject, i)) {
+			newArray.push(uniqueObject[i]);
+		}
+	}
+
+	return newArray;
+};

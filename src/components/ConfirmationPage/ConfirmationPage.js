@@ -1,17 +1,19 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { useHistory, Link, Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
 	Flex,
 	Text,
-	Link,
 	Icon,
 	Select,
 	Badge,
 	Checkbox,
-	Tooltip
+	Alert,
+	AlertIcon,
+	AlertDescription
 } from "@chakra-ui/core";
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import Helmet from "react-helmet";
 import Footer from "../Footer.jsx";
 import ValidatorTile from "../SuggestedValidators/ValidatorTile";
@@ -23,6 +25,9 @@ import {
 	getRiskLevel
 } from "../../constants";
 import CustomButton from "../CustomButton";
+import useVerifyBalance from "./useVerifyBalance";
+import Authorization from "../Authentication/Authorization";
+import SubmitStakingTransaction from "./SubmitStakingTransaction";
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -38,7 +43,8 @@ type ConfirmationPageProps = {
 	fees: string,
 	eras: Number,
 	amount: float,
-	currency: string
+	currency: string,
+	users: Array<{}>
 };
 
 const messageBoxColors = {
@@ -55,9 +61,36 @@ const messageBoxColors = {
 };
 
 const ConfirmationPage = (props: ConfirmationPageProps) => {
+	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
 
+	const [stashId, setStashId] = React.useState();
+	const [controllerId, setControllerId] = React.useState();
+	const [accounts, setAccounts] = React.useState(null);
 	const [termsCheck, setTermsCheck] = React.useState(false);
+	const isEnoughBalance = useVerifyBalance({
+		stashId,
+		controllerId,
+		stakeAmount: props.amount,
+		validatorList: props.validatorsList.map(validator => validator.stashId)
+	});
+
+	const getAuthInfo = async () => {
+		const authInfo = await Authorization();
+		setAccounts(authInfo.accounts);
+	};
+	const handleSubmit = () => {
+		SubmitStakingTransaction({
+			stashId,
+			controllerId,
+			stakeAmount: props.amount,
+			validatorList: props.validatorsList.map(validator => validator.stashId)
+		});
+	};
+
+	React.useEffect(() => {
+		getAuthInfo();
+	}, []);
 
 	return (
 		<>
@@ -66,7 +99,12 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 			</Helmet>
 			<Route exact path='/confirmation'>
 				<Box m={4} mt={10}>
-					<Link m={4}>
+					<Link
+						m={4}
+						onClick={() => {
+							history.push("/suggested-validators");
+						}}
+					>
 						<Icon name='arrow-back' mr={1} /> Back
 					</Link>
 				</Box>
@@ -108,18 +146,26 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)",
 									"calc(100% - 200px)"
 								]}
+								name='stashID'
+								onChange={e => {
+									setStashId(e.target.value);
+								}}
 							>
-								{props.stashOptions.map((doc, index) => {
-									return (
-										<option
-											style={{ color: "#000", background: "#FFF" }}
-											value={doc.value}
-											key={index}
-										>
-											{doc.option}
-										</option>
-									);
-								})}
+								{(() =>
+									accounts &&
+									accounts.map((account, i) => {
+										const decoded = decodeAddress(account.address);
+										const encodedAddress = encodeAddress(decoded, 2);
+										return (
+											<option
+												style={{ color: "#000", background: "#FFF" }}
+												value={account.address}
+												key={i}
+											>
+												{account.meta.name} {encodedAddress}
+											</option>
+										);
+									}))()}
 							</Select>
 						</Flex>
 						<Flex align='center' wrap='wrap' my={2}>
@@ -138,18 +184,26 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									"calc(100% - 200px)",
 									"calc(100% - 200px)"
 								]}
+								name='controllerID'
+								onChange={e => {
+									setControllerId(e.target.value);
+								}}
 							>
-								{props.controllerOptions.map((doc, index) => {
-									return (
-										<option
-											value={doc.value}
-											key={index}
-											style={{ color: "#000", background: "#FFF" }}
-										>
-											{doc.option}
-										</option>
-									);
-								})}
+								{(() =>
+									accounts &&
+									accounts.map((account, i) => {
+										const decoded = decodeAddress(account.address);
+										const encodedAddress = encodeAddress(decoded, 2);
+										return (
+											<option
+												style={{ color: "#000", background: "#FFF" }}
+												value={account.address}
+												key={i}
+											>
+												{account.meta.name} {encodedAddress}
+											</option>
+										);
+									}))()}
 							</Select>
 						</Flex>
 						<Flex align='center' wrap='wrap' my={2}>
@@ -170,19 +224,34 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								{getRiskLevel(props.riskPreference)}
 							</Badge>
 						</Flex>
-						<Box w='100%' p={2} mt={6} h='50vh' overflow='auto'>
-							{props.validatorsList && props.validatorsList.map((validator, index) => {
-								return (
-									<ValidatorTile
-										key={index}
-										name={validator.name}
-										amount={validator.amount}
-										currency={props.currency}
-										avatar={validator.avatar}
-										colorMode={props.colorMode}
-									/>
-								);
-							})}
+						{stashId === controllerId ? (
+							<Alert status='warning' mt={4}>
+								<AlertIcon />
+								<AlertDescription mr={2}>
+									Distinct stash and controller accounts are recommended to
+									ensure fund security. You will be allowed to make the
+									transaction, but take care to not tie up all funds, only use a
+									portion of the available funds during this period.
+								</AlertDescription>
+							</Alert>
+						) : (
+							""
+						)}
+						<Box w='100%' p={2} mt={6} maxHeight='50vh' overflow='auto'>
+							{props.validatorsList &&
+								props.validatorsList.map((validator, index) => {
+									return (
+										<ValidatorTile
+											key={index}
+											name={validator.Validator}
+											stashId={validator.stashId}
+											amount={validator.amount}
+											currency={props.currency}
+											avatar={validator.avatar}
+											colorMode={props.colorMode}
+										/>
+									);
+								})}
 						</Box>
 						<Text
 							textAlign='center'
@@ -278,8 +347,13 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton disable={!termsCheck}>Submit</CustomButton>
-							{!termsCheck && (
+							<CustomButton
+								disable={!termsCheck || !stashId || !controllerId}
+								onClick={handleSubmit}
+							>
+								Submit
+							</CustomButton>
+							{!termsCheck ? (
 								<Text
 									textAlign='center'
 									w='100%'
@@ -290,6 +364,20 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								>
 									Please agree to the terms before submitting
 								</Text>
+							) : (
+								!isEnoughBalance && (
+									<Text
+										textAlign='center'
+										w='100%'
+										m={2}
+										fontSize='xs'
+										as='i'
+										color={textColorLight[mode]}
+									>
+										Please select accounts with enough balance to pay the stake
+										amount and transaction fee
+									</Text>
+								)
 							)}
 						</Flex>
 					</Box>

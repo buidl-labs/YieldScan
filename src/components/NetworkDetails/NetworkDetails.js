@@ -7,85 +7,41 @@ import {
 	textColor,
 	border,
 	primaryColor,
-	primaryColorHighlight
+	primaryColorHighlight,
+	validatorFilters
 } from "../../constants";
 import Filter from "./Filter";
 import ValidatorsTable from "./ValidatorsTable";
 import NominatorsTable from "./NominatorsTable";
+import getNominatorInfo from "../../getNominatorInfo";
 
 type NetworkDetailsProps = {
 	colorMode?: "light" | "dark",
-	currency: string
+	currency: string,
+	validators: Array<{}>
 };
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
+	const [nominators, setNominators] = React.useState([]);
 
-	const [filters, setFilters] = React.useState([
-		{
-			label: "No. of Nominators",
-			type: "range",
-			values: [100, 900],
-			min: 10,
-			max: 1000
-		},
-		{
-			label: "Total Stake",
-			type: "range",
-			values: [10, 40],
-			min: 0,
-			max: 50,
-			unit: props.currency
-		},
-		{
-			label: "Own Stake",
-			type: "range",
-			values: [10, 40],
-			min: 0,
-			max: 50,
-			unit: props.currency
-		},
-		{
-			label: "Other Stake",
-			type: "range",
-			values: [10, 40],
-			min: 0,
-			max: 50,
-			unit: props.currency
-		},
-		{
-			label: "Commission",
-			type: "range",
-			values: [10, 40],
-			min: 0,
-			max: 100,
-			unit: "%"
-		},
-		{
-			label: "Min. Expected Daily Earning",
-			type: "slider",
-			values: [25],
-			min: 0,
-			max: 50,
-			unit: props.currency
-		},
-		{
-			label: "Max. Risk Level",
-			type: "slider",
-			values: [100],
-			min: 0,
-			max: 100
-		}
-	]);
+	const [filters, setFilters] = React.useState(validatorFilters);
 
 	const [currentTab, setCurrentTab] = React.useState("Validators");
+	const setNominatorInfo = async () => {
+		const nominatorInfo = await getNominatorInfo();
+		setNominators(nominatorInfo);
+	};
+	React.useEffect(() => {
+		setNominatorInfo();
+	}, []);
 
 	return (
 		<>
 			<Helmet>
-				<title>Yield Scan &middot; Network Details</title>
+				<title>YieldScan &middot; Network Details</title>
 			</Helmet>
-			<Route exact path='/network-details-demo'>
+			<Route exact path='/(|network-details)'>
 				<Box w='100%'>
 					<Heading as='h3' size='xl' color={textColor[mode]} my={4} mt={8}>
 						Network Details
@@ -176,9 +132,15 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 										colorMode={mode}
 										filters={filters}
 										currency={props.currency}
+										validators={props.validators}
+										setFilters={setFilters}
 									/>
 								) : (
-									<NominatorsTable colorMode={mode} currency={props.currency} />
+									<NominatorsTable
+										colorMode={mode}
+										currency={props.currency}
+										nominators={nominators}
+									/>
 								)}
 							</Box>
 						</Box>

@@ -23,7 +23,7 @@ export default function HelpCenter() {
         <React.Fragment>
             {/* Help Center Home */}
             <Helmet>
-                <title>Polka Analytics Help Center</title>
+                <title>Yield Scan - Help Center</title>
                 <meta name="description" content="Validator key stats" />
             </Helmet>
             <LogEvent eventType="Help center view" />
