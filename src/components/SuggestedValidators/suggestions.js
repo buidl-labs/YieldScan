@@ -34,7 +34,6 @@ const getHighestYieldInfo = (stakeAmount, validatorsList, nominations) => {
 	const expectedReturns = filteredRewards.reduce(
 		(acc, curr) => curr.expectedReward + acc, 0
 	);
-	console.log(filteredRewards);
 	return { suggestedValidators, expectedReturns };
 };
 

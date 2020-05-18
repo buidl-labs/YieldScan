@@ -28,9 +28,6 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 	const history = useHistory();
 	const [returns, setReturns] = React.useState(0.0);
 	React.useEffect(() => {
-		console.log(
-			`Validators: \n${JSON.stringify(props.validatorsList, null, 4)}`
-		);
 		const result =
 			props.validatorsList &&
 			props.validatorsList.reduce((acc, cur) => {
