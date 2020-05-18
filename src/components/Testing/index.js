@@ -9,80 +9,6 @@ import {
 import keyring from "@polkadot/ui-keyring";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
-// const sub = async ({ stashId, controllerId, stakeAmount, validatorList }) => {
-// 	try {
-// 		console.log("stashId", stashId);
-// 		console.log("controllerId", controllerId);
-// 		console.log("stakeAmount", stakeAmount);
-// 		console.log("validatorList", validatorList);
-
-// 		const amount = stakeAmount * 10 ** 12;
-
-// 		// Got Substrate Address
-// 		const myinjectedAddress = await web3Accounts();
-
-// 		console.log("checking what is inside web3Accounts");
-// 		console.log(myinjectedAddress);
-
-// 		console.log("Keyring before loading");
-// 		console.log(keyring);
-// 		keyring.loadAll(
-// 			{
-// 				genesisHash: api.genesisHash,
-// 				isDevelopment: true,
-// 				ss58Format: 2,
-// 				type: "ed25519"
-// 			},
-// 			myinjectedAddress
-// 		);
-
-// 		console.log("After loading");
-// 		console.log(keyring);
-
-// 		const gotPairFromKeyRing = keyring.getPair(
-// 			"5CyDnRowNh8ov8g3mY2oSuyesS7fg6RfWb112JrXzbkANtLm"
-// 		);
-
-// 		console.log(
-// 			`gotPairFromKeyRing ${JSON.stringify(gotPairFromKeyRing, null, 4)}`
-// 		);
-
-// 		const { address } = gotPairFromKeyRing;
-
-// 		console.log(`address: ${address}`);
-
-// 		const decoded = decodeAddress(address);
-// 		const encodedAddress = encodeAddress(decoded, 42);
-
-// 		console.log(`encoded address: ${encodedAddress}`);
-
-// 		const injector = await web3FromAddress(
-// 			"5CyDnRowNh8ov8g3mY2oSuyesS7fg6RfWb112JrXzbkANtLm"
-// 		);
-
-// 		console.log(`\nInjector: ${JSON.stringify(injector, null, 4)}`);
-
-// 		const ledger = await api.query.staking.ledger(stashId);
-
-// 		// TODO: document this code for other readers.
-// 		const txs = [
-// 			!ledger
-// 				? api.tx.staking.bond(stashId, amount, 0)
-// 				: api.tx.staking.bondExtra(amount),
-// 			validatorList && api.tx.staking.nominate(validatorList)
-// 		];
-
-// 		// api.setSigner(injector.signer);
-// 		api.tx.utility.batch(txs).signAndSend(controllerId, ({ status }) => {
-// 			if (status.isInBlock) {
-// 				console.log(`included in ${status.asInBlock}`);
-// 			}
-// 		});
-// 	} catch (err) {
-// 		return err;
-// 	}
-// };
-
 const createAPI = async () => {
 	const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io/");
 	const api = await ApiPromise.create({ provider: wsProvider });
@@ -122,7 +48,7 @@ const Testing = props => {
 
 		const allInjected = await web3Enable("YieldScan");
 
-		const myinjectedAddress = await web3Accounts();
+		// const myinjectedAddress = await web3Accounts();`
 
 		const injector = await web3FromAddress(CONTROLLER_ID);
 
