@@ -2,23 +2,21 @@ import React from "react";
 import { useHistory, Route, Link } from "react-router-dom";
 import { Box, Heading, Flex, Text, ButtonGroup, Icon } from "@chakra-ui/core";
 import Helmet from "react-helmet";
-import {
-	isWeb3Injected,
-} from "@polkadot/extension-dapp";
+import { isWeb3Injected } from "@polkadot/extension-dapp";
 import Footer from "../Footer.jsx";
 import ValidatorTile from "./ValidatorTile";
 import ExpectedReturns from "./ExpectedReturns";
 import CustomButton from "../CustomButton";
 import Auth from "../Auth";
+import { calculateRewards } from "./suggestions.js";
 
 type SuggestedValidatorsProps = {
 	colorMode: "light" | "dark",
 	validatorsList: Array<{
-		name: string,
+		Validator: string,
 		stashId: string,
 		amount: float,
-		risk: float,
-		dailyEarningPrecise: float
+		"Risk Score": float | string
 	}>,
 	returns: float,
 	budget: float,
@@ -28,12 +26,15 @@ type SuggestedValidatorsProps = {
 
 const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 	const history = useHistory();
-	const [returns, setReturns] = React.useState(0);
+	const [returns, setReturns] = React.useState(0.0);
 	React.useEffect(() => {
+		console.log(
+			`Validators: \n${JSON.stringify(props.validatorsList, null, 4)}`
+		);
 		const result =
 			props.validatorsList &&
-			props.validatorsList.reduce((total, cur) => {
-				return total + cur.dailyEarningPrecise;
+			props.validatorsList.reduce((acc, cur) => {
+				return acc + calculateRewards(1600, cur);
 			}, 0);
 		setReturns(result);
 	}, [props, returns]);
@@ -101,10 +102,10 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 									return (
 										<ValidatorTile
 											key={index}
-											name={validator.name}
+											name={validator.Validator}
 											stashId={validator.stashId}
-											amount={validator.amount}
-											risk={validator.risk}
+											amount={props.budget / props.validatorsList.length}
+											risk={validator["Risk Score"]}
 											currency={props.currency}
 											colorMode={props.colorMode}
 										/>

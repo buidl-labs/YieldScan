@@ -10,7 +10,7 @@ type ValidatorsTableProps = {
 // TODO: Improve filtering logic implementation
 
 const ValidatorsTable = (props: ValidatorsTableProps) => {
-	const [validators, setValidators] = React.useState([]);
+	const [validators, setValidators] = React.useState(props.validators);
 
 	const parseValidators = valArr => {
 		const parseArr = [];
@@ -24,7 +24,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 				"Risk Score": doc["Risk Score"]
 			});
 		});
-		console.log(`\nparseArr: ${JSON.stringify(valArr, null, 4)}`);
+
 		return parseArr;
 	};
 
@@ -59,9 +59,29 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		props.setFilters(temp);
 	};
 
+	// TODO: Find out why some validators are returning NaN for Own stake and Other stake
+
 	const getValidatorDataRange = property => {
-		const min = Math.min(...validators.map(val => val[property]));
-		const max = Math.max(...validators.map(val => val[property]));
+		const min = Math.min(
+			...validators.map(val =>
+				// eslint-disable-next-line no-nested-ternary
+				isNaN(val[property])
+					? property === "Risk Score"
+						? 1
+						: 0
+					: val[property]
+			)
+		);
+		const max = Math.max(
+			...validators.map(val =>
+				// eslint-disable-next-line no-nested-ternary
+				isNaN(val[property])
+					? property === "Risk Score"
+						? 1
+						: 0
+					: val[property]
+			)
+		);
 
 		return { min, max };
 	};

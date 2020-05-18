@@ -235,7 +235,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 									return (
 										<ValidatorTile
 											key={index}
-											name={validator.name}
+											name={validator.Validator}
 											stashId={validator.stashId}
 											amount={validator.amount}
 											currency={props.currency}

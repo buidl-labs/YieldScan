@@ -12,44 +12,16 @@ type EditValidatorsProps = {
 	amount: float,
 	currency: string,
 	validatorsList: Array<{
-		name: string,
+		Validator: string,
 		stashId: string,
 		amount: float,
-		risk: float,
-		commission: string,
-		stashId: string,
-		amount: float,
-		dailyEarningPrecise: float
+		"Risk Score": float,
+		Commission: string,
+		"Own Stake": float,
+		"Other Stake": float
 	}>,
 	validatorTableData: Array<{}>
 };
-
-function combineTwoArrays(...arrays) {
-	let jointArray = [];
-
-	arrays.forEach(array => {
-		jointArray = [...jointArray, ...array];
-	});
-
-	const newArray = [];
-	const uniqueObject = [];
-	let objStashId;
-
-	for (const i in jointArray) {
-		if (Object.prototype.hasOwnProperty.call(jointArray, i)) {
-			objStashId = jointArray[i].stashId;
-			uniqueObject[objStashId] = jointArray[i];
-		}
-	}
-
-	for (const i in uniqueObject) {
-		if (Object.prototype.hasOwnProperty.call(uniqueObject, i)) {
-			newArray.push(uniqueObject[i]);
-		}
-	}
-
-	return newArray;
-}
 
 const EditValidators = (props: EditValidatorsProps) => {
 	const history = useHistory();
@@ -61,28 +33,37 @@ const EditValidators = (props: EditValidatorsProps) => {
 			props.validatorTableData &&
 			props.validatorTableData.reduce((acc, cur) => {
 				acc.push({
-					Validator: cur.name,
-					Commission: cur.commission,
-					"Risk Score": "0.22",
-					selected: false,
+					Validator: cur.Validator,
+					Commission: cur.Commission,
+					"Risk Score": cur["Risk Score"],
+					predictedPoolReward: cur.predictedPoolReward,
+					totalStake: cur.totalStake,
 					stashId: cur.stashId,
-					amount: 0,
-					dailyEarningPrecise: cur.dailyEarningPrecise
+					"Own Stake": cur["Own Stake"],
+					"Other Stake": cur["Other Stake"],
+					selected: false,
+					amount: 0
 				});
 				return acc;
 			}, []);
-
 		const validatorsList =
 			props.validatorsList &&
 			props.validatorsList.reduce((acc, cur) => {
 				acc.push({
-					Validator: cur.name,
-					Commission: cur.commission,
-					"Risk Score": cur.risk,
-					selected: true,
+					Validator: cur.Validator,
 					stashId: cur.stashId,
-					amount: cur.amount,
-					dailyEarningPrecise: cur.dailyEarningPrecise
+					amount: props.amount / props.validatorsList.length,
+					predictedPoolReward: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).predictedPoolReward,
+					totalStake: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).totalStake,
+					"Risk Score": cur["Risk Score"],
+					Commission: cur.Commission,
+					"Own Stake": cur["Own Stake"],
+					"Other Stake": cur["Other Stake"],
+					selected: true
 				});
 				return acc;
 			}, []);
@@ -93,7 +74,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 		]);
 		jointArray.sort((a, b) => (a.selected < b.selected ? 1 : -1));
 		setValidators(jointArray);
-	}, [props.validatorTableData, props.validatorsList]);
+	}, [props.amount, props.validatorTableData, props.validatorsList]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -115,13 +96,9 @@ const EditValidators = (props: EditValidatorsProps) => {
 	const sortList = (column, asc) => {
 		let tempValidators = [...validators];
 		if (asc) {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? 1 : b[column] > a[column] ? -1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => a[column] - b[column]);
 		} else {
-			tempValidators = tempValidators.sort((a, b) =>
-				a[column] > b[column] ? -1 : b[column] > a[column] ? 1 : 0
-			);
+			tempValidators = tempValidators.sort((a, b) => b[column] - a[column]);
 		}
 		setValidators(tempValidators);
 	};
@@ -138,19 +115,34 @@ const EditValidators = (props: EditValidatorsProps) => {
 				.filter(({ selected }) => selected === true)
 				.reduce((acc, cur) => {
 					acc.push({
-						name: cur.Validator,
-						risk: "0.22",
-						commission: cur.Commission,
+						Validator: cur.Validator,
+						"Risk Score": cur["Risk Score"],
+						Commission: cur.Commission,
 						stashId: cur.stashId,
-						amount: updatedStakingAmount,
-						dailyEarningPrecise: cur.dailyEarningPrecise
+						amount: updatedStakingAmount
 					});
 					return acc;
 				}, []);
 
-		props.selectedValidators(true);
-		props.onEvent(validatorsInfo);
+		props.selectedValidators(validatorsInfo);
+		props.setValidators(validatorsInfo);
 		history.push("/suggested-validators");
+	};
+
+	const parseValidators = valArr => {
+		const parseArr = [];
+		valArr.map((doc, i) => {
+			parseArr.push({
+				Validator: doc.Validator,
+				"No. of Nominators": doc["No. of Nominators"],
+				"Other Stake": `${doc["Other Stake"]} ${props.currency}`,
+				"Own Stake": `${doc["Own Stake"]} ${props.currency}`,
+				Commission: `${doc.Commission}%`,
+				"Risk Score": doc["Risk Score"],
+				selected: doc.selected
+			});
+		});
+		return parseArr;
 	};
 
 	return (
@@ -160,8 +152,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 			</Helmet>
 			<Route exact path='/edit-validators'>
 				<Box m={0} my={10}>
-					<Link to={'/suggested-validators'} m={0}>
-						<Icon name='arrow-back' mr={1} /> Suggested Validators
+					<Link to={"/suggested-validators"} m={0}>
+						<Icon name='arrow-back' mr={1} /> {!props.isSelected ? "Suggested Validators" : "Selected Validators"}
 					</Link>
 				</Box>
 				<Box w='100%'>
@@ -192,7 +184,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 									"Commission",
 									"Risk Score"
 								]}
-								rows={validators}
+								rows={validators && parseValidators(validators)}
 								selectCallback={callBack}
 								selectAllCallback={selectAll}
 								sortableColumns={[
@@ -218,3 +210,30 @@ const EditValidators = (props: EditValidatorsProps) => {
 };
 
 export default EditValidators;
+
+const combineTwoArrays = (...arrays) => {
+	let jointArray = [];
+
+	arrays.forEach(array => {
+		jointArray = [...jointArray, ...array];
+	});
+
+	const newArray = [];
+	const uniqueObject = [];
+	let objStashId;
+
+	for (const i in jointArray) {
+		if (Object.prototype.hasOwnProperty.call(jointArray, i)) {
+			objStashId = jointArray[i].stashId;
+			uniqueObject[objStashId] = jointArray[i];
+		}
+	}
+
+	for (const i in uniqueObject) {
+		if (Object.prototype.hasOwnProperty.call(uniqueObject, i)) {
+			newArray.push(uniqueObject[i]);
+		}
+	}
+
+	return newArray;
+};

@@ -98,6 +98,7 @@ const Filter = (props: FilterProps) => {
 										changeValues(index, val);
 									}}
 									type='range'
+									allowOverlap={true}
 									colorMode={mode}
 								></RangeInput>
 							)}
@@ -111,6 +112,7 @@ const Filter = (props: FilterProps) => {
 										changeValues(index, val);
 									}}
 									type='slider'
+									allowOverlap={true}
 									colorMode={mode}
 								></RangeInput>
 							)}

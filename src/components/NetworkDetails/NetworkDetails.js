@@ -18,28 +18,21 @@ import getValidatorInfo from "../../getValidatorInfo";
 
 type NetworkDetailsProps = {
 	colorMode?: "light" | "dark",
-	currency: string
+	currency: string,
+	validators: Array<{}>
 };
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
-	const [validators, setValidators] = React.useState([]);
 	const [nominators, setNominators] = React.useState([]);
 
 	const [filters, setFilters] = React.useState(validatorFilters);
 
 	const [currentTab, setCurrentTab] = React.useState("Validators");
-	const setValidatorInfo = async () => {
-		const validatorInfo = await getValidatorInfo();
-		setValidators(validatorInfo);
-	};
 	const setNominatorInfo = async () => {
 		const nominatorInfo = await getNominatorInfo();
 		setNominators(nominatorInfo);
 	};
-	React.useEffect(() => {
-		setValidatorInfo();
-	}, []);
 	React.useEffect(() => {
 		setNominatorInfo();
 	}, []);
@@ -140,7 +133,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 										colorMode={mode}
 										filters={filters}
 										currency={props.currency}
-										validators={validators}
+										validators={props.validators}
 										setFilters={setFilters}
 									/>
 								) : (

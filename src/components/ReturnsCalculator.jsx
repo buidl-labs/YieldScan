@@ -1,5 +1,5 @@
-import React           from "react";
-import { Link, Route } from "react-router-dom";
+import React from "react";
+import { Route } from "react-router-dom";
 import {
 	Box,
 	Heading,
@@ -8,109 +8,60 @@ import {
 	InputGroup,
 	Input,
 	InputRightAddon,
-	Button,
-	useColorMode,
 	Slider,
 	SliderTrack,
 	SliderFilledTrack,
-	SliderThumb
-}                      from "@chakra-ui/core";
-import CustomButton    from "./CustomButton";
-import CountUp         from "react-countup";
-import Helmet          from "react-helmet";
-import { useDebounce } from "use-debounce";
-import LogEvent        from "./LogEvent";
-import ErrorMessage    from "./ErrorMessage";
+	SliderThumb,
+	Alert,
+	AlertIcon,
+	AlertDescription
+} from "@chakra-ui/core";
+import Helmet from "react-helmet";
+import LogEvent from "./LogEvent";
 import ExpectedReturns from "./SuggestedValidators/ExpectedReturns";
-import {
-	getRiskSliderColor,
-	textColorLight,
-} from "./../constants";
+import CustomButton from "./CustomButton";
+import { getRiskSliderColor, textColorLight } from "../constants";
+import { getSuggestions } from "./SuggestedValidators/suggestions";
 
 const textColor = { light: "gray.600", dark: "#FFF" };
 
 type ReturnsCalculatorProps = {
 	colorMode: "light" | "dark",
 	currency: string,
-	validatorData: Array<{}>,
+	validators: Array<{}>
 };
 
 const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
-	const { colorMode, toggleColorMode }        = useColorMode();
-	const [stakeInput, setStakeInput]           = React.useState();
-	const [budget, setBudget]                   = React.useState();
-	const [expectedReturns, setExpectedReturns] = React.useState(0.0);
-	const [suggPromptsAmount]                   = useDebounce(stakeInput / 16, 0);
-	const [validatorsList, setValidatorsList]   = React.useState([]);
-	const [validatorData, setValidatorData]     = React.useState([]);
-	const [errorState, setErrorState]           = React.useState(false);
-	const [intentionData, setIntentionData]     = React.useState([]);
-	const [apiConnected, setApiConnected]       = React.useState(false);
-	const [isLoaded, setIsLoaded]               = React.useState(false);
-	const [riskLevel, setRiskLevel]             = React.useState(50);
-	const [sliderBG, setSliderBG]               = React.useState("yellow.300");
-	const ERA_PER_DAY = 4;
+	const [budget, setBudget] = React.useState("");
+	const [returns, setReturns] = React.useState(0.0);
+	const [sliderBG, setSliderBG] = React.useState("yellow.300");
+	const [isResultReady, setIsResultReady] = React.useState(false);
+	const [suggestionsFound, setSuggestionsFound] = React.useState(true);
 
-	function suggPrompts() {
-		const data = validatorsList.map(validator => {
-			const {
-				stashId,
-				stashIdTruncated,
-				name,
-				commission,
-				totalStake,
-				poolReward,
-				noOfNominators
-			} = validator;
-			const userStakeFraction =
-				suggPromptsAmount / (suggPromptsAmount + totalStake);
-			const dailyEarning = userStakeFraction * poolReward * ERA_PER_DAY;
-			return {
-				noOfNominators,
-				stashId,
-				stashIdTruncated,
-				name,
-				commission: `${parseFloat(commission)}%`,
-				dailyEarning: isNaN(dailyEarning)
-					? "Not enough data"
-					: `${dailyEarning.toPrecision(10)} ${props.currency}`,
-				dailyEarningPrecise: isNaN(dailyEarning) ? 0 : dailyEarning
-			};
+	const calculateReturns = () => {
+		const { suggestedValidators, expectedReturns } = getSuggestions(
+			budget,
+			props.riskLevel / 100,
+			props.validators
+		);
+		setReturns(expectedReturns);
+		props.setSuggestedValidators({
+			budget,
+			expectedReturns,
+			suggestedValidators
 		});
+		suggestedValidators.length > 0
+			? setSuggestionsFound(true)
+			: setSuggestionsFound(false);
+		setIsResultReady(true);
+	};
 
-		//handle suggested validaors
-		data.sort((num1, num2) => num2.dailyEarningPrecise - num1.dailyEarningPrecise);
-		const suggestedValidators = [...data.slice(0, 16)];
-		setBudget (stakeInput);
-		const validatorInfo = {};
-		if (suggestedValidators.length > 0) {
-			const expectedEarning = suggestedValidators.reduce((a, b) => ({
-				dailyEarningPrecise: a.dailyEarningPrecise + b.dailyEarningPrecise
-			}));
-			validatorInfo.expectedReturns = expectedEarning.dailyEarningPrecise;
-			setExpectedReturns(expectedEarning.dailyEarningPrecise);
-		}
-		validatorInfo.validatorsList = suggestedValidators;
-		validatorInfo.budget = stakeInput;
-		props.onEvent(validatorInfo);
-		
-		if (apiConnected) setIsLoaded(true);
-	}
-
-	React.useEffect(() => {
-		setValidatorsList(props.validatorData);
-	}, [props]);
-
-	if (errorState) {
-		return <ErrorMessage />;
-	}
-
-	function calculateReturns() {
-		suggPrompts();
-	}
+	const handleSuggestions = async () => {
+		calculateReturns();
+	};
 
 	const onRiskChange = value => {
-		setSliderBG(getRiskSliderColor(value/100));
+		setSliderBG(getRiskSliderColor(value / 100));
 	};
 
 	return (
@@ -121,12 +72,32 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			</Helmet>
 			<LogEvent eventType='Returns calculator view' />
 			<Route exact path='/returns-calculator'>
-				<Heading mt={16} mb={12} 
-					ml={"calc(15% - 2rem)" // 992px upwards
-					}>
+				<Heading
+					mt={16}
+					mb={!suggestionsFound ? 4 : 12}
+					ml={
+						"calc(15% - 2rem)" // 992px upwards
+					}
+				>
 					Calculate your returns
 				</Heading>
-				<Flex alignItems='center' flexWrap='wrap' justify="center">
+				{!suggestionsFound ? (
+					<Alert
+						status='error'
+						mb={12}
+						mx={
+							"calc(15% - 2rem)" // 992px upwards
+						}
+					>
+						<AlertIcon />
+						<AlertDescription mr={2}>
+							No suggestions could be found for your choices :(
+						</AlertDescription>
+					</Alert>
+				) : (
+					""
+				)}
+				<Flex alignItems='center' flexWrap='wrap' justify='center'>
 					<Box mr={8}>
 						<Box
 							color='gray.500'
@@ -146,11 +117,12 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 										min='0'
 										step='0.000000000001'
 										max='999999999999999'
-										value={stakeInput}
+										value={budget}
 										textAlign='center'
 										rounded='40px'
 										onChange={e => {
-											setStakeInput(parseFloat(e.target.value));
+											if (e.target.value) setBudget(parseFloat(e.target.value));
+											else setBudget("");
 										}}
 									/>
 								</Flex>
@@ -184,9 +156,9 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 							</Text>
 							<Slider
 								defaultValue={50}
-								value={riskLevel}
+								value={props.riskLevel}
 								onChange={value => {
-									setRiskLevel(value);
+									props.setRiskLevel(value);
 									onRiskChange(value);
 								}}
 							>
@@ -208,10 +180,13 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 							</Flex>
 						</Box>
 						<Flex flexWrap='wrap' direction='column' alignItems='flex-start'>
-								<CustomButton disable={!stakeInput || stakeInput===0} onClick={calculateReturns}>
-									Calculate
-								</CustomButton>
-								{!stakeInput && (
+							<CustomButton
+								disable={!budget || budget === 0}
+								onClick={handleSuggestions}
+							>
+								Calculate
+							</CustomButton>
+							{!budget && (
 								<Text
 									my={4}
 									mx={1}
@@ -221,7 +196,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 								>
 									Please enter a valid budget
 								</Text>
-								)}
+							)}
 						</Flex>
 					</Box>
 					<Box
@@ -235,15 +210,17 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 					>
 						<ExpectedReturns
 							budget={budget}
-							returns={expectedReturns}
+							returns={returns}
 							currency={props.currency}
 							button={true}
+							isResultReady={isResultReady}
+							suggestionsFound={suggestionsFound}
 						/>
 					</Box>
 				</Flex>
 			</Route>
 		</React.Fragment>
 	);
-}
+};
 
 export default ReturnsCalculator;

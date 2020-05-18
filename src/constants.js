@@ -1,6 +1,6 @@
 const currency = "KSM";
 const LOW_RISK = 0.25;
-const MED_RISK = 0.5;
+const MED_RISK = 0.75;
 const HIGH_RISK = 1;
 
 const getRiskLevelColor = risk => {
@@ -10,7 +10,7 @@ const getRiskLevelColor = risk => {
 	if (risk < MED_RISK) {
 		return "yellow";
 	}
-	if (risk < HIGH_RISK) {
+	if (risk <= HIGH_RISK) {
 		return "red";
 	}
 	return "gray";
@@ -23,7 +23,7 @@ const getRiskLevel = risk => {
 	if (risk < MED_RISK) {
 		return "MEDIUM";
 	}
-	if (risk < HIGH_RISK) {
+	if (risk <= HIGH_RISK) {
 		return "HIGH";
 	}
 	return "UNKNOWN";
@@ -36,7 +36,7 @@ const getRiskSliderColor = risk => {
 	if (risk < MED_RISK) {
 		return "yellow.300";
 	}
-	if (risk < HIGH_RISK) {
+	if (risk <= HIGH_RISK) {
 		return "red.400";
 	}
 	return "gray.400";

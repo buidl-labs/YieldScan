@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import {
 	Flex,
 	useDisclosure,
@@ -16,17 +16,12 @@ import {
 	DrawerHeader,
 	DrawerBody,
 	DrawerFooter,
-	Text,
 	Icon,
-	MenuItem,
-	MenuButton,
-	Menu,
-	MenuList,
 } from '@chakra-ui/core'
 import { NavLink } from 'react-router-dom'
 import { AiOutlineMenu } from 'react-icons/ai'
 
-export default ({ onExtensionDialogOpen, onCreateAccountDialogOpen }) => {
+export default () => {
 	const { colorMode, toggleColorMode } = useColorMode()
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
