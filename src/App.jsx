@@ -18,6 +18,8 @@ import { currency } from "./constants";
 import Loader from "./Loader";
 import getValidatorInfo from "./getValidatorInfo";
 
+import Testing from "./components/Testing";
+
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
 function App() {
@@ -81,7 +83,7 @@ function App() {
 			<Router>
 				<ScrollToTop />
 				<Route exact path='/'>
-					<Redirect to='/network-details' />
+					<Redirect to='/testing' />
 				</Route>
 				<NavBar />
 				<Flex
@@ -121,9 +123,9 @@ function App() {
 						)}
 					</Route>
 
-					{/* <Route path='/help-center'>
-						<HelpCenter />
-					</Route> */}
+					<Route path='/testing'>
+						<Testing />
+					</Route>
 
 					<ProtectedRoute
 						path='/suggested-validators'

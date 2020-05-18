@@ -3,65 +3,86 @@ import { web3Accounts, web3FromAddress } from "@polkadot/extension-dapp";
 import keyring from "@polkadot/ui-keyring";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
-const SubmitStakingTransaction = ({
+const SubmitStakingTransaction = async ({
 	stashId,
 	controllerId,
 	stakeAmount,
 	validatorList
 }) => {
-	const amount = stakeAmount * 10 ** 12;
-	const createApi = async () => {
+	try {
+		console.log("stashId", stashId);
+		console.log("controllerId", controllerId);
+		console.log("stakeAmount", stakeAmount);
+		console.log("validatorList", validatorList);
+
+		const amount = stakeAmount * 10 ** 12;
+
 		const wsProvider = new WsProvider("wss://kusama-rpc.polkadot.io/");
 		const api = await ApiPromise.create({ provider: wsProvider });
 
-		const getAddress = async () => {
-			keyring.loadAll(
-				{
-					genesisHash: api.genesisHash,
-					isDevelopment: true,
-					ss58Format: 2,
-					type: "ed25519"
-				},
-				await web3Accounts()
-			);
-			const pair = keyring.getPair(controllerId);
-			const { address } = pair;
-			return address;
-		};
+		// Got Substrate Address
+		const myinjectedAddress = await web3Accounts();
 
-		const getInjector = async () => {
-			const address = await getAddress();
-			const decoded = decodeAddress(address);
-			const encodedAddress = encodeAddress(decoded, 42);
-			const injector = await web3FromAddress(encodedAddress);
-			console.log(`\nInjector: ${JSON.stringify(injector, null, 4)}`);
-			return injector;
-		};
+		console.log("checking what is inside web3Accounts");
+		console.log(myinjectedAddress);
 
-		const batchTransactions = async () => {
-			const ledger = await api.query.staking.ledger(stashId);
-			const txs = [
-				!ledger
-					? api.tx.staking.bond(stashId, amount, 0)
-					: api.tx.staking.bondExtra(amount),
-				validatorList && api.tx.staking.nominate(validatorList)
-			];
-			return txs;
-		};
+		console.log("Keyring before loading");
+		console.log(keyring);
+		keyring.loadAll(
+			{
+				genesisHash: api.genesisHash,
+				isDevelopment: true,
+				ss58Format: 2,
+				type: "ed25519"
+			},
+			myinjectedAddress
+		);
 
-		const submitTransactions = async () => {
-			const injector = await getInjector();
-			api.setSigner(injector.signer);
-			const txs = await batchTransactions();
-			api.tx.utility.batch(txs).signAndSend(controllerId, ({ status }) => {
-				if (status.isInBlock) {
-					console.log(`included in ${status.asInBlock}`);
-				}
-			});
-		};
-		submitTransactions();
-	};
-	createApi();
+		console.log("After loading");
+		console.log(keyring);
+
+		const gotPairFromKeyRing = keyring.getPair(
+			"5CyDnRowNh8ov8g3mY2oSuyesS7fg6RfWb112JrXzbkANtLm"
+		);
+
+		console.log(
+			`gotPairFromKeyRing ${JSON.stringify(gotPairFromKeyRing, null, 4)}`
+		);
+
+		const { address } = gotPairFromKeyRing;
+
+		console.log(`address: ${address}`);
+
+		const decoded = decodeAddress(address);
+		const encodedAddress = encodeAddress(decoded, 42);
+
+		console.log(`encoded address: ${encodedAddress}`);
+
+		const injector = await web3FromAddress(
+			"5CyDnRowNh8ov8g3mY2oSuyesS7fg6RfWb112JrXzbkANtLm"
+		);
+
+		console.log(`\nInjector: ${JSON.stringify(injector, null, 4)}`);
+
+		const ledger = await api.query.staking.ledger(stashId);
+
+		// TODO: document this code for other readers.
+		const txs = [
+			!ledger
+				? api.tx.staking.bond(stashId, amount, 0)
+				: api.tx.staking.bondExtra(amount),
+			validatorList && api.tx.staking.nominate(validatorList)
+		];
+
+		// api.setSigner(injector.signer);
+		api.tx.utility.batch(txs).signAndSend(controllerId, ({ status }) => {
+			if (status.isInBlock) {
+				console.log(`included in ${status.asInBlock}`);
+			}
+		});
+	} catch (err) {
+		return err;
+	}
 };
 
 export default SubmitStakingTransaction;

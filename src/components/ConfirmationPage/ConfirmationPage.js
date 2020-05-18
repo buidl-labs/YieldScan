@@ -80,6 +80,17 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 		setAccounts(authInfo.accounts);
 	};
 
+	const testSubmitTransaction = async () => {
+		const testing = await SubmitStakingTransaction({
+			stashId,
+			controllerId,
+			stakeAmount: props.amount,
+			validatorList: props.validatorsList.map(validator => validator.stashId)
+		});
+
+		console.log(testing);
+	};
+
 	React.useEffect(() => {
 		getAuthInfo();
 	}, []);
@@ -339,21 +350,7 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton
-								disable={!termsCheck || !isEnoughBalance}
-								onClick={
-									termsCheck && isEnoughBalance
-										? SubmitStakingTransaction({
-												stashId,
-												controllerId,
-												stakeAmount: props.amount,
-												validatorList: props.validatorsList.map(
-													validator => validator.stashId
-												)
-										  })
-										: undefined
-								}
-							>
+							<CustomButton onClick={testSubmitTransaction}>
 								Submit
 							</CustomButton>
 							{!termsCheck ? (
