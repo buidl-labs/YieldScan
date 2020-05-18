@@ -29,7 +29,7 @@ const getValidatorInfo = async () => {
 				Commission: cur.commission / 10 ** 7,
 				"Risk Score":
 					currentValidator && currentValidator.riskScore
-						? currentValidator.riskScore
+						? currentValidator.riskScore.toFixed(2)
 						: "-"
 			});
 			return acc;

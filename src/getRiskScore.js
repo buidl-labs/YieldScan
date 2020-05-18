@@ -4,13 +4,13 @@ const getRiskScore = async () => {
 	let riskInfo = [];
 	try {
 		const response = await axios.get(
-			"https://polka-analytics-api-testing-sfgk.onrender.com/validatorinfo"
+			"https://polka-analytics-api-testing-sfgk.onrender.com/riskscore"
 		);
 		riskInfo = response.data;
 	} catch (error) {
 		console.error(error);
 	}
-	return riskInfo.slice(0, 40);
+	return riskInfo;
 };
 
 export default getRiskScore;
