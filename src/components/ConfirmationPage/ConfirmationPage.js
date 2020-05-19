@@ -28,6 +28,7 @@ import CustomButton from "../CustomButton";
 import useVerifyBalance from "./useVerifyBalance";
 import Authorization from "../Authentication/Authorization";
 import SubmitStakingTransaction from "./SubmitStakingTransaction";
+import Testing from "../Testing/index.js";
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -68,12 +69,13 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 	const [controllerId, setControllerId] = React.useState();
 	const [accounts, setAccounts] = React.useState(null);
 	const [termsCheck, setTermsCheck] = React.useState(false);
-	const isEnoughBalance = useVerifyBalance({
-		stashId,
-		controllerId,
-		stakeAmount: props.amount,
-		validatorList: props.validatorsList.map(validator => validator.stashId)
-	});
+	const isEnoughBalance = false;
+	// useVerifyBalance({
+	// 	stashId,
+	// 	controllerId,
+	// 	stakeAmount: props.amount,
+	// 	validatorList: props.validatorsList.map(validator => validator.stashId)
+	// });
 
 	const getAuthInfo = async () => {
 		const authInfo = await Authorization();
@@ -86,6 +88,17 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 			stakeAmount: props.amount,
 			validatorList: props.validatorsList.map(validator => validator.stashId)
 		});
+	};
+
+	const testSubmitTransaction = async () => {
+		const testing = await SubmitStakingTransaction({
+			stashId,
+			controllerId,
+			stakeAmount: props.amount,
+			validatorList: props.validatorsList.map(validator => validator.stashId)
+		});
+
+		console.log(testing);
 	};
 
 	React.useEffect(() => {
@@ -347,12 +360,21 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton
+							{/* <CustomButton
 								disable={!termsCheck || !stashId || !controllerId}
 								onClick={handleSubmit}
 							>
 								Submit
-							</CustomButton>
+							</CustomButton> */}
+							<Testing
+								disable={!termsCheck || !stashId || !controllerId}
+								stashId={stashId}
+								controllerId={controllerId}
+								stakeAmount={props.amount}
+								validatorList={props.validatorsList.map(
+									validator => validator.stashId
+								)}
+							/>
 							{!termsCheck ? (
 								<Text
 									textAlign='center'

@@ -30,9 +30,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 
 	// TODO : Improve how validator data is being handled in tables
 	React.useEffect(() => {
-		const validatorTableData =
-			props.validatorTableData &&
-			props.validatorTableData.reduce((acc, cur) => {
+		const parser = (arr, selected) =>
+			arr.reduce((acc, cur) => {
 				acc.push({
 					Validator: cur.Validator,
 					Commission: cur.Commission,
@@ -42,65 +41,75 @@ const EditValidators = (props: EditValidatorsProps) => {
 					stashId: cur.stashId,
 					"Own Stake": cur["Own Stake"],
 					"Other Stake": cur["Other Stake"],
-					selected: false,
-					amount: 0
+					selected,
+					amount: selected ? props.amount / props.validators.length : 0
 				});
 				return acc;
 			}, []);
-		const validatorsList =
-			props.validatorsList &&
-			props.validatorsList.reduce((acc, cur) => {
-				acc.push({
-					Validator: cur.Validator,
-					stashId: cur.stashId,
-					amount: props.amount / props.validatorsList.length,
-					predictedPoolReward: props.validatorTableData.find(
-						validator => validator.stashId === cur.stashId
-					).predictedPoolReward,
-					totalStake: props.validatorTableData.find(
-						validator => validator.stashId === cur.stashId
-					).totalStake,
-					"Risk Score": cur["Risk Score"],
-					Commission: cur.Commission,
-					"Own Stake": cur["Own Stake"],
-					"Other Stake": cur["Other Stake"],
-					selected: true
-				});
-				return acc;
-			}, []);
-
-		const selectedValidatorsList =
-			props.selectedValidatorsList &&
-			props.selectedValidatorsList.reduce((acc, cur) => {
-				acc.push({
-					Validator: cur.Validator,
-					stashId: cur.stashId,
-					amount: props.amount / props.validatorsList.length,
-					predictedPoolReward: props.validatorTableData.find(
-						validator => validator.stashId === cur.stashId
-					).predictedPoolReward,
-					totalStake: props.validatorTableData.find(
-						validator => validator.stashId === cur.stashId
-					).totalStake,
-					"Risk Score": cur["Risk Score"],
-					Commission: cur.Commission,
-					"Own Stake": cur["Own Stake"],
-					"Other Stake": cur["Other Stake"],
-					selected: true
-				});
-				return acc;
-			}, []);
-
-		const combineWith = props.isSelected
-			? selectedValidatorsList
-			: validatorsList;
+		const validatorTableData = parser(props.validatorTableData, false);
+		console.log("edit validators props:");
+		console.log(props.validators);
+		const selectedValidatorsList = parser(props.validators, true);
 		const jointArray = combineTwoArrays([
 			...validatorTableData,
-			...combineWith
+			...selectedValidatorsList
 		]);
 		jointArray.sort((a, b) => (a.selected < b.selected ? 1 : -1));
 		setValidators(jointArray);
-	}, [props.amount, props.isSelected, props.selectedValidatorsList, props.validatorTableData, props.validatorsList]);
+	}, [props.amount, props.validatorTableData, props.validators]);
+
+	React.useEffect(() => {
+		props.setSelected(true);
+	}, [props])
+	// React.useEffect(() => {
+	// 	const validatorTableData =
+	// 		props.validatorTableData &&
+	// 		props.validatorTableData.reduce((acc, cur) => {
+	// 			acc.push({
+	// 				Validator: cur.Validator,
+	// 				Commission: cur.Commission,
+	// 				"Risk Score": cur["Risk Score"],
+	// 				predictedPoolReward: cur.predictedPoolReward,
+	// 				totalStake: cur.totalStake,
+	// 				stashId: cur.stashId,
+	// 				"Own Stake": cur["Own Stake"],
+	// 				"Other Stake": cur["Other Stake"],
+	// 				selected: false,
+	// 				amount: 0
+	// 			});
+	// 			return acc;
+	// 		}, []);
+
+	// 	const selectedValidatorsList =
+	// 		props.validators &&
+	// 		props.validators.reduce((acc, cur) => {
+	// 			acc.push({
+	// 				Validator: cur.Validator,
+	// 				stashId: cur.stashId,
+	// 				amount: props.amount / props.validators.length,
+	// 				predictedPoolReward: props.validatorTableData.find(
+	// 					validator => validator.stashId === cur.stashId
+	// 				).predictedPoolReward,
+	// 				totalStake: props.validatorTableData.find(
+	// 					validator => validator.stashId === cur.stashId
+	// 				).totalStake,
+	// 				"Risk Score": cur["Risk Score"],
+	// 				Commission: cur.Commission,
+	// 				"Own Stake": cur["Own Stake"],
+	// 				"Other Stake": cur["Other Stake"],
+	// 				selected: true
+	// 			});
+	// 			return acc;
+	// 		}, []);
+
+	// 	const combineWith = selectedValidatorsList;
+	// 	const jointArray = combineTwoArrays([
+	// 		...validatorTableData,
+	// 		...combineWith
+	// 	]);
+	// 	jointArray.sort((a, b) => (a.selected < b.selected ? 1 : -1));
+	// 	setValidators(jointArray);
+	// }, [props, props.amount, props.isSelected, props.validators, props.validatorTableData, validators]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -154,7 +163,6 @@ const EditValidators = (props: EditValidatorsProps) => {
 					return acc;
 				}, []);
 
-		props.selectedValidators(validatorsInfo);
 		props.setValidators(validatorsInfo);
 		history.push("/suggested-validators");
 	};
@@ -164,6 +172,10 @@ const EditValidators = (props: EditValidatorsProps) => {
 		valArr.map((doc, i) => {
 			parseArr.push({
 				Validator: doc.Validator,
+				predictedPoolReward: doc.predictedPoolReward,
+				totalStake: doc.totalStake,
+				stashId: doc.stashId,
+				amount: doc.amount,
 				"No. of Nominators": doc["No. of Nominators"],
 				"Other Stake": `${doc["Other Stake"]} ${props.currency}`,
 				"Own Stake": `${doc["Own Stake"]} ${props.currency}`,
