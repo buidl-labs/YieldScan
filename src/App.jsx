@@ -82,9 +82,6 @@ function App() {
 			</Helmet>
 			<Router>
 				<ScrollToTop />
-				<Route exact path='/'>
-					<Redirect to='/testing' />
-				</Route>
 				<NavBar />
 				<Flex
 					className='App'
@@ -121,10 +118,6 @@ function App() {
 						) : (
 							<Loader />
 						)}
-					</Route>
-
-					<Route path='/testing'>
-						<Testing />
 					</Route>
 
 					<ProtectedRoute

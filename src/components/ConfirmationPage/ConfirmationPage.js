@@ -28,6 +28,7 @@ import CustomButton from "../CustomButton";
 import useVerifyBalance from "./useVerifyBalance";
 import Authorization from "../Authentication/Authorization";
 import SubmitStakingTransaction from "./SubmitStakingTransaction";
+import Testing from "../Testing/index.js";
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -358,12 +359,19 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton
+							{/* <CustomButton
 								disable={!termsCheck || !stashId || !controllerId}
 								onClick={handleSubmit}
 							>
 								Submit
-							</CustomButton>
+							</CustomButton> */}
+							<Testing
+								disable={!termsCheck || !stashId || !controllerId}
+								stashId={stashId}
+								controllerId={controllerId}
+								stakeAmount={props.amount}
+								validatorList={props.validatorsList}
+							/>
 							{!termsCheck ? (
 								<Text
 									textAlign='center'
