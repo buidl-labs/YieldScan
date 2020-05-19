@@ -68,7 +68,7 @@ const Testing = props => {
 	};
 	return (
 		<CustomButton onClick={submitTransaction} disable={props.disable}>
-			Testing Playground
+			Submit
 		</CustomButton>
 	);
 };

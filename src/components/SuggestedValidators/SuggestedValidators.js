@@ -64,9 +64,7 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 						</Link>
 					) : (
 						<Link
-							onClick={() => {
-								history.push("/edit-validators");
-							}}
+							to="/edit-validators"
 						>
 							<Icon name='arrow-back' mr={1} />
 							Edit Validators

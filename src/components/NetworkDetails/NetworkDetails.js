@@ -23,18 +23,11 @@ type NetworkDetailsProps = {
 
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
-	const [nominators, setNominators] = React.useState([]);
+	const { nominators } = props;
 
 	const [filters, setFilters] = React.useState(validatorFilters);
 
 	const [currentTab, setCurrentTab] = React.useState("Validators");
-	const setNominatorInfo = async () => {
-		const nominatorInfo = await getNominatorInfo();
-		setNominators(nominatorInfo);
-	};
-	React.useEffect(() => {
-		setNominatorInfo();
-	}, []);
 
 	return (
 		<>

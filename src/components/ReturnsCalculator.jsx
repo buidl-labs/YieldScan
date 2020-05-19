@@ -50,15 +50,17 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			expectedReturns,
 			suggestedValidators
 		});
+		
+		props.setValidators(suggestedValidators);
 		suggestedValidators.length > 0
 			? setSuggestionsFound(true)
 			: setSuggestionsFound(false);
 		setIsResultReady(true);
 	};
 
-	const handleSuggestions = async () => {
-		calculateReturns();
-	};
+	// const handleSuggestions = async () => {
+	// 	calculateReturns();
+	// };
 
 	const onRiskChange = value => {
 		setSliderBG(getRiskSliderColor(value / 100));
@@ -176,7 +178,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						<Flex flexWrap='wrap' direction='column' alignItems='flex-start'>
 							<CustomButton
 								disable={!budget || budget === 0}
-								onClick={handleSuggestions}
+								onClick={calculateReturns}
 							>
 								Calculate
 							</CustomButton>

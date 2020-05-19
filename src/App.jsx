@@ -19,6 +19,7 @@ import Loader from "./Loader";
 import getValidatorInfo from "./getValidatorInfo";
 
 import Testing from "./components/Testing";
+import getNominatorInfo from "./getNominatorInfo.js";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -37,18 +38,21 @@ function App() {
 		suggestedValidators: []
 	});
 	const [users, setUsers] = React.useState();
-	const [selectedValidators, setSelectedValidators] = React.useState(false);
+	const [selected, setSelected] = React.useState(false);
+	const [nominatorInfo, setNominatorInfo] = React.useState();
 
 	const handleSuggestedValidators = val => {
 		setSuggestedValidatorsData(val);
 	};
 
-	React.useEffect(() => {
-		setValidators(suggestedValidatorsData.suggestedValidators);
-	}, [suggestedValidatorsData.suggestedValidators]);
-
 	const handleUsers = data => {
 		setUsers({ ...data });
+	};
+
+	const handleSelectedValidators = data => {
+		console.log("handleSelectedValidators gives:")
+		console.log(data)
+		setValidators(data);
 	};
 
 	React.useEffect(() => {
@@ -60,6 +64,14 @@ function App() {
 			}
 		};
 		getInfo();
+	}, []);
+
+	React.useEffect(() => {
+		const nominators = async () => {
+			const info = await getNominatorInfo();
+			setNominatorInfo(info);
+		};
+		nominators();
 	}, []);
 
 	if (errorState) {
@@ -99,6 +111,7 @@ function App() {
 								colorMode={colorMode}
 								currency={currency}
 								validators={validatorTableData}
+								nominators={nominatorInfo}
 							/>
 						) : (
 							<Loader />
@@ -114,6 +127,7 @@ function App() {
 								setSuggestedValidators={handleSuggestedValidators}
 								riskLevel={riskLevel}
 								setRiskLevel={setRiskLevel}
+								setValidators={handleSelectedValidators}
 							/>
 						) : (
 							<Loader />
@@ -129,7 +143,8 @@ function App() {
 								budget={parseFloat(suggestedValidatorsData.budget)}
 								currency={currency}
 								validatorsList={validators}
-								selectedValidators={selectedValidators}
+								selectedValidators={selected}
+								setValidators={handleSelectedValidators}
 							/>
 						)}
 					/>
@@ -145,15 +160,11 @@ function App() {
 								colorMode={colorMode}
 								currency={currency}
 								amount={parseFloat(suggestedValidatorsData.budget)}
-								validatorsList={suggestedValidatorsData.suggestedValidators}
 								validatorTableData={validatorTableData}
-								setValidators={data => {
-									setValidators([...data]);
-								}}
-								selectedValidators={state => {
-									setSelectedValidators(state);
-								}}
-								isSelected={selectedValidators}
+								setValidators={handleSelectedValidators}
+								validators={validators}
+								isSelected={selected}
+								setSelected={setSelected}
 							/>
 						)}
 					/>
