@@ -31,7 +31,10 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 		const result =
 			props.validatorsList &&
 			props.validatorsList.reduce((acc, cur) => {
-				return acc + calculateRewards(1600, cur);
+				const predictedReward = isNaN(cur.predictedPoolReward)
+					? 0
+					: calculateRewards(cur.amount, cur);
+				return acc + predictedReward;
 			}, 0);
 		setReturns(result);
 	}, [props, returns]);

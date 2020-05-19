@@ -43,7 +43,6 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		let inRange = false;
 		if (type === "range") {
 			inRange = num <= Math.max(...range) && num >= Math.min(...range);
-			// console.log(`${num} is in ${range}: ${inRange}`);
 		} else if (type === "slider") {
 			inRange = belowValue ? num <= range[0] : num >= range[0];
 		}
@@ -96,7 +95,6 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 	// TODO: Improve filtering logic implementation
 
 	React.useEffect(() => {
-		console.log(`\nFilters: \n${JSON.stringify(props.filters, null, 4)}`);
 		const validatorsInfo =
 			validators &&
 			validators.filter(val => {
@@ -135,7 +133,6 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 					passesCommissionFilter,
 					passesRiskScoreFilter
 				];
-				// console.log(`${val.Validator} passed: ${passesFilter}`);
 				return passesFilter.reduce((acc, curr) => curr && acc, true);
 			});
 		setFilteredValidators(validatorsInfo);
