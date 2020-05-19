@@ -69,12 +69,13 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 	const [controllerId, setControllerId] = React.useState();
 	const [accounts, setAccounts] = React.useState(null);
 	const [termsCheck, setTermsCheck] = React.useState(false);
-	const isEnoughBalance = useVerifyBalance({
-		stashId,
-		controllerId,
-		stakeAmount: props.amount,
-		validatorList: props.validatorsList.map(validator => validator.stashId)
-	});
+	const isEnoughBalance = false;
+	// useVerifyBalance({
+	// 	stashId,
+	// 	controllerId,
+	// 	stakeAmount: props.amount,
+	// 	validatorList: props.validatorsList.map(validator => validator.stashId)
+	// });
 
 	const getAuthInfo = async () => {
 		const authInfo = await Authorization();
@@ -370,7 +371,9 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								stashId={stashId}
 								controllerId={controllerId}
 								stakeAmount={props.amount}
-								validatorList={props.validatorsList}
+								validatorList={props.validatorsList.map(
+									validator => validator.stashId
+								)}
 							/>
 							{!termsCheck ? (
 								<Text

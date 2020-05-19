@@ -21,6 +21,7 @@ const Testing = props => {
 		? encodeAddress(DECODED_CONTROLLER, 2)
 		: "";
 	const VALIDATOR_LIST = props.validatorList;
+	console.log(VALIDATOR_LIST)
 	const STAKE_AMOUNT = props.stakeAmount;
 	const AMOUNT = STAKE_AMOUNT * 10 ** 12;
 	const submitTransaction = async () => {
@@ -28,13 +29,8 @@ const Testing = props => {
 		// const myinjectedAddress = await web3Accounts();`
 		const allInjected = await web3Enable("YieldScan");
 		const injector = await web3FromAddress(CONTROLLER_ID);
-		console.log(
-			`injector: ${JSON.stringify(
-				injector,
-				null,
-				4
-			)}\ncontroller: ${CONTROLLER_ID}`
-		);
+		console.log("injector:")
+		console.log(injector);
 		api.setSigner(injector.signer);
 		const ledger = await api.query.staking.ledger(STASH_ID);
 		// Get controller nonce to batch transactions without failing
