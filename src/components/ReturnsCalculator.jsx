@@ -72,32 +72,22 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			</Helmet>
 			<LogEvent eventType='Returns calculator view' />
 			<Route exact path='/returns-calculator'>
-				<Heading
-					mt={16}
-					mb={!suggestionsFound ? 4 : 12}
-					ml={
-						"calc(15% - 2rem)" // 992px upwards
-					}
-				>
-					Calculate your returns
-				</Heading>
-				{!suggestionsFound ? (
-					<Alert
-						status='error'
-						mb={12}
-						mx={
-							"calc(15% - 2rem)" // 992px upwards
-						}
-					>
-						<AlertIcon />
-						<AlertDescription mr={2}>
-							No suggestions could be found for your choices :(
-						</AlertDescription>
-					</Alert>
-				) : (
-					""
-				)}
 				<Flex alignItems='center' flexWrap='wrap' justify='center'>
+					<Box w={["100%", "80%", "80%", "90%"]} mx={[0, 8, 24, 0]} maxW="960px">
+						<Heading mt={16} mb={!suggestionsFound ? 4 : 12}>
+							Calculate your returns
+						</Heading>
+						{true ? (
+							<Alert status='error' mb={12}>
+								<AlertIcon />
+								<AlertDescription mr={2}>
+									No suggestions could be found for your choices :(
+								</AlertDescription>
+							</Alert>
+						) : (
+							""
+						)}
+					</Box>
 					<Box mr={8}>
 						<Box
 							color='gray.500'
