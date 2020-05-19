@@ -28,6 +28,7 @@ const EditValidators = (props: EditValidatorsProps) => {
 
 	const [validators, setValidators] = React.useState();
 
+	// TODO : Improve how validator data is being handled in tables
 	React.useEffect(() => {
 		const validatorTableData =
 			props.validatorTableData &&
@@ -68,13 +69,38 @@ const EditValidators = (props: EditValidatorsProps) => {
 				return acc;
 			}, []);
 
+		const selectedValidatorsList =
+			props.selectedValidatorsList &&
+			props.selectedValidatorsList.reduce((acc, cur) => {
+				acc.push({
+					Validator: cur.Validator,
+					stashId: cur.stashId,
+					amount: props.amount / props.validatorsList.length,
+					predictedPoolReward: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).predictedPoolReward,
+					totalStake: props.validatorTableData.find(
+						validator => validator.stashId === cur.stashId
+					).totalStake,
+					"Risk Score": cur["Risk Score"],
+					Commission: cur.Commission,
+					"Own Stake": cur["Own Stake"],
+					"Other Stake": cur["Other Stake"],
+					selected: true
+				});
+				return acc;
+			}, []);
+
+		const combineWith = props.isSelected
+			? selectedValidatorsList
+			: validatorsList;
 		const jointArray = combineTwoArrays([
 			...validatorTableData,
-			...validatorsList
+			...combineWith
 		]);
 		jointArray.sort((a, b) => (a.selected < b.selected ? 1 : -1));
 		setValidators(jointArray);
-	}, [props.amount, props.validatorTableData, props.validatorsList]);
+	}, [props.amount, props.isSelected, props.selectedValidatorsList, props.validatorTableData, props.validatorsList]);
 
 	const mode = props.colorMode ? props.colorMode : "light";
 
@@ -117,8 +143,12 @@ const EditValidators = (props: EditValidatorsProps) => {
 					acc.push({
 						Validator: cur.Validator,
 						"Risk Score": cur["Risk Score"],
+						predictedPoolReward: cur.predictedPoolReward,
+						totalStake: cur.totalStake,
 						Commission: cur.Commission,
 						stashId: cur.stashId,
+						"Own Stake": cur["Own Stake"],
+						"Other Stake": cur["Other Stake"],
 						amount: updatedStakingAmount
 					});
 					return acc;
@@ -153,7 +183,8 @@ const EditValidators = (props: EditValidatorsProps) => {
 			<Route exact path='/edit-validators'>
 				<Box m={0} my={10}>
 					<Link to={"/suggested-validators"} m={0}>
-						<Icon name='arrow-back' mr={1} /> {!props.isSelected ? "Suggested Validators" : "Selected Validators"}
+						<Icon name='arrow-back' mr={1} />{" "}
+						{!props.isSelected ? "Suggested Validators" : "Selected Validators"}
 					</Link>
 				</Box>
 				<Box w='100%'>

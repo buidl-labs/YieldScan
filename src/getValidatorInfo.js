@@ -12,13 +12,22 @@ const getValidatorInfo = async () => {
 			const currentValidator = riskScores.find(
 				validator => validator.stashId === cur.stashId
 			);
-			acc.push({
-				Validator: cur.name
+			const Validator = cur.name
 					? cur.name
-					: `Validator (...${cur.stashId.slice(-5)})`,
+					: `Validator (...${cur.stashId.slice(-5)})`
+			const poolReward =
+				cur.rewards.length > 0
+					? cur.rewards[cur.rewards.length - 1].poolReward / 10 ** 12
+					: "Not enough data";
+			const commission = cur.commission / 10 ** 7;
+			const predictedPoolReward = isNaN(poolReward)
+				? "Not enough data"
+				: poolReward * (1 - commission / 100);
+			acc.push({
+				Validator,
 				stashId: cur.stashId,
 				totalStake: cur.totalStake,
-				predictedPoolReward: 300,
+				predictedPoolReward,
 				"No. of Nominators": cur.noOfNominators,
 				"Other Stake": parseFloat(
 					cur.totalStake - cur.currentValidator.exposure.own / 10 ** 12
@@ -26,7 +35,7 @@ const getValidatorInfo = async () => {
 				"Own Stake": parseFloat(
 					cur.currentValidator.exposure.own / 10 ** 12
 				).toFixed(2),
-				Commission: cur.commission / 10 ** 7,
+				Commission: commission,
 				"Risk Score":
 					currentValidator && currentValidator.riskScore
 						? currentValidator.riskScore.toFixed(2)
