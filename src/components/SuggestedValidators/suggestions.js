@@ -22,28 +22,30 @@ const getRewardsForValidatorsList = (validatorsList, stakeAmount) => {
 };
 
 const getHighestYieldInfo = (stakeAmount, validatorsList, nominations) => {
-	const validatorRewards = getRewardsForValidatorsList(
+	const validatorRewardsList = getRewardsForValidatorsList(
 		validatorsList,
 		stakeAmount
 	);
+	const validatorRewards = validatorRewardsList.filter(validator => !isNaN(validator.expectedReward))
 	validatorRewards.sort((a, b) => b.expectedReward - a.expectedReward);
 	const filteredRewards = [...validatorRewards.slice(0, nominations)];
 	const suggestedValidators = filteredRewards.map(
 		reward => validatorsList[reward.index]
 	);
 	const expectedReturns = filteredRewards.reduce(
-		(acc, curr) => curr.expectedReward + acc, 0
+		(acc, curr) => parseFloat(curr.expectedReward) + acc, 0
 	);
-	console.log(filteredRewards);
 	return { suggestedValidators, expectedReturns };
 };
 
 const getSuggestions = (budget, risk, allValidators) => {
-	const validatorsList = allValidators.filter(validator =>
-		risk === 1
+	const validatorsList = allValidators.filter(validator =>{
+		const passesRiskPreference = risk === 1
 			? true
 			: !isNaN(validator["Risk Score"]) && validator["Risk Score"] <= risk
-	);
+		const enoughDataForPoolReward = !isNaN(validator.predictedPoolReward)
+		return passesRiskPreference && enoughDataForPoolReward;
+	});
 	const nominations =
 		validatorsList.length > MAX_NOMINATIONS
 			? MAX_NOMINATIONS

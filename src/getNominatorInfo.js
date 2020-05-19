@@ -7,10 +7,16 @@ const getNominatorInfo = async () => {
 			"https://polka-analytics-api-testing-sfgk.onrender.com/nominatorsinfo"
 		);
 		nominatorsInfo = response.data.reduce((acc, cur) => {
+			const rawEarnings = cur.rewardsArr.reduce(
+				(accumulator, current) => current.nomReward + accumulator,
+				0
+			);
+			const parsedEarnings = (rawEarnings / 10 ** 12).toFixed(2);
 			acc.push({
 				Nominator: `Nominator (...${cur.nominatorId.slice(-5)})`,
 				"Total Staked": cur.totalStaked,
-				Nominations: cur.backers
+				Nominations: cur.backers,
+				"Daily Earnings": parsedEarnings
 			});
 			return acc;
 		}, []);

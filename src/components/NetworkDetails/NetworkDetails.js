@@ -14,7 +14,6 @@ import Filter from "./Filter";
 import ValidatorsTable from "./ValidatorsTable";
 import NominatorsTable from "./NominatorsTable";
 import getNominatorInfo from "../../getNominatorInfo";
-import getValidatorInfo from "../../getValidatorInfo";
 
 type NetworkDetailsProps = {
 	colorMode?: "light" | "dark",

@@ -28,13 +28,13 @@ const SuggestedValidators = (props: SuggestedValidatorsProps) => {
 	const history = useHistory();
 	const [returns, setReturns] = React.useState(0.0);
 	React.useEffect(() => {
-		console.log(
-			`Validators: \n${JSON.stringify(props.validatorsList, null, 4)}`
-		);
 		const result =
 			props.validatorsList &&
 			props.validatorsList.reduce((acc, cur) => {
-				return acc + calculateRewards(1600, cur);
+				const predictedReward = isNaN(cur.predictedPoolReward)
+					? 0
+					: calculateRewards(cur.amount, cur);
+				return acc + predictedReward;
 			}, 0);
 		setReturns(result);
 	}, [props, returns]);

@@ -44,11 +44,6 @@ const Table = (props: TableProps) => {
 		? `50px repeat(${props.columns.length}, 1fr)`
 		: `repeat(${props.columns.length}, 1fr)`;
 
-		React.useEffect(() => {
-			console.log(
-				`\n validatorsList: \n${JSON.stringify(props.rows, null, 4)}`
-			);
-		})
 	return (
 		<>
 			<Box w='100%' h='100%' maxHeight="550px" overflow='auto'>

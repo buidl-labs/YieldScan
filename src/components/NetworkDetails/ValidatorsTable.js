@@ -7,8 +7,6 @@ type ValidatorsTableProps = {
 	filters?: Array<{}>
 };
 
-// TODO: Improve filtering logic implementation
-
 const ValidatorsTable = (props: ValidatorsTableProps) => {
 	const [validators, setValidators] = React.useState(props.validators);
 
@@ -59,8 +57,6 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		props.setFilters(temp);
 	};
 
-	// TODO: Find out why some validators are returning NaN for Own stake and Other stake
-
 	const getValidatorDataRange = property => {
 		const min = Math.min(
 			...validators.map(val =>
@@ -82,8 +78,10 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 					: val[property]
 			)
 		);
-
-		return { min, max };
+		return {
+			min,
+			max
+		};
 	};
 
 	const changeFilterRange = () => {
@@ -94,39 +92,49 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		});
 	};
 
+	// TODO: Improve filtering logic implementation
+
 	React.useEffect(() => {
 		const validatorsInfo =
 			validators &&
-			validators.filter(val =>
-				isInRange({
+			validators.filter(val => {
+				const passesNominatorFilter = isInRange({
 					num: val["No. of Nominators"],
 					range: props.filters[0].values,
 					type: "range"
-				}) &&
-				isInRange({
+				});
+				const passesOwnStakeFilter = isInRange({
 					num: parseFloat(val["Own Stake"]),
 					range: props.filters[1].values,
 					type: "range"
-				}) &&
-				isInRange({
+				});
+				const passesOtherStakeFilter = isInRange({
 					num: parseFloat(val["Other Stake"]),
 					range: props.filters[2].values,
 					type: "range"
-				}) &&
-				isInRange({
+				});
+				const passesCommissionFilter = isInRange({
 					num: parseFloat(val.Commission),
 					range: props.filters[3].values,
 					type: "range"
-				}) &&
-				isNaN(parseFloat(val["Risk Score"] * 100))
+				});
+				const passesRiskScoreFilter = isNaN(parseFloat(val["Risk Score"] * 100))
 					? true
 					: isInRange({
 							num: parseFloat(val["Risk Score"] * 100),
 							range: props.filters[4].values,
 							type: "slider",
 							belowValue: true
-					  })
-			);
+					  });
+				const passesFilter = [
+					passesNominatorFilter,
+					passesOwnStakeFilter,
+					passesOtherStakeFilter,
+					passesCommissionFilter,
+					passesRiskScoreFilter
+				];
+				return passesFilter.reduce((acc, curr) => curr && acc, true);
+			});
 		setFilteredValidators(validatorsInfo);
 	}, [props, validators]);
 	React.useEffect(() => {

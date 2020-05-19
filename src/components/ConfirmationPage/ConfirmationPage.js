@@ -79,6 +79,14 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 		const authInfo = await Authorization();
 		setAccounts(authInfo.accounts);
 	};
+	const handleSubmit = () => {
+		SubmitStakingTransaction({
+			stashId,
+			controllerId,
+			stakeAmount: props.amount,
+			validatorList: props.validatorsList.map(validator => validator.stashId)
+		});
+	};
 
 	const testSubmitTransaction = async () => {
 		const testing = await SubmitStakingTransaction({
@@ -350,7 +358,10 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 							</Box>
 						</Flex>
 						<Flex justify='center' py={2} wrap='wrap'>
-							<CustomButton onClick={testSubmitTransaction}>
+							<CustomButton
+								disable={!termsCheck || !stashId || !controllerId}
+								onClick={handleSubmit}
+							>
 								Submit
 							</CustomButton>
 							{!termsCheck ? (

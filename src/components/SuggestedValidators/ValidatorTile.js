@@ -58,7 +58,7 @@ const ValidatorTile = (props: ValidatorTileProps) => {
 										|
 									</Text>
 									Risk Score:
-									<Badge mx={2} fontSize='sm' variantColor={riskBadge}>
+									<Badge as="span" mx={2} fontSize='sm' variantColor={riskBadge}>
 										{props.risk}
 									</Badge>
 								</>

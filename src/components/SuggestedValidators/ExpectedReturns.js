@@ -22,14 +22,14 @@ const ExpectedReturns = (props: ExpectedReturnsProps) => {
 			<Heading as='h3' size='lg'>
 				Expected Results{" "}
 				<Tooltip
-					label='Brief text about how we calculate returns'
+					label='These returns are calculated based on the past performance of validators'
 					placement='bottom'
 				>
 					<Icon name='question' fontSize='md' opacity={0.7} />
 				</Tooltip>
 			</Heading>
 			<Text fontSize='md' mt={4}>
-				Expected Returns
+				Expected Daily Returns
 			</Text>
 			<Text mb={4} fontSize='2xl' fontWeight='medium'>
 				<CountUp end={returns} decimals={3} suffix={` ${props.currency}`} />
