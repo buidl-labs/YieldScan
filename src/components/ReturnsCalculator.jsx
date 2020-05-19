@@ -73,11 +73,15 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			<LogEvent eventType='Returns calculator view' />
 			<Route exact path='/returns-calculator'>
 				<Flex alignItems='center' flexWrap='wrap' justify='center'>
-					<Box w={["100%", "80%", "80%", "90%"]} mx={[0, 8, 24, 0]} maxW="960px">
+					<Box
+						w={["100%", "80%", "80%", "90%"]}
+						mx={[0, 8, 24, 0]}
+						maxW='960px'
+					>
 						<Heading mt={16} mb={!suggestionsFound ? 4 : 12}>
 							Calculate your returns
 						</Heading>
-						{true ? (
+						{!suggestionsFound ? (
 							<Alert status='error' mb={12}>
 								<AlertIcon />
 								<AlertDescription mr={2}>
