@@ -42,8 +42,3 @@ The network details section of the app contains collated information about valid
 The returns calculator allows users to see their potential daily earnings by entering their budget and selecting their risk preference and reduces cognitive load involved with staking. For details on how to use the calculator UI, view [Returns Calculator Wiki](https://github.com/buidl-labs/YieldScan/wiki/Returns-Calculator)
 
 ![Returns Calculator](https://i.imgur.com/y0YLO8i.png)
-
--   [@AbhinavThukral97](https://github.com/AbhinavThukral97)
--   [@sahil1995](https://github.com/sahilnanda1995)
--   [@saumyakaran](https://github.com/saumyakaran/)
--   [@prastut](https://github.com/prastut/)
