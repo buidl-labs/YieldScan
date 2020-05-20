@@ -1,13 +1,12 @@
-const ERA_PER_DAY = 4;
 const MAX_NOMINATIONS = 16;
 
 const calculateRewards = (stakeAmount, validatorInfo) => {
 	const { totalStake, predictedPoolReward } = validatorInfo;
 	const userStakeFraction = stakeAmount / (stakeAmount + totalStake);
 	const nextEraPredictedReward = userStakeFraction * predictedPoolReward;
-	return isNaN(nextEraPredictedReward * ERA_PER_DAY)
+	return isNaN(nextEraPredictedReward)
 		? "Not enough data"
-		: nextEraPredictedReward * ERA_PER_DAY;
+		: nextEraPredictedReward;
 };
 
 const getRewardsForValidatorsList = (validatorsList, stakeAmount) => {
