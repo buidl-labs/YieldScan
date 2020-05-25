@@ -21,7 +21,7 @@ const Testing = props => {
 		? encodeAddress(DECODED_CONTROLLER, 2)
 		: "";
 	const VALIDATOR_LIST = props.validatorList;
-	console.log(VALIDATOR_LIST)
+	console.log(VALIDATOR_LIST);
 	const STAKE_AMOUNT = props.stakeAmount;
 	const AMOUNT = STAKE_AMOUNT * 10 ** 12;
 	const submitTransaction = async () => {
@@ -29,7 +29,7 @@ const Testing = props => {
 		// const myinjectedAddress = await web3Accounts();`
 		const allInjected = await web3Enable("YieldScan");
 		const injector = await web3FromAddress(CONTROLLER_ID);
-		console.log("injector:")
+		console.log("injector:");
 		console.log(injector);
 		api.setSigner(injector.signer);
 		const ledger = await api.query.staking.ledger(STASH_ID);
@@ -44,26 +44,32 @@ const Testing = props => {
 			VALIDATOR_LIST && api.tx.staking.nominate(VALIDATOR_LIST)
 		];
 		console.log(txs);
-		txs[0].signAndSend(CONTROLLER_ID, ({ status }) => {
-			if (status.isInBlock) {
-				console.log(`bonded in ${status.asInBlock}`);
-			}
-		});
-		txs[1].signAndSend(
-			CONTROLLER_ID,
-			{ nonce: parseInt(nonce, 10) + 1 },
-			({ status }) => {
-				if (status.isInBlock) {
-					console.log(`nominated in ${status.asInBlock}`);
-				}
-			}
-		);
-		// api.tx.utility.batch(txs).signAndSend(CONTROLLER_ID, ({ status }) => {
-		// 	console.log(`status: ${JSON.stringify(status, null, 4)}`)
+		// txs[0].signAndSend(CONTROLLER_ID, ({ status }) => {
 		// 	if (status.isInBlock) {
-		// 		console.log(`included in ${status.asInBlock}`);
+		// 		console.log(`bonded in ${status.asInBlock}`);
 		// 	}
 		// });
+		// txs[1].signAndSend(
+		// 	CONTROLLER_ID,
+		// 	{ nonce: parseInt(nonce, 10) + 1 },
+		// 	({ status }) => {
+		// 		if (status.isInBlock) {
+		// 			console.log(`nominated in ${status.asInBlock}`);
+		// 		}
+		// 	}
+		// );
+		api.tx.utility
+			.batch(txs)
+			.signAndSend(
+				CONTROLLER_ID,
+				{ nonce: parseInt(nonce, 10) },
+				({ status }) => {
+					console.log(`status: ${JSON.stringify(status, null, 4)}`);
+					if (status.isInBlock) {
+						console.log(`batched included in ${status.asInBlock}`);
+					}
+				}
+			);
 		// console.log(injected);
 	};
 	return (

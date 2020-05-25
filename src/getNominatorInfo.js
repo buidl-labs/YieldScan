@@ -23,7 +23,7 @@ const getNominatorInfo = async () => {
 	} catch (error) {
 		console.error(error);
 	}
-	return nominatorsInfo.slice(0, 40);
+	return nominatorsInfo.slice(0, nominatorsInfo.length - 1);
 };
 
 export default getNominatorInfo;

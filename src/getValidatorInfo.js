@@ -17,7 +17,7 @@ const getValidatorInfo = async () => {
 					: `Validator (...${cur.stashId.slice(-5)})`
 			const poolReward =
 				cur.rewards.length > 0
-					? cur.rewards[cur.rewards.length - 1].poolReward / 10 ** 12
+					? cur.rewards.reduce((accum, curr) => curr.poolReward + accum, 0) / 10 ** 12
 					: "Not enough data";
 			const commission = cur.commission / 10 ** 7;
 			const predictedPoolReward = isNaN(poolReward)
