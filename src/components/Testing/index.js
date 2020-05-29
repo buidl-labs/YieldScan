@@ -31,18 +31,39 @@ const Testing = props => {
 	const AMOUNT = STAKE_AMOUNT * 10 ** 12;
 	const submitTransaction = async () => {
 		handleIsSubmitted(true);
+		toast({
+			title: "Retrieving Injector",
+			description: "Retrieving injector from your selected controller",
+			status: "info",
+			duration: 9000,
+			isClosable: true
+		});
 		const api = await createAPI();
 		// const myinjectedAddress = await web3Accounts();`
-		const allInjected = await web3Enable("YieldScan");
 		const injector = await web3FromAddress(CONTROLLER_ID);
 		console.log("injector:");
 		console.log(injector);
 		api.setSigner(injector.signer);
+		toast({
+			title: "Checking existing bonds",
+			description: "Checking to see if you've already bonded using the select stash account",
+			status: "info",
+			duration: 9000,
+			isClosable: true
+		});
 		const ledger = await api.query.staking.ledger(STASH_ID);
 		// Get controller nonce to batch transactions without failing
 		const { nonce } = await api.query.system.account(KUSAMA_CONTROLLER);
 		console.log(`CONTROLLER NONCE: ${JSON.stringify(nonce, null, 4)}`);
 		console.log(ledger);
+		toast({
+			title: "Creating transactions",
+			description:
+				"Generating bonding and nomination transactions",
+			status: "info",
+			duration: 9000,
+			isClosable: true
+		});
 		const txs = [
 			!ledger
 				? api.tx.staking.bond(STASH_ID, AMOUNT, 0)
@@ -85,7 +106,7 @@ const Testing = props => {
 							title: "Status",
 							description: `Transaction included at blockHash ${status.asFinalized}`,
 							status: "info",
-							duration: 9000,
+							duration: 15000,
 							isClosable: true
 						});
 						events.forEach(({ phase, event: { data, method, section } }) => {
