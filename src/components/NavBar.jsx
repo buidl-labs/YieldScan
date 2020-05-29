@@ -70,7 +70,7 @@ export default () => {
 								Returns Calculator
 							</Link>
 						</Box>
-						{/* <Box mr={8}>
+						<Box mr={8}>
 							<Link
 								as={NavLink}
 								className="nav-link"
@@ -78,7 +78,7 @@ export default () => {
 							>
 								Help Center
 							</Link>
-						</Box> */}
+						</Box>
 						<IconButton
 							aria-label={
 								colorMode === "light"

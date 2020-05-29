@@ -12,11 +12,11 @@ import {
     // Button,
     Link as ChakraLink,
 } from '@chakra-ui/core'
-import FAQs from './FAQs'
-import HowToStake from './guides/HowToStake'
-import LogEvent from './LogEvent'
 import Helmet from 'react-helmet'
-import Footer from './Footer'
+import FAQs from './FAQs.jsx'
+import HowToStake from './guides/HowToStake.jsx'
+import LogEvent from './LogEvent'
+import Footer from './Footer.jsx'
 
 export default function HelpCenter() {
     return (
