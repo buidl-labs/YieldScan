@@ -50,7 +50,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			expectedReturns,
 			suggestedValidators
 		});
-		
+
 		props.setValidators(suggestedValidators);
 		suggestedValidators.length > 0
 			? setSuggestionsFound(true)
@@ -81,7 +81,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						maxW='960px'
 					>
 						<Heading mt={16} mb={!suggestionsFound ? 4 : 12}>
-							Calculate your returns
+							Calculate your staking returns on Kusama
 						</Heading>
 						{!suggestionsFound ? (
 							<Alert status='error' mb={12}>
@@ -104,7 +104,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						>
 							<Flex flexWrap='wrap'>
 								<Flex direction='column' mr={8} mb={4}>
-									<Text mb={2}>I want to spend</Text>
+									<Text mb={2}>I want to invest</Text>
 									<Input
 										placeholder='Enter your budget'
 										variant='filled'

@@ -20,6 +20,7 @@ import getValidatorInfo from "./getValidatorInfo";
 
 import Testing from "./components/Testing";
 import getNominatorInfo from "./getNominatorInfo.js";
+import TxStatus from "./components/ConfirmationPage/TxStatus.js";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -40,6 +41,9 @@ function App() {
 	const [users, setUsers] = React.useState();
 	const [selected, setSelected] = React.useState(false);
 	const [nominatorInfo, setNominatorInfo] = React.useState();
+	const [txStatus, setTxStatus] = React.useState();
+	const [txBlock, setTxBlock] = React.useState();
+	const [submitted, setSubmitted] = React.useState(false);
 
 	const handleSuggestedValidators = val => {
 		setSuggestedValidatorsData(val);
@@ -50,9 +54,21 @@ function App() {
 	};
 
 	const handleSelectedValidators = data => {
-		console.log("handleSelectedValidators gives:")
-		console.log(data)
+		console.log("handleSelectedValidators gives:");
+		console.log(data);
 		setValidators(data);
+	};
+
+	const handleTxStatus = status => {
+		setTxStatus(status);
+	};
+
+	const handleTxBlock = block => {
+		setTxBlock(block);
+	}
+
+	const handleSubmit = bool => {
+		setSubmitted(bool);
 	};
 
 	React.useEffect(() => {
@@ -185,7 +201,17 @@ function App() {
 								currency={currency}
 								validatorsList={validators}
 								users={users}
+								handleTxStatus={handleTxStatus}
+								handleTxBlock={handleTxBlock}
+								handleIsSubmitted={handleSubmit}
+								isSubmitted={submitted}
 							/>
+						)}
+					/>
+					<ProtectedRoute
+						path='/status'
+						component={() => (
+							<TxStatus txStatus={txStatus} txBlock={txBlock} isSubmitted={submitted} />
 						)}
 					/>
 				</Flex>

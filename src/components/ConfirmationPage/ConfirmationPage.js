@@ -28,7 +28,7 @@ import CustomButton from "../CustomButton";
 import useVerifyBalance from "./useVerifyBalance";
 import Authorization from "../Authentication/Authorization";
 import SubmitStakingTransaction from "./SubmitStakingTransaction";
-import Testing from "../Testing/index.js";
+import Testing from "../Testing/index";
 
 type ConfirmationPageProps = {
 	colorMode?: "light" | "dark",
@@ -64,6 +64,7 @@ const messageBoxColors = {
 const ConfirmationPage = (props: ConfirmationPageProps) => {
 	const history = useHistory();
 	const mode = props.colorMode ? props.colorMode : "light";
+	const { handleTxStatus, handleTxBlock, handleIsSubmitted, isSubmitted } = props;
 
 	const [stashId, setStashId] = React.useState();
 	const [controllerId, setControllerId] = React.useState();
@@ -374,6 +375,10 @@ const ConfirmationPage = (props: ConfirmationPageProps) => {
 								validatorList={props.validatorsList.map(
 									validator => validator.stashId
 								)}
+								handleTxStatus={handleTxStatus}
+								handleTxBlock={handleTxBlock}
+								handleIsSubmitted={handleIsSubmitted}
+								isSubmitted={isSubmitted}
 							/>
 							{!termsCheck ? (
 								<Text

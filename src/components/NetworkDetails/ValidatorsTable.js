@@ -14,6 +14,7 @@ const ValidatorsTable = (props: ValidatorsTableProps) => {
 		const parseArr = [];
 		valArr.map((doc, i) => {
 			parseArr.push({
+				id: doc.id ? doc.id : null,
 				Validator: doc.Validator,
 				"No. of Nominators": doc["No. of Nominators"],
 				"Other Stake": `${doc["Other Stake"]} ${props.currency}`,

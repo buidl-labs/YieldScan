@@ -46,7 +46,7 @@ const Table = (props: TableProps) => {
 
 	return (
 		<>
-			<Box w='100%' h='100%' maxHeight="550px" overflow='auto'>
+			<Box w='100%' h='100%' maxHeight='550px' overflow='auto'>
 				<Grid
 					w='100%'
 					templateColumns={columnTemplate}
@@ -158,7 +158,7 @@ const Table = (props: TableProps) => {
 									>
 										<Checkbox
 											size='lg'
-											key={"Check" + index}
+											key={`Check${index}`}
 											variantColor='teal'
 											isChecked={row.selected}
 											onChange={e => {
@@ -188,7 +188,17 @@ const Table = (props: TableProps) => {
 													color={textColorLight[mode]}
 													as={col === "Validator" ? "b" : "p"}
 												>
-													{row[col]}
+													{col === "Nominator" || col === "Validator" ? (
+														<a
+															href={`https://polkascan.io/kusama/account/${row.id}`}
+															target='_blank'
+															rel='noopener noreferrer'
+														>
+															{row[col]}
+														</a>
+													) : (
+														row[col]
+													)}
 												</Text>
 											)}
 										</Box>
