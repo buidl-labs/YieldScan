@@ -50,7 +50,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 			expectedReturns,
 			suggestedValidators
 		});
-		
+
 		props.setValidators(suggestedValidators);
 		suggestedValidators.length > 0
 			? setSuggestionsFound(true)
@@ -104,7 +104,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						>
 							<Flex flexWrap='wrap'>
 								<Flex direction='column' mr={8} mb={4}>
-									<Text mb={2}>I want to spend</Text>
+									<Text mb={2}>I want to invest</Text>
 									<Input
 										placeholder='Enter your budget'
 										variant='filled'

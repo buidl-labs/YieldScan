@@ -13,17 +13,20 @@ const getValidatorInfo = async () => {
 				validator => validator.stashId === cur.stashId
 			);
 			const Validator = cur.name
-					? cur.name
-					: `Validator (...${cur.stashId.slice(-5)})`
+				? cur.name
+				: `Validator (...${cur.stashId.slice(-5)})`;
 			const poolReward =
 				cur.rewards.length > 0
-					? cur.rewards.reduce((accum, curr) => curr.poolReward + accum, 0) / 10 ** 12
+					? cur.rewards.reduce((accum, curr) => curr.poolReward + accum, 0) /
+					  10 ** 12
 					: "Not enough data";
 			const commission = cur.commission / 10 ** 7;
 			const predictedPoolReward = isNaN(poolReward)
 				? "Not enough data"
 				: poolReward * (1 - commission / 100);
+
 			acc.push({
+				id: cur.stashId,
 				Validator,
 				stashId: cur.stashId,
 				totalStake: cur.totalStake,

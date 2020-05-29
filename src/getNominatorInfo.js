@@ -13,6 +13,7 @@ const getNominatorInfo = async () => {
 			);
 			const parsedEarnings = (rawEarnings / 10 ** 12).toFixed(2);
 			acc.push({
+				id: cur.nominatorId ? cur.nominatorId : null,
 				Nominator: `Nominator (...${cur.nominatorId.slice(-5)})`,
 				"Total Staked": cur.totalStaked,
 				Nominations: cur.backers,
