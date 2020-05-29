@@ -2,7 +2,7 @@ import React from "react";
 import { WsProvider, ApiPromise } from "@polkadot/api";
 import { web3FromAddress, web3Enable } from "@polkadot/extension-dapp";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
-import { useToast } from "@chakra-ui/core";
+import { useToast, CircularProgress, Text } from "@chakra-ui/core";
 import { useHistory } from "react-router-dom";
 import CustomButton from "../CustomButton";
 
@@ -16,6 +16,7 @@ const Testing = props => {
 	const history = useHistory();
 	const toast = useToast();
 	const { handleTxStatus, handleTxBlock, handleIsSubmitted } = props;
+	const isSubmitting = false;
 	// Variables to change
 	const STASH_ID = props.stashId;
 	const CONTROLLER_ID = props.controllerId;
@@ -46,7 +47,8 @@ const Testing = props => {
 		api.setSigner(injector.signer);
 		toast({
 			title: "Checking existing bonds",
-			description: "Checking to see if you've already bonded using the select stash account",
+			description:
+				"Checking to see if you've already bonded using the select stash account",
 			status: "info",
 			duration: 9000,
 			isClosable: true
@@ -58,8 +60,7 @@ const Testing = props => {
 		console.log(ledger);
 		toast({
 			title: "Creating transactions",
-			description:
-				"Generating bonding and nomination transactions",
+			description: "Generating bonding and nomination transactions",
 			status: "info",
 			duration: 9000,
 			isClosable: true
@@ -98,8 +99,8 @@ const Testing = props => {
 					}
 					if (status.isFinalized) {
 						console.log(`finalized: ${status.asFinalized}`);
-						api.rpc.chain.getBlock(`${status.asFinalized}`, ({block})=> {
-							console.log(`block: ${block.header.number}`)
+						api.rpc.chain.getBlock(`${status.asFinalized}`, ({ block }) => {
+							console.log(`block: ${block.header.number}`);
 							handleTxBlock(block);
 						});
 						toast({
@@ -122,12 +123,45 @@ const Testing = props => {
 					}
 					history.push("/status");
 				}
+			)
+			.then(
+				val => {
+					console.log(val);
+				},
+				err => {
+					toast({
+						title: "Submission failed",
+						description: "This could be due to failure of authorization",
+						status: "error",
+						duration: 15000,
+						isClosable: true
+					});
+					console.log(err)
+				}
 			);
 		// console.log(injected);
 	};
 	return (
-		<CustomButton onClick={submitTransaction} disable={props.disable}>
-			Submit
+		<CustomButton
+			onClick={submitTransaction}
+			disable={props.disable || isSubmitting}
+		>
+			{isSubmitting ? (
+				<React.Fragment>
+					<Text as='span' mr={4} verticalAlign='top'>
+						Submitting
+					</Text>
+					<CircularProgress
+						isIndeterminate
+						as='span'
+						color='white'
+						size='24px'
+						alignSelf='center'
+					/>
+				</React.Fragment>
+			) : (
+				"Submit"
+			)}
 		</CustomButton>
 	);
 };
