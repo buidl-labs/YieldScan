@@ -2,6 +2,8 @@ import React from "react";
 import { WsProvider, ApiPromise } from "@polkadot/api";
 import { web3FromAddress, web3Enable } from "@polkadot/extension-dapp";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
+import { useToast } from "@chakra-ui/core";
+import { useHistory } from "react-router-dom";
 import CustomButton from "../CustomButton";
 
 const createAPI = async () => {
@@ -11,6 +13,9 @@ const createAPI = async () => {
 };
 
 const Testing = props => {
+	const history = useHistory();
+	const toast = useToast();
+	const { handleTxStatus, handleTxBlock, handleIsSubmitted } = props;
 	// Variables to change
 	const STASH_ID = props.stashId;
 	const CONTROLLER_ID = props.controllerId;
@@ -25,6 +30,7 @@ const Testing = props => {
 	const STAKE_AMOUNT = props.stakeAmount;
 	const AMOUNT = STAKE_AMOUNT * 10 ** 12;
 	const submitTransaction = async () => {
+		handleIsSubmitted(true);
 		const api = await createAPI();
 		// const myinjectedAddress = await web3Accounts();`
 		const allInjected = await web3Enable("YieldScan");
@@ -63,11 +69,37 @@ const Testing = props => {
 			.signAndSend(
 				CONTROLLER_ID,
 				{ nonce: parseInt(nonce, 10) },
-				({ status }) => {
+				({ events = [], status }) => {
 					console.log(`status: ${JSON.stringify(status, null, 4)}`);
+					handleTxStatus(status);
 					if (status.isInBlock) {
 						console.log(`batched included in ${status.asInBlock}`);
 					}
+					if (status.isFinalized) {
+						console.log(`finalized: ${status.asFinalized}`);
+						api.rpc.chain.getBlock(`${status.asFinalized}`, ({block})=> {
+							console.log(`block: ${block.header.number}`)
+							handleTxBlock(block);
+						});
+						toast({
+							title: "Status",
+							description: `Transaction included at blockHash ${status.asFinalized}`,
+							status: "info",
+							duration: 9000,
+							isClosable: true
+						});
+						events.forEach(({ phase, event: { data, method, section } }) => {
+							console.log(`${phase}: ${section}.${method}:: ${data}`);
+							toast({
+								title: `${phase}`,
+								description: `${section}.${method}:: ${data}`,
+								status: "warning",
+								duration: 15000,
+								isClosable: true
+							});
+						});
+					}
+					history.push("/status");
 				}
 			);
 		// console.log(injected);
