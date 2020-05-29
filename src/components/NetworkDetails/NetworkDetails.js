@@ -37,7 +37,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			<Route exact path='/(|network-details)'>
 				<Box w='100%'>
 					<Heading as='h3' size='xl' color={textColor[mode]} my={4} mt={8}>
-						Network Details
+						Kusama Network Details
 					</Heading>
 					<Flex wrap='wrap' my={8}>
 						<PseudoBox
