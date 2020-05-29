@@ -27,17 +27,24 @@ const NominatorsTable = (props: NominatorsTableProps) => {
 	};
 
 	const parseNominators = nomArr => {
-		const parseArr = nomArr.map((nominatorIterator, i) => {
-			return {
-				id: nominatorIterator.id,
-				Nominator: nominatorIterator.Nominator,
-				"Total Staked": `${nominatorIterator["Total Staked"]} ${props.currency}`,
-				Nominations: nominatorIterator.Nominations,
-				"Daily Earnings": `${nominatorIterator["Daily Earnings"]} ${props.currency}`
-			};
-		});
+		const parseArr = nomArr
+			.map((nominatorIterator, i) => {
+				return {
+					id: nominatorIterator.id,
+					Nominator: nominatorIterator.Nominator,
+					"Total Staked": `${nominatorIterator["Total Staked"]} ${props.currency}`,
+					Nominations: nominatorIterator.Nominations,
+					"Daily Earnings": `${nominatorIterator["Daily Earnings"]} ${props.currency}`
+				};
+			})
+			.sort((a, b) =>
+				b.Nominations > a.Nominations
+					? 1
+					: a.Nominations > b.Nominations
+					? -1
+					: 0
+			);
 
-		console.log(parseArr);
 		return parseArr;
 	};
 
