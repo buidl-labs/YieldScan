@@ -81,7 +81,7 @@ export default function HelpCenter() {
                         Can't find what you're looking for?
                     </Text>
                     <ChakraLink
-                        href="mailto:sahil@thevantageproject.com"
+                        href="mailto:karan@buidllabs.io"
                         color="teal.500"
                     >
                         Contact Us
