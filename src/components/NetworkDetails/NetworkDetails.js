@@ -24,6 +24,7 @@ type NetworkDetailsProps = {
 const NetworkDetails = (props: NetworkDetailsProps) => {
 	const mode = props.colorMode ? props.colorMode : "light";
 	const { nominators } = props;
+	console.log(nominators);
 
 	const [filters, setFilters] = React.useState(validatorFilters);
 
@@ -37,7 +38,7 @@ const NetworkDetails = (props: NetworkDetailsProps) => {
 			<Route exact path='/(|network-details)'>
 				<Box w='100%'>
 					<Heading as='h3' size='xl' color={textColor[mode]} my={4} mt={8}>
-						Network Details
+						Kusama's Network Details
 					</Heading>
 					<Flex wrap='wrap' my={8}>
 						<PseudoBox
