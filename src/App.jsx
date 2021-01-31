@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import { Flex, useColorMode } from "@chakra-ui/core";
 import { Helmet } from "react-helmet";
 import amplitude from "amplitude-js";
@@ -18,9 +18,9 @@ import { currency } from "./constants";
 import Loader from "./Loader";
 import getValidatorInfo from "./getValidatorInfo";
 
-import Testing from "./components/Testing";
-import getNominatorInfo from "./getNominatorInfo.js";
-import TxStatus from "./components/ConfirmationPage/TxStatus.js";
+import getNominatorInfo from "./getNominatorInfo";
+import TxStatus from "./components/ConfirmationPage/TxStatus";
+import HelpCenter from "./components/HelpCenter.jsx";
 
 const AMPLITUDE_KEY = "1f1699160a46dec6cc7514c14cb5c968";
 
@@ -65,7 +65,7 @@ function App() {
 
 	const handleTxBlock = block => {
 		setTxBlock(block);
-	}
+	};
 
 	const handleSubmit = bool => {
 		setSubmitted(bool);
@@ -211,9 +211,16 @@ function App() {
 					<ProtectedRoute
 						path='/status'
 						component={() => (
-							<TxStatus txStatus={txStatus} txBlock={txBlock} isSubmitted={submitted} />
+							<TxStatus
+								txStatus={txStatus}
+								txBlock={txBlock}
+								isSubmitted={submitted}
+							/>
 						)}
 					/>
+					<Route path='/help-center'>
+						<HelpCenter />
+					</Route>
 				</Flex>
 			</Router>
 		</AmplitudeProvider>

@@ -81,7 +81,7 @@ const ReturnsCalculator = (props: ReturnsCalculatorProps) => {
 						maxW='960px'
 					>
 						<Heading mt={16} mb={!suggestionsFound ? 4 : 12}>
-							Calculate your staking returns on Kusama
+							Calculate your returns on Kusama
 						</Heading>
 						{!suggestionsFound ? (
 							<Alert status='error' mb={12}>

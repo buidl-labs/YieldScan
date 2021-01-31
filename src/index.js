@@ -20,6 +20,8 @@ const customTheme = {
 	colors: {
 		...theme.colors,
 		brand: {
+			200: "#19cc95",
+			500: "#19cc95",
 			900: "#19cc95"
 		}
 	}
