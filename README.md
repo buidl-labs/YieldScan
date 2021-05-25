@@ -28,7 +28,7 @@ This project is funded and supported by the [Web3 Foundation](https://web3.found
 - PolkadotJS browser extension
 - At least one account on Kusama with enough balance to pay for transaction fees and bond funds.
 
-Currently, the app can be used on https://yieldscan.onrender.com/.
+Currently, the app can be used on https://yieldscan.app/.
 
 > :warning: **IMPORTANT:** Please note that this project is still under development and bugs and issues are to be expected.
 >
